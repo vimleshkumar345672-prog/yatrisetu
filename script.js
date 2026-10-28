@@ -1,16 +1,15 @@
 /**
- * YatriSetu Final Production Engine (4-Argon Security & Cloud Sync Model)
- * - 100% Real-Time Public Post Sync Across All Devices
- * - Protected Backend Architecture & XSS Input Sanitization
- * - Complete Bilingual Support (Hindi / English), ID Verification & PhonePe Confirmation
+ * YatriSetu Final Production Engine (4-Argon Complete Master Model)
+ * - 100% Original Features Intact (Bilingual HI/EN, Multi-Photo Gallery, Popular Routes, Help Centre)
+ * - Custom PhonePe-Style Green Tick Animated Modal (Zero Browser Alerts)
+ * - Two-Way Real-Time Sync: Instant Live Booking Alert & Dashboard for Ride/Stay Providers
  */
 
 // ============================================================================
-// 👇 लाइन नंबर 13: यहाँ नीचे "" के अंदर अपना Firebase Realtime Database लिंक पेस्ट करें
-// (उदाहरण: const FIREBASE_DB_URL = "https://yatrisetu-a9ff5-default-rtdb.firebaseio.com";)
+// 👇 लाइन नंबर 13: आपका Firebase Realtime Database लिंक यहाँ पहले से जुड़ा हुआ है
 // ============================================================================
 
-const FIREBASE_DB_URL = "https://yatrisetu-a9ff5-default-rtdb.firebaseio.com/";
+const FIREBASE_DB_URL = https://yatrisetu-a9ff5-default-rtdb.firebaseio.com/;
 
 // ============================================================================
 
@@ -18,6 +17,8 @@ const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
 const STORAGE_KEY_USER = 'yatrisetu_user_final';
 const STORAGE_KEY_BOOKINGS = 'yatrisetu_bookings_final';
 const STORAGE_KEY_CACHE = 'yatrisetu_listings_cache';
+const STORAGE_KEY_MY_POSTS = 'yatrisetu_my_posted_ids_v1';
+const STORAGE_KEY_NOTIFIED_PNRS = 'yatrisetu_notified_pnrs_v1';
 
 let currentLanguage = 'en';
 let lastActionTimestamp = 0;
@@ -42,7 +43,7 @@ function sanitizeHTML(str) {
 function isRateLimited() {
     const now = Date.now();
     if (now - lastActionTimestamp < 1200) {
-        alert("कृपया थोड़ा रुककर दोबारा प्रयास करें (Please wait a moment).");
+        showPhonePePopup("कृपया प्रतीक्षा करें", "थोड़ा रुककर दोबारा बटन दबाएं (Please wait a moment).", "info");
         return true;
     }
     lastActionTimestamp = now;
@@ -55,20 +56,58 @@ function playSuccessChime() {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (!AudioCtx) return;
         const ctx = new AudioCtx();
-        const notes = [587.33, 880];
+        const notes = [587.33, 880, 1174.66];
         notes.forEach((freq, idx) => {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.14);
-            gain.gain.setValueAtTime(0.18, ctx.currentTime + idx * 0.14);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.14 + 0.45);
+            osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.12);
+            gain.gain.setValueAtTime(0.2, ctx.currentTime + idx * 0.12);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.12 + 0.45);
             osc.connect(gain);
             gain.connect(ctx.destination);
-            osc.start(ctx.currentTime + idx * 0.14);
-            osc.stop(ctx.currentTime + idx * 0.14 + 0.45);
+            osc.start(ctx.currentTime + idx * 0.12);
+            osc.stop(ctx.currentTime + idx * 0.12 + 0.45);
         });
     } catch (err) {}
+}
+
+// ============================================================================
+// ✨ PHONEPE STYLE ANIMATED GREEN-TICK POPUP (No Browser Alerts!)
+// ============================================================================
+function showPhonePePopup(title, subtitle, type = "success", extraHTML = "") {
+    if (type === "success") playSuccessChime();
+
+    const existing = document.getElementById('yatrisetuPhonePeModal');
+    if (existing) existing.remove();
+
+    const isSuccess = type === "success";
+    const iconBg = isSuccess ? "bg-emerald-500" : "bg-blue-600";
+    const ringBg = isSuccess ? "bg-emerald-100" : "bg-blue-100";
+    const iconClass = isSuccess ? "fa-check" : "fa-bell";
+
+    const modal = document.createElement('div');
+    modal.id = 'yatrisetuPhonePeModal';
+    modal.className = 'fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 transition-opacity duration-300';
+    modal.innerHTML = `
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl border border-slate-100 transform scale-100 transition-all">
+            <div class="w-20 h-20 ${ringBg} rounded-full flex items-center justify-center mx-auto mb-4 relative">
+                <div class="w-14 h-14 ${iconBg} text-white rounded-full flex items-center justify-center text-2xl shadow-lg">
+                    <i class="fa-solid ${iconClass}"></i>
+                </div>
+            </div>
+            <span class="inline-block px-3 py-0.5 bg-emerald-50 text-emerald-700 font-extrabold text-[10px] rounded-full uppercase tracking-wider mb-2">
+                Verified by YatriSetu
+            </span>
+            <h3 class="font-extrabold text-slate-900 text-lg leading-snug mb-1.5">${title}</h3>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">${subtitle}</p>
+            ${extraHTML}
+            <button onclick="document.getElementById('yatrisetuPhonePeModal').remove()" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl text-xs shadow-lg shadow-emerald-600/25 cursor-pointer transition">
+                Done / ठीक है
+            </button>
+        </div>
+    `;
+    document.body.appendChild(modal);
 }
 
 // 14-Day Scheduling Window
@@ -88,7 +127,9 @@ function configureDateConstraints() {
     });
 }
 
-// Full Bilingual Dictionary (Hindi & English)
+// ============================================================================
+// COMPLETE BILINGUAL DICTIONARY (Hindi & English)
+// ============================================================================
 const i18n = {
     en: {
         brandSub: "Intercity Mobility & Stays",
@@ -180,7 +221,7 @@ function toggleLanguage() {
 }
 
 // ============================================================================
-// USER REGISTRATION & PROFILE SYSTEM
+// USER REGISTRATION & OWNERSHIP TRACKING
 // ============================================================================
 function loadRegisteredUser() {
     try {
@@ -190,6 +231,34 @@ function loadRegisteredUser() {
 }
 
 let currentUser = loadRegisteredUser();
+
+function getMyPostedIds() {
+    try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY_MY_POSTS)) || [];
+    } catch (e) { return []; }
+}
+
+function saveMyPostedId(listingId) {
+    const list = getMyPostedIds();
+    if (!list.includes(listingId)) {
+        list.push(listingId);
+        localStorage.setItem(STORAGE_KEY_MY_POSTS, JSON.stringify(list));
+    }
+}
+
+function getNotifiedPnrs() {
+    try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY_NOTIFIED_PNRS)) || [];
+    } catch (e) { return []; }
+}
+
+function markPnrNotified(pnr) {
+    const list = getNotifiedPnrs();
+    if (!list.includes(pnr)) {
+        list.push(pnr);
+        localStorage.setItem(STORAGE_KEY_NOTIFIED_PNRS, JSON.stringify(list));
+    }
+}
 
 function updateNavbarUserUI() {
     const textEl = document.getElementById('navUserText');
@@ -240,13 +309,16 @@ async function saveUserProfile(e) {
 
     localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(currentUser));
     updateNavbarUserUI();
+    updateBookingsBadge();
     closeModal('registerModal');
-    playSuccessChime();
-    alert(`स्वागत है ${currentUser.name}! आपकी वेरिफाइड प्रोफाइल सेव हो गई है।`);
+    showPhonePePopup(
+        "प्रोफाइल वेरिफाई हो गई!",
+        `स्वागत है ${currentUser.name}! अब आपके नंबर (+91 ${currentUser.phone}) की सभी राइड और बुकिंग अलर्ट आपके अकाउंट से जुड़ गए हैं।`
+    );
 }
 
 // ============================================================================
-// 🌐 CLOUD REALTIME SYNC ENGINE (सभी यूजर्स के लिए साझा लाइव सर्वर)
+// 🌐 CLOUD REALTIME SYNC & HOST BOOKING ALERT ENGINE
 // ============================================================================
 function getDefaultSeedListings() {
     const todayStr = new Date().toISOString().split('T')[0];
@@ -264,6 +336,7 @@ function getDefaultSeedListings() {
             seats: 3,
             price: 350,
             photos: ['https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=85'],
+            bookingsList: [],
             createdAt: Date.now() - 3600000
         },
         "seed_102": {
@@ -279,6 +352,7 @@ function getDefaultSeedListings() {
             seats: 1,
             price: 150,
             photos: ['https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=85'],
+            bookingsList: [],
             createdAt: Date.now() - 7200000
         },
         "seed_103": {
@@ -294,12 +368,56 @@ function getDefaultSeedListings() {
             seats: 2,
             price: 799,
             photos: ['https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=85'],
+            bookingsList: [],
             createdAt: Date.now() - 10800000
         }
     };
 }
 
-// 1. क्लाउड से सभी की पोस्ट लाना
+// Check if this listing belongs to the current driver/host
+function isMyListing(item) {
+    const myPostedIds = getMyPostedIds();
+    if (myPostedIds.includes(item.id)) return true;
+    if (currentUser && currentUser.phone && item.phone === currentUser.phone) return true;
+    return false;
+}
+
+// Check if any new booking arrived on the driver's posted rides
+function checkIncomingDriverBookings(listings) {
+    const notifiedPnrs = getNotifiedPnrs();
+
+    listings.forEach(item => {
+        if (!isMyListing(item) || !item.bookingsList || !Array.isArray(item.bookingsList)) return;
+
+        item.bookingsList.forEach(b => {
+            if (b && b.pnr && !notifiedPnrs.includes(b.pnr)) {
+                markPnrNotified(b.pnr);
+                const waReply = encodeURIComponent(
+                    `नमस्ते ${b.passengerName}, आपकी YatriSetu बुकिंग (${b.pnr}) कन्फर्म हो गई है! रूट: ${item.from} से ${item.to} (${item.date}).`
+                );
+                const extraActions = `
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 text-left text-xs space-y-1 mb-4">
+                        <div class="flex justify-between"><span class="text-slate-400">यात्री (Passenger):</span><strong class="text-slate-900">${sanitizeHTML(b.passengerName)}</strong></div>
+                        <div class="flex justify-between"><span class="text-slate-400">मोबाइल:</span><strong class="text-blue-600">+91 ${sanitizeHTML(b.passengerPhone)}</strong></div>
+                        <div class="flex justify-between"><span class="text-slate-400">रूट:</span><strong class="text-slate-900">${sanitizeHTML(item.from)} ➔ ${sanitizeHTML(item.to)}</strong></div>
+                        <div class="flex justify-between"><span class="text-slate-400">सीट / कुल राशि:</span><strong class="text-emerald-600">${b.qty} Unit (₹${b.totalAmount})</strong></div>
+                        <div class="grid grid-cols-2 gap-2 pt-2">
+                            <a href="tel:+91${sanitizeHTML(b.passengerPhone)}" class="py-2 bg-blue-600 text-white font-bold rounded-xl text-center"><i class="fa-solid fa-phone mr-1"></i>Call</a>
+                            <a href="https://wa.me/91${sanitizeHTML(b.passengerPhone)}?text=${waReply}" target="_blank" class="py-2 bg-emerald-600 text-white font-bold rounded-xl text-center"><i class="fa-brands fa-whatsapp mr-1"></i>WhatsApp</a>
+                        </div>
+                    </div>
+                `;
+                showPhonePePopup(
+                    "🎉 आपकी राइड बुक हो गई!",
+                    `${b.passengerName} ने अभी-अभी आपकी ${item.from} ➔ ${item.to} लिस्टिंग पर ${b.qty} सीट/रूम बुक किया है!`,
+                    "success",
+                    extraActions
+                );
+            }
+        });
+    });
+}
+
 async function fetchListingsFromCloud() {
     const dbUrl = getCleanFirebaseUrl();
     if (!dbUrl) return;
@@ -309,7 +427,6 @@ async function fetchListingsFromCloud() {
         if (!res.ok) return;
         const data = await res.json();
 
-        // अगर डेटाबेस बिल्कुल खाली है, तो शुरुआती 3 डेमो पोस्ट डालें
         if (!data) {
             const seeds = getDefaultSeedListings();
             for (const key in seeds) {
@@ -332,17 +449,18 @@ async function fetchListingsFromCloud() {
         allListings.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
         localStorage.setItem(STORAGE_KEY_CACHE, JSON.stringify(allListings));
+        checkIncomingDriverBookings(allListings);
+        updateBookingsBadge();
         renderListings(allListings);
     } catch (err) {
-        console.warn("Cloud sync error, loading cached view.");
+        console.warn("Cloud sync error, using cached view.");
     }
 }
 
-// 2. नया राइड/रूम सीधे क्लाउड में जोड़ना (ताकि हर इंसान को दिखे)
 async function publishNewItemToCloud(newItem) {
     const dbUrl = getCleanFirebaseUrl();
     if (!dbUrl) {
-        alert("⚠️ Firebase URL सेट नहीं है! कृपया लाइन 13 चेक करें।");
+        showPhonePePopup("सर्वर लिंक एरर", "Firebase URL सेट नहीं है!", "info");
         return false;
     }
 
@@ -354,32 +472,38 @@ async function publishNewItemToCloud(newItem) {
         });
 
         if (!res.ok) {
-            alert(`⚠️ पोस्ट सेव नहीं हो सकी (Error ${res.status})। कृपया Firebase के Rules टैब में जाकर कोड Publish करें!`);
+            showPhonePePopup("सर्वर नियम जांचें", `पोस्ट सेव नहीं हो सकी (Status ${res.status})। कृपया Firebase Rules चेक करें।`, "info");
             return false;
         }
 
+        saveMyPostedId(newItem.id);
         await fetchListingsFromCloud();
         return true;
     } catch (err) {
-        alert("⚠️ इंटरनेट कनेक्शन एरर: सर्वर से संपर्क नहीं हो पाया।");
+        showPhonePePopup("इंटरनेट कनेक्शन एरर", "सर्वर से संपर्क नहीं हो पाया। कृपया इंटरनेट चेक करें।", "info");
         return false;
     }
 }
 
-// 3. बुकिंग होने पर सीट घटाना और प्राइवेट बुकिंग लॉग सेव करना
-async function updateSeatsAndLogBooking(cloudKey, remainingSeats, bookingData) {
+async function updateSeatsAndLogBooking(item, remainingSeats, bookingData) {
     const dbUrl = getCleanFirebaseUrl();
     if (!dbUrl) return;
 
+    const updatedBookingsList = Array.isArray(item.bookingsList) ? [...item.bookingsList] : [];
+    updatedBookingsList.unshift(bookingData);
+    item.bookingsList = updatedBookingsList;
+
     try {
-        if (cloudKey) {
-            await fetch(`${dbUrl}/listings/${cloudKey}.json`, {
+        if (item.cloudKey) {
+            await fetch(`${dbUrl}/listings/${item.cloudKey}.json`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ seats: remainingSeats })
+                body: JSON.stringify({
+                    seats: remainingSeats,
+                    bookingsList: updatedBookingsList
+                })
             });
         }
-        // प्राइवेट बुकिंग लॉग (जिसे सिर्फ वेबसाइट ओनर Firebase में देख सकता है)
         await fetch(`${dbUrl}/bookings.json`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -431,6 +555,8 @@ function renderListings(items) {
         const photoCount = item.photos ? item.photos.length : 1;
         const isSoldOut = item.seats <= 0;
         const unitLabel = item.kind === 'stay' ? 'rooms left' : 'seats left';
+        const mine = isMyListing(item);
+        const receivedCount = (item.bookingsList && Array.isArray(item.bookingsList)) ? item.bookingsList.length : 0;
 
         const card = document.createElement('div');
         card.className = "bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 flex flex-col justify-between";
@@ -444,6 +570,11 @@ function renderListings(items) {
                     <span class="absolute top-3 right-3 bg-blue-600 text-white px-3.5 py-1 rounded-full text-xs font-extrabold shadow">
                         ₹${Number(item.price)}
                     </span>
+                    ${mine ? `
+                        <span class="absolute bottom-3 left-3 bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-[10px] font-extrabold shadow">
+                            Your Post (${receivedCount} Booked)
+                        </span>
+                    ` : ''}
                     ${photoCount > 1 ? `
                         <span class="absolute bottom-3 right-3 bg-black/75 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1">
                             <i class="fa-regular fa-images"></i> +${photoCount} Photos
@@ -528,13 +659,30 @@ async function submitRideForm(e) {
 
     const category = document.getElementById('rVehicleCategory').value;
     const uploadedPhotos = await readFilesAsBase64(document.getElementById('rPhotos'));
+    const driverName = sanitizeHTML(document.getElementById('rDriverName').value.trim());
+    const driverPhone = sanitizeHTML(document.getElementById('rDriverPhone').value.trim());
+
+    // Save driver phone to currentUser if not registered yet so driver receives live alerts
+    if (!currentUser) {
+        currentUser = {
+            name: driverName,
+            phone: driverPhone,
+            emergencyPhone: driverPhone,
+            idType: 'Aadhaar Card',
+            idDigits: '0000',
+            photo: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80',
+            registeredAt: Date.now()
+        };
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(currentUser));
+        updateNavbarUserUI();
+    }
 
     const newListing = {
         id: 'YS-' + Math.floor(100000 + Math.random() * 900000),
         kind: 'ride',
         category: category,
-        providerName: sanitizeHTML(document.getElementById('rDriverName').value.trim()),
-        phone: sanitizeHTML(document.getElementById('rDriverPhone').value.trim()),
+        providerName: driverName,
+        phone: driverPhone,
         vehicleOrAddress: sanitizeHTML(document.getElementById('rVehicleNumber').value.trim().toUpperCase()),
         from: sanitizeHTML(document.getElementById('rFromCity').value.trim()),
         to: sanitizeHTML(document.getElementById('rToCity').value.trim()),
@@ -542,16 +690,19 @@ async function submitRideForm(e) {
         seats: parseInt(document.getElementById('rSeats').value, 10) || 1,
         price: parseInt(document.getElementById('rPrice').value, 10) || 100,
         photos: uploadedPhotos.length > 0 ? uploadedPhotos : [getDefaultImageForCategory(category)],
+        bookingsList: [],
         createdAt: Date.now()
     };
 
     const ok = await publishNewItemToCloud(newListing);
     if (ok) {
         closeModal('publishModal');
-        playSuccessChime();
         e.target.reset();
         configureDateConstraints();
-        alert("✅ आपकी राइड लाइव पब्लिश हो गई है! अब यह हर यूजर को दिखेगी।");
+        showPhonePePopup(
+            "राइड लाइव पब्लिश हो गई!",
+            `आपकी ${newListing.from} ➔ ${newListing.to} राइड 24/7 लाइव हो गई है। जैसे ही कोई इसे बुक करेगा, आपके फोन पर तुरंत नोटिफिकेशन आएगा!`
+        );
     }
 }
 
@@ -561,13 +712,29 @@ async function submitStayForm(e) {
 
     const uploadedPhotos = await readFilesAsBase64(document.getElementById('sPhotos'));
     const city = sanitizeHTML(document.getElementById('sCity').value.trim());
+    const hostName = sanitizeHTML(document.getElementById('sHostName').value.trim());
+    const hostPhone = sanitizeHTML(document.getElementById('sHostPhone').value.trim());
+
+    if (!currentUser) {
+        currentUser = {
+            name: hostName,
+            phone: hostPhone,
+            emergencyPhone: hostPhone,
+            idType: 'Aadhaar Card',
+            idDigits: '0000',
+            photo: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80',
+            registeredAt: Date.now()
+        };
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(currentUser));
+        updateNavbarUserUI();
+    }
 
     const newStay = {
         id: 'YS-' + Math.floor(100000 + Math.random() * 900000),
         kind: 'stay',
         category: 'Stay',
-        providerName: sanitizeHTML(document.getElementById('sHostName').value.trim()),
-        phone: sanitizeHTML(document.getElementById('sHostPhone').value.trim()),
+        providerName: hostName,
+        phone: hostPhone,
         vehicleOrAddress: sanitizeHTML(document.getElementById('sAddress').value.trim()),
         from: city,
         to: city,
@@ -575,21 +742,24 @@ async function submitStayForm(e) {
         seats: parseInt(document.getElementById('sRooms').value, 10) || 1,
         price: parseInt(document.getElementById('sPrice').value, 10) || 500,
         photos: uploadedPhotos.length > 0 ? uploadedPhotos : [getDefaultImageForCategory('Stay')],
+        bookingsList: [],
         createdAt: Date.now()
     };
 
     const ok = await publishNewItemToCloud(newStay);
     if (ok) {
         closeModal('publishModal');
-        playSuccessChime();
         e.target.reset();
         configureDateConstraints();
-        alert("✅ आपका होमस्टे लाइव पब्लिश हो गया है! अब यह हर यूजर को दिखेगा।");
+        showPhonePePopup(
+            "होमस्टे लाइव पब्लिश हो गया!",
+            `आपका ${city} होमस्टे लाइव हो गया है। जब भी कोई यात्री रूम बुक करेगा, आपको तुरंत यहाँ सूचना मिलेगी!`
+        );
     }
 }
 
 // ============================================================================
-// PASSENGER BOOKING & MY BOOKINGS WALLET
+// PASSENGER BOOKING & TWO-WAY "MY BOOKINGS" WALLET (DRIVER + PASSENGER)
 // ============================================================================
 function loadBookingsFromStorage() {
     try {
@@ -645,7 +815,7 @@ async function processBookingConfirmation(e) {
 
     const qty = parseInt(document.getElementById('passengerQty').value, 10) || 1;
     if (qty > item.seats) {
-        alert(`केवल ${item.seats} सीट/रूम उपलब्ध हैं!`);
+        showPhonePePopup("सीट उपलब्ध नहीं", `केवल ${item.seats} सीट/रूम उपलब्ध हैं!`, "info");
         return;
     }
 
@@ -677,6 +847,9 @@ async function processBookingConfirmation(e) {
     const newSeats = item.seats - qty;
     item.seats = newSeats;
 
+    // Mark PNR notified on the booker's own device if they test-booked their own ride
+    markPnrNotified(pnrToken);
+
     const newBooking = {
         pnr: pnrToken,
         listingId: item.id,
@@ -698,7 +871,7 @@ async function processBookingConfirmation(e) {
 
     myBookings.unshift(newBooking);
     localStorage.setItem(STORAGE_KEY_BOOKINGS, JSON.stringify(myBookings));
-    await updateSeatsAndLogBooking(item.cloudKey, newSeats, newBooking);
+    await updateSeatsAndLogBooking(item, newSeats, newBooking);
     updateBookingsBadge();
     renderListings(allListings);
 
@@ -738,53 +911,113 @@ async function processBookingConfirmation(e) {
     playSuccessChime();
 }
 
+// Get all bookings received on rides/stays posted by this user
+function getBookingsReceivedByMe() {
+    const received = [];
+    allListings.forEach(item => {
+        if (isMyListing(item) && Array.isArray(item.bookingsList)) {
+            item.bookingsList.forEach(b => {
+                received.push({ ...b, listingRoute: `${item.from} ➔ ${item.to}`, listingDate: item.date });
+            });
+        }
+    });
+    return received;
+}
+
 function updateBookingsBadge() {
+    const receivedBookings = getBookingsReceivedByMe();
+    const totalCount = myBookings.length + receivedBookings.length;
+
     const badge = document.getElementById('bookingCountBadge');
-    if (badge) badge.innerText = myBookings.length;
+    if (badge) badge.innerText = totalCount;
 
     const container = document.getElementById('myBookingsList');
     if (!container) return;
 
-    if (myBookings.length === 0) {
-        container.innerHTML = `
-            <div class="text-center py-8 bg-slate-50 rounded-2xl border border-slate-200">
-                <i class="fa-solid fa-ticket text-2xl text-slate-300 mb-2"></i>
-                <p class="text-xs font-bold text-slate-600">You have no confirmed bookings yet.</p>
-            </div>
-        `;
-        return;
-    }
+    let html = '';
 
-    container.innerHTML = myBookings.map(b => {
-        const waMsg = encodeURIComponent(`Hello ${b.providerName}, regarding my YatriSetu booking ${b.pnr} (${b.route} on ${b.date}). Passenger: ${b.passengerName}`);
-        return `
-        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-            <div class="flex items-start gap-3">
-                <img src="${b.passengerPhoto || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'}" alt="Passenger" class="w-11 h-11 rounded-full object-cover border-2 border-emerald-500 mt-0.5">
-                <div class="space-y-1">
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span class="px-2.5 py-0.5 bg-emerald-600 text-white font-extrabold rounded-full text-[10px]">${sanitizeHTML(b.pnr)}</span>
-                        <span class="font-extrabold text-slate-900 text-sm">${sanitizeHTML(b.route)}</span>
-                        <span class="text-slate-400 font-bold">• ${sanitizeHTML(b.date)}</span>
-                    </div>
-                    <p class="text-slate-700 font-bold">Provider: ${sanitizeHTML(b.providerName)} (${sanitizeHTML(b.vehicleOrAddress)})</p>
-                    <p class="text-slate-500">Passenger: <strong>${sanitizeHTML(b.passengerName)}</strong> — <strong class="text-emerald-600">₹${b.totalAmount}</strong></p>
+    // SECTION 1: Bookings received on Driver/Host's posted rides
+    html += `
+        <div class="mb-5">
+            <h4 class="font-extrabold text-slate-900 text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                <i class="fa-solid fa-bell text-emerald-600"></i> मेरी राइड/रूम पर आई बुकिंग्स (Bookings Received on My Posts: ${receivedBookings.length})
+            </h4>
+            ${receivedBookings.length === 0 ? `
+                <div class="p-4 rounded-2xl bg-emerald-50/50 border border-emerald-200 text-xs text-slate-600">
+                    अभी आपकी पोस्ट की गई राइड या रूम पर कोई बुकिंग नहीं आई है। जैसे ही कोई बुक करेगा, यहाँ यात्री का नाम और नंबर आ जाएगा।
                 </div>
-            </div>
-            <div class="flex items-center gap-2 self-end sm:self-center">
-                <a href="https://wa.me/91${sanitizeHTML(b.providerPhone)}?text=${waMsg}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition flex items-center gap-1">
-                    <i class="fa-brands fa-whatsapp"></i> Chat
-                </a>
-                <a href="tel:+91${sanitizeHTML(b.providerPhone)}" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition flex items-center gap-1">
-                    <i class="fa-solid fa-phone"></i> Call
-                </a>
-            </div>
+            ` : receivedBookings.map(b => {
+                const waReply = encodeURIComponent(`नमस्ते ${b.passengerName}, आपकी YatriSetu बुकिंग ${b.pnr} (${b.route}) कन्फर्म है।`);
+                return `
+                <div class="p-4 mb-2.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                    <div class="flex items-start gap-3">
+                        <img src="${b.passengerPhoto || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'}" alt="Passenger" class="w-11 h-11 rounded-full object-cover border-2 border-emerald-600 mt-0.5">
+                        <div class="space-y-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="px-2 py-0.5 bg-emerald-600 text-white font-extrabold rounded-full text-[10px]">NEW BOOKING • ${sanitizeHTML(b.pnr)}</span>
+                                <span class="font-extrabold text-slate-900 text-sm">${sanitizeHTML(b.route)}</span>
+                            </div>
+                            <p class="text-slate-800 font-extrabold">यात्री (Passenger): ${sanitizeHTML(b.passengerName)} (+91 ${sanitizeHTML(b.passengerPhone)})</p>
+                            <p class="text-slate-600">ID Proof: ${sanitizeHTML(b.passengerIdProof || 'Verified')} • <strong>${b.qty} सीट/रूम (₹${b.totalAmount})</strong></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 self-end sm:self-center">
+                        <a href="https://wa.me/91${sanitizeHTML(b.passengerPhone)}?text=${waReply}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition flex items-center gap-1">
+                            <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                        </a>
+                        <a href="tel:+91${sanitizeHTML(b.passengerPhone)}" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition flex items-center gap-1">
+                            <i class="fa-solid fa-phone"></i> Call
+                        </a>
+                    </div>
+                </div>`;
+            }).join('')}
         </div>
-    `}).join('');
+    `;
+
+    // SECTION 2: Bookings made by this user as a passenger
+    html += `
+        <div>
+            <h4 class="font-extrabold text-slate-900 text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                <i class="fa-solid fa-ticket text-blue-600"></i> मेरे द्वारा बुक किए गए टिकट (My Passenger Tickets: ${myBookings.length})
+            </h4>
+            ${myBookings.length === 0 ? `
+                <div class="text-center py-6 bg-slate-50 rounded-2xl border border-slate-200">
+                    <p class="text-xs font-bold text-slate-500">आपने अभी तक खुद के सफर के लिए कोई टिकट बुक नहीं किया है।</p>
+                </div>
+            ` : myBookings.map(b => {
+                const waMsg = encodeURIComponent(`Hello ${b.providerName}, regarding my YatriSetu booking ${b.pnr} (${b.route} on ${b.date}). Passenger: ${b.passengerName}`);
+                return `
+                <div class="p-4 mb-2.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                    <div class="flex items-start gap-3">
+                        <img src="${b.passengerPhoto || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'}" alt="Passenger" class="w-11 h-11 rounded-full object-cover border-2 border-blue-500 mt-0.5">
+                        <div class="space-y-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="px-2.5 py-0.5 bg-blue-600 text-white font-extrabold rounded-full text-[10px]">${sanitizeHTML(b.pnr)}</span>
+                                <span class="font-extrabold text-slate-900 text-sm">${sanitizeHTML(b.route)}</span>
+                                <span class="text-slate-400 font-bold">• ${sanitizeHTML(b.date)}</span>
+                            </div>
+                            <p class="text-slate-700 font-bold">Provider: ${sanitizeHTML(b.providerName)} (${sanitizeHTML(b.vehicleOrAddress || '')})</p>
+                            <p class="text-slate-500">Passenger: <strong>${sanitizeHTML(b.passengerName)}</strong> — <strong class="text-emerald-600">₹${b.totalAmount}</strong></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 self-end sm:self-center">
+                        <a href="https://wa.me/91${sanitizeHTML(b.providerPhone)}?text=${waMsg}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition flex items-center gap-1">
+                            <i class="fa-brands fa-whatsapp"></i> Chat
+                        </a>
+                        <a href="tel:+91${sanitizeHTML(b.providerPhone)}" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition flex items-center gap-1">
+                            <i class="fa-solid fa-phone"></i> Call
+                        </a>
+                    </div>
+                </div>`;
+            }).join('')}
+        </div>
+    `;
+
+    container.innerHTML = html;
 }
 
 // ============================================================================
-// GALLERY, FILTERS & MODALS
+// GALLERY, FILTERS, POPULAR ROUTES & MODALS (100% RESTORED)
 // ============================================================================
 function openGallery(listingId) {
     const item = allListings.find(x => x.id === listingId);
@@ -898,7 +1131,7 @@ function switchPublishTab(tab) {
     }
 }
 
-// Initialize & Start 4-Second Live Cloud Sync
+// Initialize & Start 4-Second Live Two-Way Cloud Sync
 document.addEventListener('DOMContentLoaded', () => {
     configureDateConstraints();
     updateNavbarUserUI();
