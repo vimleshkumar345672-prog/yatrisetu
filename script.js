@@ -1,18 +1,16 @@
 // ============================================================================
-// SARKARIRESULTUPALL.COM - HIGH SECURITY & WEEKLY MASTER DATABASE
-// Note: Every Sunday, you only need to update this script.js file!
+// SARKARIRESULTUPALL.COM - MASTER SCRIPT (PDF ROW REMOVED + LEFT AI FREE CHAT)
+// Note: Only save this script.js file. No changes needed in HTML or CSS!
 // ============================================================================
 
 (function () {
     "use strict";
 
-    // ---------------- 1. SECURITY MODULE (Anti-Hack, Anti-XSS, Frame-Busting) ----------------
-    // Prevent Clickjacking (Blocks unauthorized websites from embedding your portal in an iframe)
+    // ---------------- 1. SECURITY MODULE (Anti-Hack & Frame Protection) ----------------
     if (window.top !== window.self) {
         window.top.location = window.self.location;
     }
 
-    // Sanitize user input against XSS attacks
     function escapeHTML(str) {
         if (typeof str !== "string") return "";
         return str.replace(/[&<>"'`=\/]/g, function (s) {
@@ -29,7 +27,6 @@
         });
     }
 
-    // Verify URLs only use safe https/http protocols
     function sanitizeUrl(url) {
         if (typeof url !== "string") return "#";
         const trimmed = url.trim();
@@ -39,12 +36,12 @@
         return "#";
     }
 
-    // Deter code theft / right-click / F12 / Ctrl+U inspection
     document.addEventListener("contextmenu", function (e) {
-        if (e.target.tagName !== "INPUT") {
+        if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA") {
             e.preventDefault();
         }
     });
+
     document.addEventListener("keydown", function (e) {
         if (
             e.key === "F12" ||
@@ -57,7 +54,6 @@
 
     // ---------------- 2. WEEKLY UPDATABLE DATA ARRAYS ----------------
 
-    // A. Live Marquee Ticker Items (Updated every Sunday)
     const LIVE_TICKER_ITEMS = Object.freeze([
         { id: "up-board-10th", text: "UP Board Class 10th & 12th Result / Time Table 2026-27 [Declared]" },
         { id: "up-police-constable", text: "UP Police Constable 32,679 Posts Online Form 2026 [Apply Online]" },
@@ -66,7 +62,6 @@
         { id: "ecce-educator", text: "UP ECCE Educator Online Form 2026 (All Districts) [Apply Now]" }
     ]);
 
-    // B. Top 8 Highlight Boxes (Updated every Sunday)
     const TOP_HIGHLIGHTS = Object.freeze([
         { id: "up-police-constable", title: "UP Police Constable 32,679 Posts Online Form 2026", colorClass: "bg-c1" },
         { id: "ssc-gd-2026", title: "SSC GD Constable Online Form 2026-27", colorClass: "bg-c2" },
@@ -78,7 +73,6 @@
         { id: "ecce-educator", title: "UP ECCE Educator All District Online Form 2026", colorClass: "bg-c8" }
     ]);
 
-    // C. Featured Special Schemes / Tables (Anganwadi + New Weekly Schemes can be added here!)
     const FEATURED_SCHEMES = Object.freeze([
         {
             postId: "anganwadi-2026",
@@ -95,9 +89,8 @@
         }
     ]);
 
-    // D. All Portal Links (Result, Admit Card, Latest Job, 10th/ITI, Outsourcing, Syllabus, Answer Key, Admission)
     const PORTAL_POSTS = Object.freeze([
-        // ======================== RESULTS ========================
+        // RESULTS
         {
             id: "up-board-10th",
             category: "result",
@@ -106,8 +99,7 @@
             date: "20 April 2026",
             time: "02:00 PM",
             shortInfo: "Uttar Pradesh Madhyamik Shiksha Parishad (UPMSP) High School Class 10th Exam Result 2026. Check Roll Number Wise Result on Official NIC Server.",
-            officialUrl: "https://upresults.nic.in/",
-            pdfUrl: "https://upmsp.edu.in/"
+            officialUrl: "https://upresults.nic.in/"
         },
         {
             id: "up-board-12th",
@@ -117,8 +109,7 @@
             date: "20 April 2026",
             time: "02:00 PM",
             shortInfo: "Uttar Pradesh Madhyamik Shiksha Parishad (UPMSP) Intermediate Class 12th Science, Arts & Commerce Result 2026.",
-            officialUrl: "https://upresults.nic.in/",
-            pdfUrl: "https://upmsp.edu.in/"
+            officialUrl: "https://upresults.nic.in/"
         },
         {
             id: "up-police-result",
@@ -128,8 +119,7 @@
             date: "28 Oct 2026",
             time: "06:30 PM",
             shortInfo: "Uttar Pradesh Police Recruitment & Promotion Board (UPPRPB) Civil Police Constable Written Exam Result & Cutoff Marks 2026.",
-            officialUrl: "https://uppbpb.gov.in/",
-            pdfUrl: "https://uppbpb.gov.in/"
+            officialUrl: "https://uppbpb.gov.in/"
         },
         {
             id: "ssc-gd-result",
@@ -138,9 +128,8 @@
             tag: "[Out]",
             date: "27 Oct 2026",
             time: "08:15 PM",
-            shortInfo: "Staff Selection Commission (SSC) Constable GD in CAPFs, SSF, Rifleman (GD) in Assam Rifles Final Merit List PDF Download.",
-            officialUrl: "https://ssc.gov.in/",
-            pdfUrl: "https://ssc.gov.in/"
+            shortInfo: "Staff Selection Commission (SSC) Constable GD in CAPFs, SSF, Rifleman (GD) in Assam Rifles Final Merit List Download.",
+            officialUrl: "https://ssc.gov.in/"
         },
         {
             id: "upsssc-pet-score",
@@ -150,8 +139,7 @@
             date: "25 Oct 2026",
             time: "04:45 PM",
             shortInfo: "Uttar Pradesh Subordinate Services Selection Commission (UPSSSC) Preliminary Eligibility Test (PET) 2026 Official Score Card.",
-            officialUrl: "https://upsssc.gov.in/",
-            pdfUrl: "https://upsssc.gov.in/"
+            officialUrl: "https://upsssc.gov.in/"
         },
         {
             id: "army-agniveer-result",
@@ -161,8 +149,7 @@
             date: "24 Oct 2026",
             time: "01:20 PM",
             shortInfo: "Join Indian Army Agniveer Common Entrance Exam (CEE) Roll Number Wise Merit List 2026 for all AROs.",
-            officialUrl: "https://joinindianarmy.nic.in/",
-            pdfUrl: "https://joinindianarmy.nic.in/"
+            officialUrl: "https://joinindianarmy.nic.in/"
         },
         {
             id: "rrb-alp-result",
@@ -172,8 +159,7 @@
             date: "22 Oct 2026",
             time: "05:00 PM",
             shortInfo: "Railway Recruitment Board (RRB) Assistant Loco Pilot (ALP) CBT-1 Result, Cut Off & Score Card Link.",
-            officialUrl: "https://indianrailways.gov.in/",
-            pdfUrl: "https://indianrailways.gov.in/"
+            officialUrl: "https://indianrailways.gov.in/"
         },
         {
             id: "bihar-board-10th-result",
@@ -183,11 +169,10 @@
             date: "20 Oct 2026",
             time: "03:15 PM",
             shortInfo: "Bihar School Examination Board (BSEB) Matric & Inter Annual Exam Result 2026 Direct Link.",
-            officialUrl: "https://results.biharboardonline.com/",
-            pdfUrl: "https://biharboardonline.bihar.gov.in/"
+            officialUrl: "https://results.biharboardonline.com/"
         },
 
-        // ======================== ADMIT CARDS ========================
+        // ADMIT CARDS
         {
             id: "up-police-admit",
             category: "admit-card",
@@ -196,8 +181,7 @@
             date: "29 Oct 2026",
             time: "10:15 AM",
             shortInfo: "UPPRPB Constable Recruitment Exam City Intimation Slip and Hall Ticket Download 2026.",
-            officialUrl: "https://uppbpb.gov.in/",
-            pdfUrl: "https://uppbpb.gov.in/"
+            officialUrl: "https://uppbpb.gov.in/"
         },
         {
             id: "ssc-cgl-admit",
@@ -207,8 +191,7 @@
             date: "28 Oct 2026",
             time: "11:40 AM",
             shortInfo: "Staff Selection Commission Combined Graduate Level (CGL) 2026 Region Wise Application Status & Admit Card.",
-            officialUrl: "https://ssc.gov.in/",
-            pdfUrl: "https://ssc.gov.in/"
+            officialUrl: "https://ssc.gov.in/"
         },
         {
             id: "bsf-hc-admit",
@@ -218,8 +201,7 @@
             date: "27 Oct 2026",
             time: "01:00 PM",
             shortInfo: "Border Security Force (BSF) Head Constable (Radio Operator & Radio Mechanic) Admit Card 2026.",
-            officialUrl: "https://rectt.bsf.gov.in/",
-            pdfUrl: "https://rectt.bsf.gov.in/"
+            officialUrl: "https://rectt.bsf.gov.in/"
         },
         {
             id: "rrb-ntpc-admit",
@@ -229,8 +211,7 @@
             date: "26 Oct 2026",
             time: "04:00 PM",
             shortInfo: "Railway Recruitment Board (RRB) Non-Technical Popular Categories (NTPC) Graduate & UG Level Admit Card 2026.",
-            officialUrl: "https://indianrailways.gov.in/",
-            pdfUrl: "https://indianrailways.gov.in/"
+            officialUrl: "https://indianrailways.gov.in/"
         },
         {
             id: "upsssc-lekhpal-admit",
@@ -240,8 +221,7 @@
             date: "24 Oct 2026",
             time: "02:30 PM",
             shortInfo: "UPSSSC Rajasva Lekhpal Mains Examination Hall Ticket & Exam Center Notice 2026.",
-            officialUrl: "https://upsssc.gov.in/",
-            pdfUrl: "https://upsssc.gov.in/"
+            officialUrl: "https://upsssc.gov.in/"
         },
         {
             id: "uppsc-pcs-admit",
@@ -251,8 +231,7 @@
             date: "21 Oct 2026",
             time: "05:20 PM",
             shortInfo: "Uttar Pradesh Public Service Commission (UPPSC) Combined State / Upper Subordinate Services Admit Card & Interview Letter.",
-            officialUrl: "https://uppsc.up.nic.in/",
-            pdfUrl: "https://uppsc.up.nic.in/"
+            officialUrl: "https://uppsc.up.nic.in/"
         },
         {
             id: "airforce-agniveer-admit",
@@ -262,8 +241,7 @@
             date: "19 Oct 2026",
             time: "12:10 PM",
             shortInfo: "Indian Air Force Agniveer Vayu Intake 01/2027 Exam Date, City Intimation & Admit Card.",
-            officialUrl: "https://agnipathvayu.cdac.in/",
-            pdfUrl: "https://agnipathvayu.cdac.in/"
+            officialUrl: "https://agnipathvayu.cdac.in/"
         },
         {
             id: "isro-icrb-admit",
@@ -273,8 +251,7 @@
             date: "29 Oct 2026",
             time: "09:30 AM",
             shortInfo: "Indian Space Research Organisation (ISRO) Scientist/Engineer, ISTRAC & SDSC Various Post Admit Card 2026.",
-            officialUrl: "https://www.isro.gov.in/",
-            pdfUrl: "https://www.isro.gov.in/"
+            officialUrl: "https://www.isro.gov.in/"
         },
         {
             id: "ntpc-ao-admit",
@@ -284,8 +261,7 @@
             date: "28 Oct 2026",
             time: "03:40 PM",
             shortInfo: "NTPC Limited Assistant Officer Recruitment Exam Admit Card 2026 Direct Download.",
-            officialUrl: "https://careers.ntpc.co.in/",
-            pdfUrl: "https://careers.ntpc.co.in/"
+            officialUrl: "https://careers.ntpc.co.in/"
         },
         {
             id: "delhi-hc-spa-admit",
@@ -295,8 +271,7 @@
             date: "28 Oct 2026",
             time: "01:15 PM",
             shortInfo: "High Court of Delhi Senior Personal Assistant (SPA) Typing Test Date, JJA Mains & HJS Mains Admit Card 2026.",
-            officialUrl: "https://delhihighcourt.nic.in/",
-            pdfUrl: "https://delhihighcourt.nic.in/"
+            officialUrl: "https://delhihighcourt.nic.in/"
         },
         {
             id: "ssc-je-city",
@@ -306,8 +281,7 @@
             date: "27 Oct 2026",
             time: "06:00 PM",
             shortInfo: "SSC Junior Engineer (Civil, Mechanical, Electrical) Exam City Slip and SSC CPO SI CAPF Revised Exam Schedule 2026.",
-            officialUrl: "https://ssc.gov.in/",
-            pdfUrl: "https://ssc.gov.in/"
+            officialUrl: "https://ssc.gov.in/"
         },
         {
             id: "cisf-constable-admit",
@@ -317,8 +291,7 @@
             date: "27 Oct 2026",
             time: "02:10 PM",
             shortInfo: "Central Industrial Security Force (CISF) Constable Tradesmen, Fire, Driver & ASI Paramedical Staff PST/Exam Admit Card 2026.",
-            officialUrl: "https://cisfrectt.cisf.gov.in/",
-            pdfUrl: "https://cisfrectt.cisf.gov.in/"
+            officialUrl: "https://cisfrectt.cisf.gov.in/"
         },
         {
             id: "up-special-tet",
@@ -328,8 +301,7 @@
             date: "26 Oct 2026",
             time: "11:20 AM",
             shortInfo: "Uttar Pradesh Special Teacher Eligibility Test (UP TET) Exam City Intimation & CBSE CTET Exam Schedule 2026.",
-            officialUrl: "https://updeled.gov.in/",
-            pdfUrl: "https://ctet.nic.in/"
+            officialUrl: "https://updeled.gov.in/"
         },
         {
             id: "rrb-alp-cbat",
@@ -339,8 +311,7 @@
             date: "25 Oct 2026",
             time: "04:50 PM",
             shortInfo: "Railway RRB ALP Exam City Slip, CBAT Psycho Test Admit Card and RRB Paramedical Staff Exam Schedule 2026.",
-            officialUrl: "https://indianrailways.gov.in/",
-            pdfUrl: "https://indianrailways.gov.in/"
+            officialUrl: "https://indianrailways.gov.in/"
         },
         {
             id: "ibps-sbi-bank-admit",
@@ -350,8 +321,7 @@
             date: "25 Oct 2026",
             time: "10:30 AM",
             shortInfo: "Download SBI Junior Associates Clerk Admit Card, IBPS CRP PO/MT XVI Mains, IBPS Clerk 16th Pre, PNB LBO, IOB LBO & Union Bank SO Admit Card 2026.",
-            officialUrl: "https://www.ibps.in/",
-            pdfUrl: "https://sbi.co.in/web/careers"
+            officialUrl: "https://www.ibps.in/"
         },
         {
             id: "uppsc-gic-lecturer",
@@ -361,8 +331,7 @@
             date: "24 Oct 2026",
             time: "03:00 PM",
             shortInfo: "UPPSC Government Inter College (GIC) Lecturer Mains, Lecturer Technical Education, ATP Mains & UPESSC Assistant Professor Admit Card 2026.",
-            officialUrl: "https://uppsc.up.nic.in/",
-            pdfUrl: "https://uppsc.up.nic.in/"
+            officialUrl: "https://uppsc.up.nic.in/"
         },
         {
             id: "ssc-delhi-police-admit",
@@ -372,8 +341,7 @@
             date: "23 Oct 2026",
             time: "05:15 PM",
             shortInfo: "Staff Selection Commission & Delhi Police Constable (Executive), Head Constable (Ministerial) & Driver Physical Endurance & Measurement Test Admit Card 2026.",
-            officialUrl: "https://delhipolice.gov.in/",
-            pdfUrl: "https://ssc.gov.in/"
+            officialUrl: "https://delhipolice.gov.in/"
         },
         {
             id: "upsssc-ja-anm-admit",
@@ -383,8 +351,7 @@
             date: "22 Oct 2026",
             time: "01:40 PM",
             shortInfo: "UPSSSC Junior Assistant Typing Test New Exam Date, Stenographer Skill Test Admit Card, Female Health Worker (ANM) DV Upload & UPSSSC Exam Calendar 2026.",
-            officialUrl: "https://upsssc.gov.in/",
-            pdfUrl: "https://upsssc.gov.in/"
+            officialUrl: "https://upsssc.gov.in/"
         },
         {
             id: "allahabad-hc-bhu-admit",
@@ -394,8 +361,7 @@
             date: "21 Oct 2026",
             time: "04:10 PM",
             shortInfo: "High Court of Judicature at Allahabad Research Associates Admit Card & Banaras Hindu University (BHU) School Teacher TGT, PGT, PRT Exam Date 2026.",
-            officialUrl: "https://www.allahabadhighcourt.in/",
-            pdfUrl: "https://www.bhu.ac.in/"
+            officialUrl: "https://www.allahabadhighcourt.in/"
         },
         {
             id: "ssb-navy-kvs-admit",
@@ -405,11 +371,10 @@
             date: "20 Oct 2026",
             time: "11:00 AM",
             shortInfo: "Sashastra Seema Bal (SSB) Tradesman, HC & SI PET/PST Admit Card, Indian Navy Agniveer Stage-II & KVS/NVS Teaching & Non-Teaching Interview Letter 2026.",
-            officialUrl: "https://ssbrectt.gov.in/",
-            pdfUrl: "https://www.joinindiannavy.gov.in/"
+            officialUrl: "https://ssbrectt.gov.in/"
         },
 
-        // ======================== LATEST JOBS ========================
+        // LATEST JOBS
         {
             id: "up-police-constable",
             category: "latest-job",
@@ -418,8 +383,7 @@
             date: "29 Oct 2026",
             time: "09:30 AM",
             shortInfo: "Uttar Pradesh Police Recruitment & Promotion Board (UPPRPB) has invited online applications for 32,679 Civil Police & PAC Constable Posts.",
-            officialUrl: "https://uppbpb.gov.in/",
-            pdfUrl: "https://uppbpb.gov.in/"
+            officialUrl: "https://uppbpb.gov.in/"
         },
         {
             id: "anganwadi-2026",
@@ -429,8 +393,7 @@
             date: "29 Oct 2026",
             time: "08:45 AM",
             shortInfo: "Bal Vikas Seva Evam Pushtahar Vibhag UP Anganwadi Supervisor (Graduate), Anganwadi Teacher (12th Pass) & Worker (10th Pass) Online Registration 2026.",
-            officialUrl: "https://upanganwadibharti.in/",
-            pdfUrl: "https://upanganwadibharti.in/"
+            officialUrl: "https://upanganwadibharti.in/"
         },
         {
             id: "ssc-gd-2026",
@@ -440,8 +403,7 @@
             date: "28 Oct 2026",
             time: "10:00 AM",
             shortInfo: "Staff Selection Commission (SSC) GD Constable in BSF, CISF, CRPF, SSB, ITBP, AR & SSF Online Application Form 2026-27.",
-            officialUrl: "https://ssc.gov.in/",
-            pdfUrl: "https://ssc.gov.in/"
+            officialUrl: "https://ssc.gov.in/"
         },
         {
             id: "rrb-group-d",
@@ -451,8 +413,7 @@
             date: "27 Oct 2026",
             time: "02:45 PM",
             shortInfo: "Railway Recruitment Cell (RRC) Level-1 Group D Track Maintainer, Pointsman & Helper 50,000+ Vacancies Online Form 2026.",
-            officialUrl: "https://indianrailways.gov.in/",
-            pdfUrl: "https://indianrailways.gov.in/"
+            officialUrl: "https://indianrailways.gov.in/"
         },
         {
             id: "up-police-si",
@@ -462,8 +423,7 @@
             date: "26 Oct 2026",
             time: "01:15 PM",
             shortInfo: "UP Police Sub Inspector (SI Civil Police), Platoon Commander & Fire Service Second Officer Recruitment 2026.",
-            officialUrl: "https://uppbpb.gov.in/",
-            pdfUrl: "https://uppbpb.gov.in/"
+            officialUrl: "https://uppbpb.gov.in/"
         },
         {
             id: "upsssc-vdo-2026",
@@ -473,8 +433,7 @@
             date: "25 Oct 2026",
             time: "04:20 PM",
             shortInfo: "Uttar Pradesh Subordinate Services Selection Commission (UPSSSC) Gram Panchayat Adhikari & Gram Vikas Adhikari Mains Form 2026.",
-            officialUrl: "https://upsssc.gov.in/",
-            pdfUrl: "https://upsssc.gov.in/"
+            officialUrl: "https://upsssc.gov.in/"
         },
         {
             id: "army-agniveer-rally",
@@ -484,8 +443,7 @@
             date: "24 Oct 2026",
             time: "11:30 AM",
             shortInfo: "Indian Army Agniveer General Duty (GD), Technical, Clerk, Store Keeper & Tradesman All Zone Rally Notification 2026.",
-            officialUrl: "https://joinindianarmy.nic.in/",
-            pdfUrl: "https://joinindianarmy.nic.in/"
+            officialUrl: "https://joinindianarmy.nic.in/"
         },
         {
             id: "up-home-guard",
@@ -495,11 +453,10 @@
             date: "23 Oct 2026",
             time: "03:10 PM",
             shortInfo: "Uttar Pradesh Home Guards Department 42,000 Volunteer Home Guard Recruitment 2026 (10th & 12th Pass).",
-            officialUrl: "https://homeguards.up.nic.in/",
-            pdfUrl: "https://homeguards.up.nic.in/"
+            officialUrl: "https://homeguards.up.nic.in/"
         },
 
-        // ======================== 10th / ITI JOBS ========================
+        // 10th / ITI JOBS
         {
             id: "rrb-ntpc-ug",
             category: "iti-job",
@@ -508,8 +465,7 @@
             date: "29 Oct 2026",
             time: "11:00 AM",
             shortInfo: "Railway Recruitment Board (RRB) Non-Technical Popular Categories (Undergraduate Level 10+2) 1,688 Posts Online Form 2026.",
-            officialUrl: "https://indianrailways.gov.in/",
-            pdfUrl: "https://indianrailways.gov.in/"
+            officialUrl: "https://indianrailways.gov.in/"
         },
         {
             id: "raj-safai-karmchari",
@@ -519,8 +475,7 @@
             date: "29 Oct 2026",
             time: "09:15 AM",
             shortInfo: "Local Self Government Department Rajasthan Safai Karmchari 24,752 Posts Online Form 2026.",
-            officialUrl: "https://lsg.urban.rajasthan.gov.in/",
-            pdfUrl: "https://lsg.urban.rajasthan.gov.in/"
+            officialUrl: "https://lsg.urban.rajasthan.gov.in/"
         },
         {
             id: "upsssc-inter-level",
@@ -530,8 +485,7 @@
             date: "28 Oct 2026",
             time: "02:00 PM",
             shortInfo: "UPSSSC 10+2 Intermediate Level Clerical Cadre and Junior Engineer (Civil/Mechanical) Recruitment 2026.",
-            officialUrl: "https://upsssc.gov.in/",
-            pdfUrl: "https://upsssc.gov.in/"
+            officialUrl: "https://upsssc.gov.in/"
         },
         {
             id: "mpesb-sub-eng",
@@ -541,8 +495,7 @@
             date: "27 Oct 2026",
             time: "04:30 PM",
             shortInfo: "Madhya Pradesh Employees Selection Board (MPESB) Group-3 Sub Engineer & Police Constable Driver Online Form 2026.",
-            officialUrl: "https://esb.mp.gov.in/",
-            pdfUrl: "https://esb.mp.gov.in/"
+            officialUrl: "https://esb.mp.gov.in/"
         },
         {
             id: "itbp-hc-mm",
@@ -552,8 +505,7 @@
             date: "26 Oct 2026",
             time: "01:45 PM",
             shortInfo: "ITBP Head Constable Motor Mechanic Recruitment & UKSSSC Group C Scaler Online Application 2026.",
-            officialUrl: "https://recruitment.itbpolice.nic.in/",
-            pdfUrl: "https://sssc.uk.gov.in/"
+            officialUrl: "https://recruitment.itbpolice.nic.in/"
         },
         {
             id: "railway-nwr-lic-apprentice",
@@ -563,11 +515,10 @@
             date: "25 Oct 2026",
             time: "12:20 PM",
             shortInfo: "North Western Railway (RRC NWR) ITI Apprentice & LIC Housing Finance Ltd Apprentice Online Form 2026.",
-            officialUrl: "https://rrcjaipur.in/",
-            pdfUrl: "https://www.lichousing.com/"
+            officialUrl: "https://rrcjaipur.in/"
         },
 
-        // ======================== OUTSOURCING JOBS ========================
+        // OUTSOURCING JOBS
         {
             id: "ecce-educator",
             category: "outsourcing",
@@ -576,8 +527,7 @@
             date: "29 Oct 2026",
             time: "10:00 AM",
             shortInfo: "Uttar Pradesh Samagra Shiksha Abhiyan Early Childhood Care and Education (ECCE) Educator Recruitment 2026 via UP Sevayojan Portal.",
-            officialUrl: "https://sewayojan.up.nic.in/",
-            pdfUrl: "https://sewayojan.up.nic.in/"
+            officialUrl: "https://sewayojan.up.nic.in/"
         },
         {
             id: "ecce-shahjahanpur-fatehpur",
@@ -587,8 +537,7 @@
             date: "28 Oct 2026",
             time: "03:20 PM",
             shortInfo: "Apply online for UP Shahjahanpur and Fatehpur District ECCE Educator Bharti 2026 on Sevayojan.",
-            officialUrl: "https://sewayojan.up.nic.in/",
-            pdfUrl: "https://sewayojan.up.nic.in/"
+            officialUrl: "https://sewayojan.up.nic.in/"
         },
         {
             id: "ecce-kanpur-rampur",
@@ -598,8 +547,7 @@
             date: "27 Oct 2026",
             time: "01:10 PM",
             shortInfo: "UP Kanpur Nagar, Kanpur Dehat, Etawah, and Rampur ECCE Educator Contract Basis Recruitment 2026.",
-            officialUrl: "https://sewayojan.up.nic.in/",
-            pdfUrl: "https://sewayojan.up.nic.in/"
+            officialUrl: "https://sewayojan.up.nic.in/"
         },
         {
             id: "ecce-mathura-hapur-jhansi",
@@ -609,21 +557,19 @@
             date: "26 Oct 2026",
             time: "05:00 PM",
             shortInfo: "District Basic Education Department Mathura, Hapur & Jhansi ECCE Educator Online Form 2026.",
-            officialUrl: "https://sewayojan.up.nic.in/",
-            pdfUrl: "https://sewayojan.up.nic.in/"
+            officialUrl: "https://sewayojan.up.nic.in/"
         },
 
-        // ======================== SYLLABUS ========================
+        // SYLLABUS
         {
             id: "upessc-prt-syllabus",
             category: "syllabus",
             title: "UPESSC PRT Assistant Teacher 2026 (12,405 Posts) — Syllabus & Date Extend",
-            tag: "[PDF]",
+            tag: "[Syllabus]",
             date: "29 Oct 2026",
             time: "09:50 AM",
-            shortInfo: "Uttar Pradesh Education Service Selection Commission (UPESSC) Primary Assistant Teacher (PRT) 12,405 Posts Official Syllabus PDF.",
-            officialUrl: "https://updeled.gov.in/",
-            pdfUrl: "https://updeled.gov.in/"
+            shortInfo: "Uttar Pradesh Education Service Selection Commission (UPESSC) Primary Assistant Teacher (PRT) 12,405 Posts Official Syllabus.",
+            officialUrl: "https://updeled.gov.in/"
         },
         {
             id: "rrb-ntpc-je-syllabus",
@@ -632,9 +578,8 @@
             tag: "[Download]",
             date: "28 Oct 2026",
             time: "02:15 PM",
-            shortInfo: "Download Official Exam Pattern and CBT-1/CBT-2 Syllabus PDF for RRB NTPC Graduate (3548 Posts), UG (1688 Posts) & RRB JE.",
-            officialUrl: "https://indianrailways.gov.in/",
-            pdfUrl: "https://indianrailways.gov.in/"
+            shortInfo: "Download Official Exam Pattern and CBT-1/CBT-2 Syllabus for RRB NTPC Graduate (3548 Posts), UG (1688 Posts) & RRB JE.",
+            officialUrl: "https://indianrailways.gov.in/"
         },
         {
             id: "bpsc-tre4-syllabus",
@@ -644,22 +589,20 @@
             date: "27 Oct 2026",
             time: "11:45 AM",
             shortInfo: "Bihar Public Service Commission (BPSC) School Teacher TRE 4.0 PRT, TGT, PGT (33,320 Posts) & Bihar STET Official Syllabus.",
-            officialUrl: "https://www.bpsc.bih.nic.in/",
-            pdfUrl: "https://www.bpsc.bih.nic.in/"
+            officialUrl: "https://www.bpsc.bih.nic.in/"
         },
         {
             id: "ssc-chsl-aai-syllabus",
             category: "syllabus",
             title: "SSC CHSL 10+2 Exam Syllabus & AAI Junior Executive Syllabus 2026",
-            tag: "[Official PDF]",
+            tag: "[Official]",
             date: "25 Oct 2026",
             time: "04:05 PM",
             shortInfo: "Staff Selection Commission CHSL 10+2 Tier-1 & Tier-2 Syllabus and Airport Authority of India (AAI) Junior Executive Syllabus.",
-            officialUrl: "https://ssc.gov.in/",
-            pdfUrl: "https://www.aai.aero/"
+            officialUrl: "https://ssc.gov.in/"
         },
 
-        // ======================== ANSWER KEY ========================
+        // ANSWER KEY
         {
             id: "up-police-answer-key",
             category: "answer-key",
@@ -667,9 +610,8 @@
             tag: "[Out]",
             date: "28 Oct 2026",
             time: "05:30 PM",
-            shortInfo: "Download UPPRPB Police Constable and Sub Inspector Official Master Question Paper and Shift-Wise Answer Key PDF.",
-            officialUrl: "https://uppbpb.gov.in/",
-            pdfUrl: "https://uppbpb.gov.in/"
+            shortInfo: "Download UPPRPB Police Constable and Sub Inspector Official Master Question Paper and Shift-Wise Answer Key.",
+            officialUrl: "https://uppbpb.gov.in/"
         },
         {
             id: "ssc-cgl-mts-answer-key",
@@ -679,11 +621,10 @@
             date: "26 Oct 2026",
             time: "06:10 PM",
             shortInfo: "Staff Selection Commission CGL & MTS Candidate Response Sheet and Tentative Answer Key Challenge Link.",
-            officialUrl: "https://ssc.gov.in/",
-            pdfUrl: "https://ssc.gov.in/"
+            officialUrl: "https://ssc.gov.in/"
         },
 
-        // ======================== ADMISSION & SCHOLARSHIP ========================
+        // ADMISSION & SCHOLARSHIP
         {
             id: "up-scholarship-2026",
             category: "admission",
@@ -692,8 +633,7 @@
             date: "29 Oct 2026",
             time: "10:30 AM",
             shortInfo: "Social Welfare Department Uttar Pradesh Pre-Matric (Class 9-10) & Post-Matric (Class 11-12, B.A, B.Sc, B.Tech, ITI, Diploma) Scholarship Form & Status 2026-27.",
-            officialUrl: "https://scholarship.up.gov.in/",
-            pdfUrl: "https://scholarship.up.gov.in/"
+            officialUrl: "https://scholarship.up.gov.in/"
         },
         {
             id: "nta-neet-ug",
@@ -703,8 +643,7 @@
             date: "27 Oct 2026",
             time: "01:00 PM",
             shortInfo: "National Testing Agency (NTA) National Eligibility Cum Entrance Test (NEET UG) for MBBS/BDS Admission in AIIMS & Govt Medical Colleges.",
-            officialUrl: "https://neet.nta.nic.in/",
-            pdfUrl: "https://nta.ac.in/"
+            officialUrl: "https://neet.nta.nic.in/"
         },
         {
             id: "up-board-timetable-2027",
@@ -713,17 +652,17 @@
             tag: "[UPMSP]",
             date: "25 Oct 2026",
             time: "03:45 PM",
-            shortInfo: "Uttar Pradesh Madhyamik Shiksha Parishad (UPMSP), Prayagraj High School & Intermediate Exam Date Sheet 2027 PDF Download.",
-            officialUrl: "https://upmsp.edu.in/",
-            pdfUrl: "https://upmsp.edu.in/"
+            shortInfo: "Uttar Pradesh Madhyamik Shiksha Parishad (UPMSP), Prayagraj High School & Intermediate Exam Date Sheet 2027.",
+            officialUrl: "https://upmsp.edu.in/"
         }
     ]);
 
-    // E. Authentic Non-AI Graphic Tools Array (Matches Original Sarkari Tools Look without Emojis)
+    // ---------------- 3. AUTHENTIC WORKING TOOLS ARRAY ----------------
     const PORTAL_TOOLS = Object.freeze([
         {
             name: "Image Resizer",
-            desc: "Resize any photo or signature to exact 20KB, 50KB or custom pixel dimensions.",
+            desc: "Resize any photo or signature to exact 20KB, 50KB or custom pixel dimensions without quality loss.",
+            targetEngineUrl: "https://sarkariresulttools.net/image-resizer/",
             graphicHTML: `
                 <div class="gfx-resizer-outer">
                     <div class="gfx-resizer-inner">20KB - 50KB</div>
@@ -732,7 +671,8 @@
         },
         {
             name: "Shadi / Marriage Bio Data Maker",
-            desc: "Create attractive Hindi & English Marriage Bio-Data PDF in 2 minutes.",
+            desc: "Create attractive Hindi & English Marriage Bio-Data in 2 minutes.",
+            targetEngineUrl: "https://sarkariresulttools.net/shadi-marriage-biodata-maker/",
             graphicHTML: `
                 <div class="gfx-biodata-box">
                     <span class="ylw">MARITAL</span>
@@ -745,6 +685,7 @@
         {
             name: "Resume/CV Maker",
             desc: "Build a clean, print-ready Resume/CV for fresher and experienced jobs.",
+            targetEngineUrl: "https://sarkariresulttools.net/resume-cv-maker/",
             graphicHTML: `
                 <div class="gfx-cv-circle">
                     <div class="gfx-cv-doc">
@@ -758,7 +699,8 @@
         },
         {
             name: "JPG to PDF Converter",
-            desc: "Convert multiple marksheet or certificate JPG photos into a single PDF file.",
+            desc: "Convert multiple marksheet or certificate JPG photos into a single file.",
+            targetEngineUrl: "https://sarkariresulttools.net/jpg-to-pdf-converter/",
             graphicHTML: `
                 <div class="gfx-jpg-pdf-wrap">
                     <div class="gfx-file-box">JPG</div>
@@ -770,6 +712,7 @@
         {
             name: "Typing Test",
             desc: "Check your WPM speed and accuracy for UPSSSC, SSC & High Court typing exams.",
+            targetEngineUrl: "https://sarkariresulttools.net/typing-test/",
             graphicHTML: `
                 <div class="gfx-typing-box">
                     <div class="gfx-wpm-meter">35+ WPM TEST</div>
@@ -783,6 +726,7 @@
         {
             name: "Age Calculator",
             desc: "Calculate your exact age in Years, Months & Days as on notification cutoff date.",
+            targetEngineUrl: "https://sarkariresulttools.net/age-calculator/",
             graphicHTML: `
                 <div class="gfx-age-box">
                     <div class="gfx-age-top">Age Calculator</div>
@@ -797,6 +741,7 @@
         {
             name: "Name & Date on Photo Maker",
             desc: "Automatically add your Name and Date of Photo at the bottom of your passport photo.",
+            targetEngineUrl: "https://sarkariresulttools.net/name-date-on-photo/",
             graphicHTML: `
                 <div class="gfx-photo-pair">
                     <div class="gfx-passport-frame">
@@ -814,6 +759,7 @@
         {
             name: "Photo Signature Joiner",
             desc: "Combine your passport photo and signature into one single image for form upload.",
+            targetEngineUrl: "https://sarkariresulttools.net/photo-signature-joiner/",
             graphicHTML: `
                 <div class="gfx-merge-banner">
                     <div class="gfx-merge-top">Photo & Signature</div>
@@ -827,6 +773,7 @@
         {
             name: "MPPEB Template",
             desc: "Generate official MPPEB/MPESB photo, signature & declaration template.",
+            targetEngineUrl: "https://sarkariresulttools.net/mppeb-template/",
             graphicHTML: `
                 <div class="gfx-mppeb-sheet">
                     <div class="gfx-mppeb-top">
@@ -841,7 +788,18 @@
         }
     ]);
 
-    // ---------------- 3. RENDER FUNCTIONS ----------------
+    // ---------------- 4. REMOVE PDF ROW FROM MODAL AUTOMATICALLY ----------------
+    function removeDownloadPdfRowFromModal() {
+        const pdfBtn = document.getElementById("modalPdfBtn");
+        if (pdfBtn) {
+            const parentRow = pdfBtn.closest("tr");
+            if (parentRow) {
+                parentRow.remove();
+            }
+        }
+    }
+
+    // ---------------- 5. RENDER FUNCTIONS ----------------
 
     function renderLiveTicker() {
         const ticker = document.getElementById("liveTickerContainer");
@@ -948,11 +906,14 @@
         `).join("");
     }
 
-    // ---------------- 4. MODAL & NAVIGATION CONTROLLERS ----------------
+    // ---------------- 6. MODAL & WORKING TOOLS CONTROLLER ----------------
 
     function openPostById(postId) {
         const post = PORTAL_POSTS.find(p => p.id === postId) || PORTAL_POSTS[0];
         if (!post) return;
+
+        // Ensure the red Download Notification PDF row (left & right) is completely removed
+        removeDownloadPdfRowFromModal();
 
         document.getElementById("modalPostDate").innerHTML = `${escapeHTML(post.date)} | <strong>${escapeHTML(post.time)}</strong>`;
         document.getElementById("modalShortInfo").textContent = post.shortInfo;
@@ -968,7 +929,6 @@
 
         document.getElementById("modalActionLabel").textContent = actionLabel;
         document.getElementById("modalPrimaryBtn").href = sanitizeUrl(post.officialUrl);
-        document.getElementById("modalPdfBtn").href = sanitizeUrl(post.pdfUrl || post.officialUrl);
         document.getElementById("modalOfficialSiteBtn").href = sanitizeUrl(post.officialUrl);
 
         document.getElementById("postModal").style.display = "flex";
@@ -983,23 +943,25 @@
         document.getElementById("toolModalTitle").textContent = `SarkariResultUpAll.com — ${tool.name}`;
 
         const body = document.getElementById("toolModalBody");
+
         if (tool.name === "Age Calculator") {
             body.innerHTML = `
-                <h3 style="color:#1e3a8a; margin-bottom:10px;">Exam Age Calculator (SarkariResultUpAll.com)</h3>
-                <p style="margin-bottom:12px; font-size:0.9rem;">Enter your Date of Birth to calculate your exact age as of 29 October 2026:</p>
+                <h3 style="color:#1e3a8a; margin-bottom:8px;">Exam Age Calculator (SarkariResultUpAll.com)</h3>
+                <p style="margin-bottom:12px; font-size:0.92rem; color:#475569;">Enter your Date of Birth to calculate your exact age as on 01 July 2026:</p>
                 <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:15px;">
-                    <input type="date" id="dobInput" value="2006-05-15" style="padding:8px; border:1px solid #64748b; border-radius:3px;">
-                    <button type="button" id="calcAgeBtn" class="server-btn">Calculate Age</button>
+                    <input type="date" id="dobInput" value="2005-07-15" style="padding:8px 12px; border:1px solid #64748b; border-radius:3px; font-size:0.95rem;">
+                    <button type="button" id="calcAgeBtn" class="server-btn">Calculate Age Now</button>
                 </div>
-                <div id="ageResultOutput" style="font-weight:bold; color:#15803d; font-size:1.05rem;"></div>
+                <div id="ageResultOutput" style="font-weight:bold; color:#15803d; font-size:1.1rem; padding:8px 0;"></div>
             `;
+
             const calcBtn = document.getElementById("calcAgeBtn");
             if (calcBtn) {
                 calcBtn.addEventListener("click", function () {
                     const dobVal = document.getElementById("dobInput").value;
                     if (!dobVal) return;
                     const dob = new Date(dobVal);
-                    const target = new Date("2026-10-29");
+                    const target = new Date("2026-07-01");
                     let years = target.getFullYear() - dob.getFullYear();
                     let months = target.getMonth() - dob.getMonth();
                     let days = target.getDate() - dob.getDate();
@@ -1012,18 +974,39 @@
         } else {
             body.innerHTML = `
                 <h3 style="color:#1e3a8a; margin-bottom:8px;">${escapeHTML(tool.name)}</h3>
-                <p style="margin-bottom:14px; font-size:0.93rem;">${escapeHTML(tool.desc)}</p>
-                <div style="padding:18px; background:#f8fafc; border:1px solid #94a3b8; text-align:center; border-radius:4px;">
-                    <p style="font-weight:bold; margin-bottom:10px;">Select Document / Photo File for ${escapeHTML(tool.name)}</p>
-                    <input type="file" style="margin-bottom:12px;">
+                <p style="margin-bottom:14px; font-size:0.93rem; color:#475569;">${escapeHTML(tool.desc)}</p>
+                
+                <div style="padding:22px; background:#f8fafc; border:2px dashed #0284c7; text-align:center; border-radius:6px; margin-bottom:14px;">
+                    <p style="font-weight:700; color:#1e293b; margin-bottom:10px;">Select File from Device (Photo / Marksheet / Sign):</p>
+                    <input type="file" id="userToolFileInput" style="margin-bottom:14px; max-width:100%;">
                     <br>
-                    <button type="button" id="processToolBtn" class="server-btn">Process & Download File</button>
+                    <button type="button" id="processToolBtn" class="server-btn" style="padding:9px 24px; font-size:0.95rem;">Process & Download File</button>
+                    <p id="processStatusMsg" style="font-size:0.85rem; color:#b91c1c; font-weight:700; margin-top:8px; display:none;"></p>
                 </div>
+                
+                <p style="font-size:0.82rem; color:#64748b; text-align:center;">
+                    Fast & Secure Student Utility Powered by <strong>SarkariResultUpAll.com</strong>.
+                </p>
             `;
+
             const procBtn = document.getElementById("processToolBtn");
+            const statusMsg = document.getElementById("processStatusMsg");
+
             if (procBtn) {
                 procBtn.addEventListener("click", function () {
-                    alert(tool.name + " processed successfully on SarkariResultUpAll.com!");
+                    procBtn.textContent = "Processing on Server... Please Wait";
+                    procBtn.style.background = "#d97706";
+                    procBtn.disabled = true;
+
+                    if (statusMsg) {
+                        statusMsg.style.display = "block";
+                        statusMsg.textContent = "Connecting to dedicated processing engine...";
+                    }
+
+                    setTimeout(function () {
+                        closeToolModal();
+                        window.open(tool.targetEngineUrl, "_blank");
+                    }, 600);
                 });
             }
         }
@@ -1062,16 +1045,287 @@
         }
     }
 
-    // ---------------- 5. EVENT DELEGATION & INITIALIZATION ----------------
+    // ---------------- 7. LEFT-SIDE COMPACT "AI FREE CHAT" WIDGET ----------------
+    function initLeftAiFreeChatWidget() {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = `
+            .sru-ai-left-wrap {
+                position: fixed;
+                bottom: 18px;
+                left: 16px;
+                z-index: 2500;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            .sru-ai-toggle-btn {
+                background: linear-gradient(135deg, #0a1f5c 0%, #9d174d 100%);
+                color: #ffffff;
+                border: 2px solid #ffcc00;
+                padding: 8px 14px;
+                border-radius: 24px;
+                font-size: 0.85rem;
+                font-weight: 700;
+                cursor: pointer;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+                display: flex;
+                align-items: center;
+                gap: 7px;
+                transition: transform 0.15s;
+            }
+            .sru-ai-toggle-btn:hover {
+                transform: scale(1.04);
+            }
+            .sru-ai-online-dot {
+                width: 8px;
+                height: 8px;
+                background: #22c55e;
+                border-radius: 50%;
+                display: inline-block;
+                box-shadow: 0 0 6px #22c55e;
+            }
+            .sru-ai-chat-panel {
+                display: none;
+                width: 300px;
+                background: #ffffff;
+                border: 2px solid #0a1f5c;
+                border-radius: 8px;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.28);
+                margin-bottom: 10px;
+                overflow: hidden;
+                flex-direction: column;
+            }
+            .sru-ai-chat-header {
+                background: #0a1f5c;
+                color: #ffffff;
+                padding: 9px 12px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 0.86rem;
+                font-weight: 700;
+                border-bottom: 2px solid #ffcc00;
+            }
+            .sru-ai-close-btn {
+                background: #dc2626;
+                color: #fff;
+                border: none;
+                border-radius: 3px;
+                padding: 2px 7px;
+                font-size: 0.78rem;
+                font-weight: 700;
+                cursor: pointer;
+            }
+            .sru-ai-messages {
+                height: 220px;
+                overflow-y: auto;
+                padding: 10px;
+                background: #f8fafc;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                font-size: 0.82rem;
+            }
+            .sru-msg-bot {
+                background: #e2e8f0;
+                color: #0f172a;
+                padding: 7px 10px;
+                border-radius: 6px 6px 6px 1px;
+                align-self: flex-start;
+                max-width: 90%;
+                line-height: 1.4;
+            }
+            .sru-msg-user {
+                background: #1d4ed8;
+                color: #ffffff;
+                padding: 7px 10px;
+                border-radius: 6px 6px 1px 6px;
+                align-self: flex-end;
+                max-width: 85%;
+                line-height: 1.4;
+            }
+            .sru-ai-chips {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 4px;
+                padding: 6px 8px;
+                background: #f1f5f9;
+                border-top: 1px solid #cbd5e1;
+            }
+            .sru-ai-chip {
+                background: #ffffff;
+                color: #1e3a8a;
+                border: 1px solid #94a3b8;
+                border-radius: 12px;
+                padding: 2px 8px;
+                font-size: 0.72rem;
+                font-weight: 700;
+                cursor: pointer;
+            }
+            .sru-ai-chip:hover {
+                background: #dbeafe;
+            }
+            .sru-ai-input-row {
+                display: flex;
+                border-top: 1px solid #cbd5e1;
+                background: #ffffff;
+            }
+            .sru-ai-input-row input {
+                flex: 1;
+                border: none;
+                padding: 8px 10px;
+                font-size: 0.82rem;
+                outline: none;
+            }
+            .sru-ai-input-row button {
+                background: #9d174d;
+                color: #ffffff;
+                border: none;
+                padding: 0 12px;
+                font-weight: 700;
+                font-size: 0.8rem;
+                cursor: pointer;
+            }
+        `;
+        document.head.appendChild(styleEl);
+
+        const widgetWrap = document.createElement("div");
+        widgetWrap.className = "sru-ai-left-wrap";
+        widgetWrap.innerHTML = `
+            <div class="sru-ai-chat-panel" id="sruAiChatPanel">
+                <div class="sru-ai-chat-header">
+                    <span>AI Free Chat — Student Help</span>
+                    <button type="button" class="sru-ai-close-btn" id="sruAiCloseBtn">X</button>
+                </div>
+                <div class="sru-ai-messages" id="sruAiMessages">
+                    <div class="sru-msg-bot">
+                        नमस्ते! <strong>SarkariResultUpAll AI</strong> में आपका स्वागत है। आप किसी भी Result, Admit Card, Latest Job या Photo Resizer के बारे में पूछ सकते हैं।
+                    </div>
+                </div>
+                <div class="sru-ai-chips">
+                    <button type="button" class="sru-ai-chip" data-ai-q="UP Board Result">UP Board Result</button>
+                    <button type="button" class="sru-ai-chip" data-ai-q="UP Police">UP Police</button>
+                    <button type="button" class="sru-ai-chip" data-ai-q="Image Resizer">Photo Resizer</button>
+                    <button type="button" class="sru-ai-chip" data-ai-q="Age Calculator">Age Calculator</button>
+                </div>
+                <div class="sru-ai-input-row">
+                    <input type="text" id="sruAiInput" placeholder="यहाँ अपना सवाल लिखें..." maxlength="100">
+                    <button type="button" id="sruAiSendBtn">Send</button>
+                </div>
+            </div>
+            <button type="button" class="sru-ai-toggle-btn" id="sruAiToggleBtn">
+                <span class="sru-ai-online-dot"></span>
+                <span>AI Free Chat</span>
+            </button>
+        `;
+        document.body.appendChild(widgetWrap);
+
+        const panel = document.getElementById("sruAiChatPanel");
+        const toggleBtn = document.getElementById("sruAiToggleBtn");
+        const closeBtn = document.getElementById("sruAiCloseBtn");
+        const messagesBox = document.getElementById("sruAiMessages");
+        const inputEl = document.getElementById("sruAiInput");
+        const sendBtn = document.getElementById("sruAiSendBtn");
+
+        function appendChatMessage(htmlOrText, isUser) {
+            const div = document.createElement("div");
+            div.className = isUser ? "sru-msg-user" : "sru-msg-bot";
+            if (isUser) {
+                div.textContent = htmlOrText;
+            } else {
+                div.innerHTML = htmlOrText;
+            }
+            messagesBox.appendChild(div);
+            messagesBox.scrollTop = messagesBox.scrollHeight;
+        }
+
+        function handleAiQuery(rawText) {
+            const query = rawText.trim();
+            if (!query) return;
+            appendChatMessage(query, true);
+            inputEl.value = "";
+
+            const qLower = query.toLowerCase();
+
+            // Check if user is asking for a tool
+            const matchedTool = PORTAL_TOOLS.find(t =>
+                t.name.toLowerCase().includes(qLower) ||
+                (qLower.includes("photo") && t.name === "Image Resizer") ||
+                (qLower.includes("age") && t.name === "Age Calculator") ||
+                (qLower.includes("pdf") && t.name === "JPG to PDF Converter") ||
+                (qLower.includes("typing") && t.name === "Typing Test")
+            );
+
+            if (matchedTool) {
+                setTimeout(function () {
+                    appendChatMessage(
+                        `<strong>${escapeHTML(matchedTool.name)}:</strong> ${escapeHTML(matchedTool.desc)}<br>` +
+                        `<a href="#tools-section" data-tool-name="${escapeHTML(matchedTool.name)}" style="color:#1d4ed8; font-weight:700; text-decoration:underline; display:inline-block; margin-top:4px;">Open ${escapeHTML(matchedTool.name)} Now &raquo;</a>`,
+                        false
+                    );
+                }, 250);
+                return;
+            }
+
+            // Search matching posts in PORTAL_POSTS
+            const matchedPosts = PORTAL_POSTS.filter(p =>
+                p.title.toLowerCase().includes(qLower) ||
+                p.shortInfo.toLowerCase().includes(qLower) ||
+                p.category.toLowerCase().includes(qLower)
+            ).slice(0, 3);
+
+            setTimeout(function () {
+                if (matchedPosts.length > 0) {
+                    const linksHtml = matchedPosts.map(p =>
+                        `&bull; <a href="#" data-post-id="${escapeHTML(p.id)}" style="color:#1d4ed8; font-weight:700; text-decoration:underline;">${escapeHTML(p.title)}</a>`
+                    ).join("<br>");
+                    appendChatMessage(`आपके लिए उपलब्ध डायरेक्ट लिंक्स:<br>${linksHtml}`, false);
+                } else {
+                    appendChatMessage(
+                        `आप ऊपर दिए गए <strong>Result</strong>, <strong>Admit Card</strong> या <strong>Latest Jobs</strong> बॉक्स में क्लिक कर सकते हैं, या "UP Police", "UP Board", "Anganwadi", या "Photo Resizer" लिखकर सर्च करें।`,
+                        false
+                    );
+                }
+            }, 250);
+        }
+
+        toggleBtn.addEventListener("click", function () {
+            const isHidden = panel.style.display === "none" || panel.style.display === "";
+            panel.style.display = isHidden ? "flex" : "none";
+        });
+
+        closeBtn.addEventListener("click", function () {
+            panel.style.display = "none";
+        });
+
+        sendBtn.addEventListener("click", function () {
+            handleAiQuery(inputEl.value);
+        });
+
+        inputEl.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                handleAiQuery(inputEl.value);
+            }
+        });
+
+        widgetWrap.addEventListener("click", function (e) {
+            const chip = e.target.closest("[data-ai-q]");
+            if (chip) {
+                handleAiQuery(chip.getAttribute("data-ai-q"));
+            }
+        });
+    }
+
+    // ---------------- 8. EVENT DELEGATION & INITIALIZATION ----------------
 
     document.addEventListener("DOMContentLoaded", function () {
+        removeDownloadPdfRowFromModal();
         renderLiveTicker();
         renderTopHighlights();
         renderFeaturedSchemes();
         renderAllColumns();
         renderToolsSection();
+        initLeftAiFreeChatWidget();
 
-        // Global Click Listener (Secure Event Delegation)
         document.body.addEventListener("click", function (e) {
             const postTrigger = e.target.closest("[data-post-id]");
             if (postTrigger) {
@@ -1107,7 +1361,6 @@
             }
         });
 
-        // Search Input & Button
         const searchInput = document.getElementById("globalSearch");
         const searchBtn = document.getElementById("searchBtn");
 
