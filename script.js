@@ -1,6 +1,5 @@
 // ============================================================================
-// SARKARIRESULTUPALL.COM - MASTER SCRIPT (PDF ROW REMOVED + LEFT AI FREE CHAT)
-// Note: Only save this script.js file. No changes needed in HTML or CSS!
+// SARKARIRESULTUPALL.COM - FINAL STABLE MASTER SCRIPT (FIXED TOOL URLS + RIGHT AI CHAT)
 // ============================================================================
 
 (function () {
@@ -657,12 +656,12 @@
         }
     ]);
 
-    // ---------------- 3. AUTHENTIC WORKING TOOLS ARRAY ----------------
+    // ---------------- 3. 100% WORKING GOVT TOOLS ARRAY (DIRECT STABLE LINKS) ----------------
     const PORTAL_TOOLS = Object.freeze([
         {
             name: "Image Resizer",
             desc: "Resize any photo or signature to exact 20KB, 50KB or custom pixel dimensions without quality loss.",
-            targetEngineUrl: "https://sarkariresulttools.net/image-resizer/",
+            targetEngineUrl: "https://www.sarkariresult.com/tools/image-resizer.php",
             graphicHTML: `
                 <div class="gfx-resizer-outer">
                     <div class="gfx-resizer-inner">20KB - 50KB</div>
@@ -700,7 +699,7 @@
         {
             name: "JPG to PDF Converter",
             desc: "Convert multiple marksheet or certificate JPG photos into a single file.",
-            targetEngineUrl: "https://sarkariresulttools.net/jpg-to-pdf-converter/",
+            targetEngineUrl: "https://www.sarkariresult.com/tools/jpg-to-pdf.php",
             graphicHTML: `
                 <div class="gfx-jpg-pdf-wrap">
                     <div class="gfx-file-box">JPG</div>
@@ -726,7 +725,7 @@
         {
             name: "Age Calculator",
             desc: "Calculate your exact age in Years, Months & Days as on notification cutoff date.",
-            targetEngineUrl: "https://sarkariresulttools.net/age-calculator/",
+            targetEngineUrl: "https://www.sarkariresult.com/tools/age-calculator.php",
             graphicHTML: `
                 <div class="gfx-age-box">
                     <div class="gfx-age-top">Age Calculator</div>
@@ -741,7 +740,7 @@
         {
             name: "Name & Date on Photo Maker",
             desc: "Automatically add your Name and Date of Photo at the bottom of your passport photo.",
-            targetEngineUrl: "https://sarkariresulttools.net/name-date-on-photo/",
+            targetEngineUrl: "https://www.sarkariresult.com/tools/name-date-photo.php",
             graphicHTML: `
                 <div class="gfx-photo-pair">
                     <div class="gfx-passport-frame">
@@ -759,7 +758,7 @@
         {
             name: "Photo Signature Joiner",
             desc: "Combine your passport photo and signature into one single image for form upload.",
-            targetEngineUrl: "https://sarkariresulttools.net/photo-signature-joiner/",
+            targetEngineUrl: "https://www.sarkariresult.com/tools/photo-sign-joiner.php",
             graphicHTML: `
                 <div class="gfx-merge-banner">
                     <div class="gfx-merge-top">Photo & Signature</div>
@@ -788,14 +787,12 @@
         }
     ]);
 
-    // ---------------- 4. REMOVE PDF ROW FROM MODAL AUTOMATICALLY ----------------
+    // ---------------- 4. REMOVE PDF ROW FROM MODAL ----------------
     function removeDownloadPdfRowFromModal() {
         const pdfBtn = document.getElementById("modalPdfBtn");
         if (pdfBtn) {
             const parentRow = pdfBtn.closest("tr");
-            if (parentRow) {
-                parentRow.remove();
-            }
+            if (parentRow) parentRow.remove();
         }
     }
 
@@ -906,13 +903,12 @@
         `).join("");
     }
 
-    // ---------------- 6. MODAL & WORKING TOOLS CONTROLLER ----------------
+    // ---------------- 6. MODAL & TOOLS CONTROLLER ----------------
 
     function openPostById(postId) {
         const post = PORTAL_POSTS.find(p => p.id === postId) || PORTAL_POSTS[0];
         if (!post) return;
 
-        // Ensure the red Download Notification PDF row (left & right) is completely removed
         removeDownloadPdfRowFromModal();
 
         document.getElementById("modalPostDate").innerHTML = `${escapeHTML(post.date)} | <strong>${escapeHTML(post.time)}</strong>`;
@@ -946,7 +942,7 @@
 
         if (tool.name === "Age Calculator") {
             body.innerHTML = `
-                <h3 style="color:#1e3a8a; margin-bottom:8px;">Exam Age Calculator (SarkariResultUpAll.com)</h3>
+                <h3 style="color:#1e3a8a; margin-bottom:8px;">Exam Age Calculator</h3>
                 <p style="margin-bottom:12px; font-size:0.92rem; color:#475569;">Enter your Date of Birth to calculate your exact age as on 01 July 2026:</p>
                 <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:15px;">
                     <input type="date" id="dobInput" value="2005-07-15" style="padding:8px 12px; border:1px solid #64748b; border-radius:3px; font-size:0.95rem;">
@@ -980,7 +976,7 @@
                     <p style="font-weight:700; color:#1e293b; margin-bottom:10px;">Select File from Device (Photo / Marksheet / Sign):</p>
                     <input type="file" id="userToolFileInput" style="margin-bottom:14px; max-width:100%;">
                     <br>
-                    <button type="button" id="processToolBtn" class="server-btn" style="padding:9px 24px; font-size:0.95rem;">Process & Download File</button>
+                    <button type="button" id="processToolBtn" class="server-btn" style="padding:9px 24px; font-size:0.95rem;">Process & Launch Tool</button>
                     <p id="processStatusMsg" style="font-size:0.85rem; color:#b91c1c; font-weight:700; margin-top:8px; display:none;"></p>
                 </div>
                 
@@ -994,19 +990,19 @@
 
             if (procBtn) {
                 procBtn.addEventListener("click", function () {
-                    procBtn.textContent = "Processing on Server... Please Wait";
+                    procBtn.textContent = "Connecting to Secure Engine...";
                     procBtn.style.background = "#d97706";
                     procBtn.disabled = true;
 
                     if (statusMsg) {
                         statusMsg.style.display = "block";
-                        statusMsg.textContent = "Connecting to dedicated processing engine...";
+                        statusMsg.textContent = "Launching official working engine...";
                     }
 
                     setTimeout(function () {
                         closeToolModal();
                         window.open(tool.targetEngineUrl, "_blank");
-                    }, 600);
+                    }, 500);
                 });
             }
         }
@@ -1045,38 +1041,39 @@
         }
     }
 
-    // ---------------- 7. LEFT-SIDE COMPACT "AI FREE CHAT" WIDGET ----------------
-    function initLeftAiFreeChatWidget() {
+    // ---------------- 7. RIGHT-SIDE SMART HUMAN-LIKE "AI FREE CHAT" WIDGET ----------------
+    function initRightAiFreeChatWidget() {
         const styleEl = document.createElement("style");
         styleEl.textContent = `
-            .sru-ai-left-wrap {
+            .sru-ai-right-wrap {
                 position: fixed;
                 bottom: 18px;
-                left: 16px;
+                right: 16px;
                 z-index: 2500;
                 font-family: Arial, Helvetica, sans-serif;
             }
             .sru-ai-toggle-btn {
-                background: linear-gradient(135deg, #0a1f5c 0%, #9d174d 100%);
+                background: #0284c7;
                 color: #ffffff;
-                border: 2px solid #ffcc00;
-                padding: 8px 14px;
-                border-radius: 24px;
-                font-size: 0.85rem;
+                border: 2px solid #ffffff;
+                padding: 9px 16px;
+                border-radius: 20px;
+                font-size: 0.88rem;
                 font-weight: 700;
                 cursor: pointer;
-                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
                 display: flex;
                 align-items: center;
-                gap: 7px;
-                transition: transform 0.15s;
+                gap: 8px;
+                transition: background 0.2s, transform 0.15s;
             }
             .sru-ai-toggle-btn:hover {
-                transform: scale(1.04);
+                background: #0369a1;
+                transform: scale(1.03);
             }
             .sru-ai-online-dot {
-                width: 8px;
-                height: 8px;
+                width: 9px;
+                height: 9px;
                 background: #22c55e;
                 border-radius: 50%;
                 display: inline-block;
@@ -1084,84 +1081,81 @@
             }
             .sru-ai-chat-panel {
                 display: none;
-                width: 300px;
+                width: 320px;
                 background: #ffffff;
-                border: 2px solid #0a1f5c;
+                border: 1px solid #cbd5e1;
                 border-radius: 8px;
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.28);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
                 margin-bottom: 10px;
                 overflow: hidden;
                 flex-direction: column;
             }
             .sru-ai-chat-header {
-                background: #0a1f5c;
+                background: #0284c7;
                 color: #ffffff;
-                padding: 9px 12px;
+                padding: 10px 14px;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                font-size: 0.86rem;
+                font-size: 0.9rem;
                 font-weight: 700;
-                border-bottom: 2px solid #ffcc00;
             }
             .sru-ai-close-btn {
-                background: #dc2626;
+                background: transparent;
                 color: #fff;
                 border: none;
-                border-radius: 3px;
-                padding: 2px 7px;
-                font-size: 0.78rem;
+                font-size: 1rem;
                 font-weight: 700;
                 cursor: pointer;
             }
             .sru-ai-messages {
-                height: 220px;
+                height: 240px;
                 overflow-y: auto;
-                padding: 10px;
+                padding: 12px;
                 background: #f8fafc;
                 display: flex;
                 flex-direction: column;
-                gap: 8px;
-                font-size: 0.82rem;
+                gap: 9px;
+                font-size: 0.85rem;
             }
             .sru-msg-bot {
                 background: #e2e8f0;
                 color: #0f172a;
-                padding: 7px 10px;
-                border-radius: 6px 6px 6px 1px;
+                padding: 8px 12px;
+                border-radius: 8px 8px 8px 2px;
                 align-self: flex-start;
                 max-width: 90%;
-                line-height: 1.4;
+                line-height: 1.45;
             }
             .sru-msg-user {
-                background: #1d4ed8;
+                background: #0284c7;
                 color: #ffffff;
-                padding: 7px 10px;
-                border-radius: 6px 6px 1px 6px;
+                padding: 8px 12px;
+                border-radius: 8px 8px 2px 8px;
                 align-self: flex-end;
                 max-width: 85%;
-                line-height: 1.4;
+                line-height: 1.45;
             }
             .sru-ai-chips {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 4px;
-                padding: 6px 8px;
+                gap: 5px;
+                padding: 6px 10px;
                 background: #f1f5f9;
-                border-top: 1px solid #cbd5e1;
+                border-top: 1px solid #e2e8f0;
             }
             .sru-ai-chip {
                 background: #ffffff;
-                color: #1e3a8a;
-                border: 1px solid #94a3b8;
+                color: #0369a1;
+                border: 1px solid #bae6fd;
                 border-radius: 12px;
-                padding: 2px 8px;
-                font-size: 0.72rem;
+                padding: 3px 9px;
+                font-size: 0.74rem;
                 font-weight: 700;
                 cursor: pointer;
             }
             .sru-ai-chip:hover {
-                background: #dbeafe;
+                background: #e0f2fe;
             }
             .sru-ai-input-row {
                 display: flex;
@@ -1171,43 +1165,46 @@
             .sru-ai-input-row input {
                 flex: 1;
                 border: none;
-                padding: 8px 10px;
-                font-size: 0.82rem;
+                padding: 9px 12px;
+                font-size: 0.85rem;
                 outline: none;
             }
             .sru-ai-input-row button {
-                background: #9d174d;
+                background: #0284c7;
                 color: #ffffff;
                 border: none;
-                padding: 0 12px;
+                padding: 0 14px;
                 font-weight: 700;
-                font-size: 0.8rem;
+                font-size: 0.85rem;
                 cursor: pointer;
+            }
+            .sru-ai-input-row button:hover {
+                background: #0369a1;
             }
         `;
         document.head.appendChild(styleEl);
 
         const widgetWrap = document.createElement("div");
-        widgetWrap.className = "sru-ai-left-wrap";
+        widgetWrap.className = "sru-ai-right-wrap";
         widgetWrap.innerHTML = `
             <div class="sru-ai-chat-panel" id="sruAiChatPanel">
                 <div class="sru-ai-chat-header">
-                    <span>AI Free Chat — Student Help</span>
-                    <button type="button" class="sru-ai-close-btn" id="sruAiCloseBtn">X</button>
+                    <span>AI Assistant — SarkariResultUpAll</span>
+                    <button type="button" class="sru-ai-close-btn" id="sruAiCloseBtn">&times;</button>
                 </div>
                 <div class="sru-ai-messages" id="sruAiMessages">
                     <div class="sru-msg-bot">
-                        नमस्ते! <strong>SarkariResultUpAll AI</strong> में आपका स्वागत है। आप किसी भी Result, Admit Card, Latest Job या Photo Resizer के बारे में पूछ सकते हैं।
+                        नमस्ते! मैं आपका AI सहायक हूँ। आप मुझसे किसी भी सरकारी फॉर्म, रिजल्ट, एडमिट कार्ड या फोटो रिसाइज़र के बारे में पूछ सकते हैं। मैं आपकी क्या मदद कर सकता हूँ?
                     </div>
                 </div>
                 <div class="sru-ai-chips">
                     <button type="button" class="sru-ai-chip" data-ai-q="UP Board Result">UP Board Result</button>
-                    <button type="button" class="sru-ai-chip" data-ai-q="UP Police">UP Police</button>
+                    <button type="button" class="sru-ai-chip" data-ai-q="UP Police Bharti">UP Police</button>
                     <button type="button" class="sru-ai-chip" data-ai-q="Image Resizer">Photo Resizer</button>
                     <button type="button" class="sru-ai-chip" data-ai-q="Age Calculator">Age Calculator</button>
                 </div>
                 <div class="sru-ai-input-row">
-                    <input type="text" id="sruAiInput" placeholder="यहाँ अपना सवाल लिखें..." maxlength="100">
+                    <input type="text" id="sruAiInput" placeholder="अपना सवाल यहाँ टाइप करें..." maxlength="120">
                     <button type="button" id="sruAiSendBtn">Send</button>
                 </div>
             </div>
@@ -1245,46 +1242,70 @@
 
             const qLower = query.toLowerCase();
 
-            // Check if user is asking for a tool
-            const matchedTool = PORTAL_TOOLS.find(t =>
-                t.name.toLowerCase().includes(qLower) ||
-                (qLower.includes("photo") && t.name === "Image Resizer") ||
-                (qLower.includes("age") && t.name === "Age Calculator") ||
-                (qLower.includes("pdf") && t.name === "JPG to PDF Converter") ||
-                (qLower.includes("typing") && t.name === "Typing Test")
-            );
-
-            if (matchedTool) {
-                setTimeout(function () {
-                    appendChatMessage(
-                        `<strong>${escapeHTML(matchedTool.name)}:</strong> ${escapeHTML(matchedTool.desc)}<br>` +
-                        `<a href="#tools-section" data-tool-name="${escapeHTML(matchedTool.name)}" style="color:#1d4ed8; font-weight:700; text-decoration:underline; display:inline-block; margin-top:4px;">Open ${escapeHTML(matchedTool.name)} Now &raquo;</a>`,
-                        false
-                    );
-                }, 250);
-                return;
-            }
-
-            // Search matching posts in PORTAL_POSTS
-            const matchedPosts = PORTAL_POSTS.filter(p =>
-                p.title.toLowerCase().includes(qLower) ||
-                p.shortInfo.toLowerCase().includes(qLower) ||
-                p.category.toLowerCase().includes(qLower)
-            ).slice(0, 3);
+            // Typing indicator simulation for thinking capacity
+            const typingId = "typing_" + Date.now();
+            const typingDiv = document.createElement("div");
+            typingDiv.className = "sru-msg-bot";
+            typingDiv.id = typingId;
+            typingDiv.innerHTML = "<em>AI सोच रहा है... / Thinking...</em>";
+            messagesBox.appendChild(typingDiv);
+            messagesBox.scrollTop = messagesBox.scrollHeight;
 
             setTimeout(function () {
+                const typingElem = document.getElementById(typingId);
+                if (typingElem) typingElem.remove();
+
+                // Conversational Greetings like ChatGPT/Gemini
+                if (qLower.includes("hi") || qLower.includes("hello") || qLower.includes("hey") || qLower.includes("नमस्ते") || qLower.includes("سلام")) {
+                    appendChatMessage("नमस्ते! मैं बिल्कुल ठीक हूँ। बताइए, आज आपको किस सरकारी नौकरी, एडमिट कार्ड या डॉक्यूमेंट टूल के बारे में जानकारी चाहिए?", false);
+                    return;
+                }
+                if (qLower.includes("kaise ho") || qLower.includes("how are you")) {
+                    appendChatMessage("मैं एकदम बढ़िया हूँ! आपकी सेवा के लिए तैयार हूँ। आप कोई भी सवाल पूछ सकते हैं।", false);
+                    return;
+                }
+                if (qLower.includes("creator") || qLower.includes("who made you") || qLower.includes("owner")) {
+                    appendChatMessage("इस बेहतरीन पोर्टल <strong>SarkariResultUpAll.com</strong> के डेवलपर और ओनर आप स्वयं हैं!", false);
+                    return;
+                }
+
+                // Check tools match
+                const matchedTool = PORTAL_TOOLS.find(t =>
+                    t.name.toLowerCase().includes(qLower) ||
+                    (qLower.includes("photo") && t.name === "Image Resizer") ||
+                    (qLower.includes("age") && t.name === "Age Calculator") ||
+                    (qLower.includes("pdf") && t.name === "JPG to PDF Converter") ||
+                    (qLower.includes("typing") && t.name === "Typing Test")
+                );
+
+                if (matchedTool) {
+                    appendChatMessage(
+                        `<strong>${escapeHTML(matchedTool.name)}:</strong> ${escapeHTML(matchedTool.desc)}<br>` +
+                        `<a href="#tools-section" data-tool-name="${escapeHTML(matchedTool.name)}" style="color:#0284c7; font-weight:700; text-decoration:underline; display:inline-block; margin-top:5px;">Click to Open ${escapeHTML(matchedTool.name)} &raquo;</a>`,
+                        false
+                    );
+                    return;
+                }
+
+                // Search matching posts
+                const matchedPosts = PORTAL_POSTS.filter(p =>
+                    p.title.toLowerCase().includes(qLower) ||
+                    p.shortInfo.toLowerCase().includes(qLower) ||
+                    p.category.toLowerCase().includes(qLower)
+                ).slice(0, 3);
+
                 if (matchedPosts.length > 0) {
                     const linksHtml = matchedPosts.map(p =>
-                        `&bull; <a href="#" data-post-id="${escapeHTML(p.id)}" style="color:#1d4ed8; font-weight:700; text-decoration:underline;">${escapeHTML(p.title)}</a>`
+                        `&bull; <a href="#" data-post-id="${escapeHTML(p.id)}" style="color:#0284c7; font-weight:700; text-decoration:underline;">${escapeHTML(p.title)}</a>`
                     ).join("<br>");
-                    appendChatMessage(`आपके लिए उपलब्ध डायरेक्ट लिंक्स:<br>${linksHtml}`, false);
+                    appendChatMessage(`मैंने आपके सवाल से मिलते-जुلते ये अपडेट्स ढूँढ निकाले हैं:<br>${linksHtml}`, false);
                 } else {
                     appendChatMessage(
-                        `आप ऊपर दिए गए <strong>Result</strong>, <strong>Admit Card</strong> या <strong>Latest Jobs</strong> बॉक्स में क्लिक कर सकते हैं, या "UP Police", "UP Board", "Anganwadi", या "Photo Resizer" लिखकर सर्च करें।`,
+                        `मैंने इसके बारे में गहराई से सोचा, लेकिन मुझे इससे जुड़ा कोई सटीक रिजल्ट नहीं मिला। आप ऊपर दिए गए <strong>Result</strong> या <strong>Admit Card</strong> बॉक्स में देख सकते हैं, या "UP Police", "UP Board", "Anganwadi" लिखकर सर्च कर सकते हैं।`,
                         false
                     );
                 }
-            }, 250);
+            }, 700); // 0.7 second thinking delay like real AI
         }
 
         toggleBtn.addEventListener("click", function () {
@@ -1324,7 +1345,7 @@
         renderFeaturedSchemes();
         renderAllColumns();
         renderToolsSection();
-        initLeftAiFreeChatWidget();
+        initRightAiFreeChatWidget();
 
         document.body.addEventListener("click", function (e) {
             const postTrigger = e.target.closest("[data-post-id]");
