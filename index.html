@@ -1,671 +1,392 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="YatriSetu - India's Trusted Carpooling, Commercial Ride Sharing & Homestay Booking Platform.">
-    <meta name="keywords" content="YatriSetu, Carpool India, Homestay Booking, Share Ride, Bike Pool, Bus Booking">
-    <title>YatriSetu — Verified Carpooling & Homestay Network</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- High Security Meta Tags (Anti-XSS, Anti-Clickjacking & Referrer Protection) -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self';">
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Vector Icons (HD Zoom Ready) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Custom Stylesheet -->
+    <title>SarkariResultUpAll.com : Sarkari Result UP All 2026, Latest Jobs, Admit Card, Online Form</title>
+    <meta name="description" content="Welcome to SarkariResultUpAll.com. Get all latest UP Board Result, Sarkari Result 2026, Admit Card, Latest Govt Jobs, 10th/ITI Jobs, Outsourcing Jobs, and Sarkari Tools in one place.">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-white text-slate-900 antialiased selection:bg-blue-600 selection:text-white">
+<body>
 
-    <!-- PREMIUM STICKY NAVBAR -->
-    <nav class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 transition-all">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <!-- Brand Logo (Vector SVG - Never Pixelates on Zoom) -->
-            <a href="#" class="flex items-center gap-2.5 group focus:outline-none">
-                <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-600/20 group-hover:bg-blue-700 transition">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
-                    </svg>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-2xl font-extrabold tracking-tight text-slate-900 leading-none">Yatri<span class="text-blue-600">Setu</span></span>
-                    <span id="brandSub" class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 mt-0.5">Intercity Mobility & Stays</span>
-                </div>
-            </a>
+    <!-- Top Header Banner with Prayagraj Sangam Subtle Background -->
+    <header class="main-header">
+        <div class="header-overlay">
+            <h1 class="site-title">SARKARI RESULT UP ALL™</h1>
+            <p class="site-url">www.SarkariResultUpAll.com</p>
+            <p class="site-Hindi-tagline">उत्तर प्रदेश एवं भारत की सभी सरकारी नौकरियों, एडमिट कार्ड और रिजल्ट का सबसे तेज़ पोर्टल</p>
+        </div>
+    </header>
 
-            <!-- Right Actions -->
-            <div class="flex items-center gap-2 sm:gap-3">
-                <!-- Language Switcher -->
-                <button onclick="toggleLanguage()" class="px-3 py-2 rounded-full border border-slate-200 hover:border-blue-600 bg-slate-50 hover:bg-blue-50/50 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 cursor-pointer">
-                    <i class="fa-solid fa-language text-blue-600 text-sm"></i>
-                    <span id="langSwitchBtn">हिंदी / HI</span>
-                </button>
-
-                <!-- My Bookings Button with Live Counter -->
-                <button onclick="openModal('myBookingsModal')" class="relative px-3.5 py-2 rounded-full border border-slate-200 hover:border-blue-600 text-slate-700 hover:text-blue-600 font-bold text-xs sm:text-sm transition flex items-center gap-1.5 cursor-pointer">
-                    <i class="fa-solid fa-ticket text-blue-600"></i>
-                    <span id="navMyBookings" class="hidden md:inline">My Bookings</span>
-                    <span id="bookingCountBadge" class="px-1.5 py-0.5 text-[10px] font-extrabold bg-blue-600 text-white rounded-full">0</span>
-                </button>
-
-                <!-- Offer a Ride / Stay Button -->
-                <button onclick="openModal('publishModal')" class="px-3.5 sm:px-4 py-2 rounded-full border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-extrabold text-xs sm:text-sm transition flex items-center gap-1.5 cursor-pointer shadow-sm">
-                    <i class="fa-solid fa-circle-plus"></i>
-                    <span id="navOfferBtn" class="hidden sm:inline">Offer a ride</span>
-                </button>
-
-                <!-- User Registration / Profile Button -->
-                <button onclick="openModal('registerModal')" id="navRegisterBtn" class="px-3.5 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm transition flex items-center gap-2 cursor-pointer shadow-sm">
-                    <img id="navUserAvatar" src="" alt="User" class="w-5 h-5 rounded-full object-cover hidden border border-white">
-                    <i id="navUserIcon" class="fa-solid fa-user-check text-emerald-400 text-xs"></i>
-                    <span id="navUserText">Register</span>
-                </button>
+    <!-- Navigation Bar with Tools Dropdown & Classic Text Search Button -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#" class="nav-item active" data-cat="home">Home</a></li>
+                <li><a href="#latest-jobs-sec" class="nav-item" data-cat="latest-job">Latest Job</a></li>
+                <li><a href="#admit-card-sec" class="nav-item" data-cat="admit-card">Admit Card</a></li>
+                <li><a href="#result-sec" class="nav-item" data-cat="result">Result</a></li>
+                <li><a href="#admission-sec" class="nav-item" data-cat="admission">Admission</a></li>
+                <li><a href="#syllabus-sec" class="nav-item" data-cat="syllabus">Syllabus</a></li>
+                <li><a href="#answer-key-sec" class="nav-item" data-cat="answer-key">Answer Key</a></li>
+                <li class="dropdown">
+                    <a href="#tools-section" class="nav-item dropbtn" data-cat="tools">Tools <span class="arrow">▾</span></a>
+                    <div class="dropdown-content" id="toolsDropdownMenu">
+                        <!-- Dynamically populated from script.js -->
+                    </div>
+                </li>
+            </ul>
+            <div class="nav-search">
+                <input type="text" id="globalSearch" maxlength="80" autocomplete="off" placeholder="Search Result, Job, Admit Card...">
+                <button type="button" id="searchBtn">Search</button>
             </div>
         </div>
     </nav>
 
-    <!-- HERO SECTION & INTEGRATED SEARCH BAR -->
-    <header class="relative bg-gradient-to-b from-slate-50 to-white pt-8 pb-14 px-4 border-b border-slate-100">
-        <div class="max-w-6xl mx-auto">
-            <!-- Hero Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-10">
-                <div class="lg:col-span-6 space-y-4">
-                    <h1 id="heroHeading" class="text-4xl sm:text-5xl lg:text-[54px] font-extrabold text-slate-900 tracking-tight leading-[1.12]">
-                        Travel anywhere together. <span class="text-blue-600">Spend smarter.</span>
-                    </h1>
-                    <p id="heroSubheading" class="text-slate-600 text-base sm:text-lg leading-relaxed max-w-xl">
-                        Connect with verified drivers across cars, bikes, buses, and trucks, or book comfortable local homestays along your route.
-                    </p>
+    <div class="page-wrapper">
+
+        <!-- Dynamic Category Welcome Banner -->
+        <section id="categoryWelcomeBox" class="category-welcome-box">
+            <h2 id="categoryHeading">Welcome to SarkariResultUpAll.com</h2>
+            <p id="categoryDescEn">
+                Welcome to official <strong>SarkariResultUpAll.com</strong>. Stay informed about the Latest Jobs, Admit Cards, and Exam Results of various competitive exams conducted by government bodies across Uttar Pradesh and India. Whether you are waiting for the Job Notification or Admit Card of any recruitment exam, entrance exam, or board exam, we update everything in real time to keep you informed.
+            </p>
+            <ul class="hindi-welcome-list">
+                <li id="categoryDescHi">
+                    <strong>SarkariResultUpAll.com</strong> में आपका स्वागत है! उत्तर प्रदेश और भारत भर में सरकारी निकायों द्वारा आयोजित विभिन्न प्रतियोगी परीक्षाओं की नवीनतम नौकरियों, एडमिट कार्ड और परिणामों के बारे में सूचित रहें। चाहे आप किसी भी भर्ती परीक्षा, प्रवेश परीक्षा या बोर्ड परीक्षा की प्रतीक्षा कर रहे हों, हम आपको सबसे पहले अपडेट प्रदान करते हैं।
+                </li>
+            </ul>
+        </section>
+
+        <!-- Dynamic Marquee Live Updates Ticker (Controlled from script.js) -->
+        <div class="marquee-wrap">
+            <marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();" id="liveTickerContainer">
+                <!-- Populated from script.js -->
+            </marquee>
+        </div>
+
+        <!-- 8 Quick Highlight Boxes (Controlled from script.js) -->
+        <section id="topHighlightGrid" class="highlight-grid"></section>
+
+        <!-- Dynamic Featured Schemes / Anganwadi Section (Controlled from script.js so more can be added weekly) -->
+        <section id="featuredSchemesContainer"></section>
+
+        <!-- Primary 3-Column Section: Result | Admit Card | Latest Jobs -->
+        <section class="three-col-grid" id="mainThreeCols">
+            <div class="portal-box" id="result-sec">
+                <div class="box-header">Result</div>
+                <ul class="post-list" id="resultList"></ul>
+                <div class="box-footer"><a href="#result-sec" data-expand="result">View All Results &raquo;</a></div>
+            </div>
+
+            <div class="portal-box" id="admit-card-sec">
+                <div class="box-header">Admit Card</div>
+                <ul class="post-list" id="admitCardList"></ul>
+                <div class="box-footer"><a href="#admit-card-sec" data-expand="admit-card">View All Admit Cards &raquo;</a></div>
+            </div>
+
+            <div class="portal-box" id="latest-jobs-sec">
+                <div class="box-header">Latest Jobs</div>
+                <ul class="post-list" id="latestJobsList"></ul>
+                <div class="box-footer"><a href="#latest-jobs-sec" data-expand="latest-job">View All Latest Jobs &raquo;</a></div>
+            </div>
+        </section>
+
+        <!-- Secondary 3-Column Section: 10th/ITI Jobs | Outsourcing Jobs | Syllabus -->
+        <section class="three-col-grid" id="secondaryThreeCols">
+            <div class="portal-box" id="iti-jobs-sec">
+                <div class="box-header">10th/ITI Jobs</div>
+                <ul class="post-list" id="itiJobsList"></ul>
+            </div>
+
+            <div class="portal-box" id="outsourcing-sec">
+                <div class="box-header">Outsourcing Jobs</div>
+                <ul class="post-list" id="outsourcingList"></ul>
+            </div>
+
+            <div class="portal-box" id="syllabus-sec">
+                <div class="box-header">Syllabus</div>
+                <ul class="post-list" id="syllabusList"></ul>
+            </div>
+        </section>
+
+        <!-- Tertiary 2-Column Section: Answer Key | Admission & Scholarship -->
+        <section class="two-col-grid" id="tertiaryTwoCols">
+            <div class="portal-box" id="answer-key-sec">
+                <div class="box-header">Answer Key</div>
+                <ul class="post-list" id="answerKeyList"></ul>
+            </div>
+
+            <div class="portal-box" id="admission-sec">
+                <div class="box-header">Admission & Scholarship</div>
+                <ul class="post-list" id="admissionList"></ul>
+            </div>
+        </section>
+
+        <!-- SarkariResultUpAll Tools Section (Classic Non-AI Graphic Cards + Detailed Guide) -->
+        <section id="tools-section" class="tools-wrapper">
+            <div class="section-banner-bar">SarkariResultUpAll.com — Free Student & Exam Tools</div>
+            <div class="tools-grid" id="toolsGridContainer"></div>
+
+            <!-- Detailed Information About Tools -->
+            <div class="tools-info-box">
+                <h2 class="tools-info-heading">SarkariResultUpAll.com Tools</h2>
+                <p class="tools-intro-text">
+                    <strong>SarkariResultUpAll.com</strong> offers a complete range of free online tools and features designed to help students and job seekers prepare their documents for UP Board, SSC, UP Police, UPSSSC, and all other government exams effortlessly:
+                </p>
+                <ol class="tools-numbered-list">
+                    <li>Image Resizer</li>
+                    <li>MPPEB Template</li>
+                    <li>Resume/CV Maker</li>
+                    <li>JPG to PDF Converter</li>
+                    <li>Typing Speed Test (Hindi & English)</li>
+                    <li>Age Calculator</li>
+                    <li>Name & Date on Photo Maker</li>
+                    <li>Photo & Signature Joiner</li>
+                    <li>Shadi / Marriage Bio-Data Maker</li>
+                </ol>
+
+                <div class="tool-detail-item">
+                    <h3>Image Resizer Tool</h3>
+                    <p>An image resizer tool on SarkariResultUpAll.com is an online utility used to resize digital photos, signatures, and thumb impressions to exact KB and pixel dimensions (such as 20KB–50KB for SSC/UPPSC) without losing quality.</p>
                 </div>
-                <div class="lg:col-span-6">
-                    <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-200/80 bg-slate-100 h-64 sm:h-80">
-                        <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=85" alt="Happy Travellers" class="w-full h-full object-cover">
-                        <div class="absolute bottom-4 left-4 right-4 sm:right-auto bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-lg border border-slate-100 flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
-                                <i class="fa-solid fa-id-card-clip"></i>
-                            </div>
-                            <div>
-                                <p id="heroBadgeTitle" class="text-xs font-extrabold text-slate-900">100% ID Verified Passengers & Hosts</p>
-                                <p id="heroBadgeSub" class="text-[11px] text-slate-500">Instant confirmation with direct WhatsApp & Call</p>
-                            </div>
-                        </div>
-                    </div>
+
+                <div class="tool-detail-item">
+                    <h3>Typing Test Tool</h3>
+                    <p>Our typing test tool measures your typing speed (WPM) and accuracy for exams like UPSSSC Junior Assistant, Allahabad High Court, Delhi High Court SPA, and SSC CHSL. You can practice free typing tests in both English and Hindi (Mangal/Krutidev) daily.</p>
+                </div>
+
+                <div class="tool-detail-item">
+                    <h3>Age Calculator Tool</h3>
+                    <p>Calculate your exact age in years, months, and days based on your Date of Birth and the official cut-off date mentioned in government job notifications.</p>
+                </div>
+
+                <div class="tool-detail-item">
+                    <h3>Name & Date on Photo Maker Tool</h3>
+                    <p>Many exams (like SSC, MPESB, and Railway) require candidates to upload a passport-size photograph with their Name and Date of Photo clearly printed at the bottom. This tool generates it in one click.</p>
+                </div>
+
+                <div class="tool-detail-item">
+                    <h3>Photo Signature Joiner Tool</h3>
+                    <p>A Photo Signature Joiner allows you to merge a passport photo and a digital signature side-by-side or top-to-bottom into a single JPG image for government form uploads.</p>
+                </div>
+
+                <div class="tool-detail-item">
+                    <h3>Resume / CV Maker & Marriage Bio-Data Tool</h3>
+                    <p>Create professional, print-ready resumes for private/outsourcing jobs and traditional or modern Marriage Bio-Data PDFs within 2 minutes.</p>
                 </div>
             </div>
+        </section>
 
-            <!-- INTEGRATED HORIZONTAL SEARCH BAR -->
-            <div class="bg-white rounded-3xl shadow-xl border-2 border-blue-600/90 p-2 sm:p-2.5 max-w-5xl mx-auto">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2 items-center">
-                    <!-- From -->
-                    <div class="lg:col-span-3 flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 transition border-b sm:border-b-0 sm:border-r border-slate-200">
-                        <i class="fa-regular fa-circle text-slate-400 text-sm"></i>
-                        <div class="w-full">
-                            <label id="lblSearchFrom" for="searchFrom" class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">From</label>
-                            <input type="text" id="searchFrom" placeholder="City or place" class="w-full bg-transparent text-sm font-bold text-slate-900 focus:outline-none placeholder:text-slate-400 placeholder:font-normal">
-                        </div>
-                    </div>
+        <!-- SEO Content, Top Pages Table, Discover More & FAQs -->
+        <section class="seo-content-wrapper">
+            <div class="seo-intro-box">
+                <p>
+                    <strong>SarkariResultUpAll.com™ 2026:</strong> Find Latest Sarkari Job Vacancies And Sarkari Exam Results At <strong>SarkariResultUpAll.com</strong> Official Portal. Get All The Information You Need On Govt Jobs And Online Form, Exam, Results, Admit Card In One Place.
+                </p>
+                <div class="assist-pill">Job Application & Exam Assistance</div>
+                <h3 class="top-pages-title">******* <u>Top SarkariResultUpAll.com Pages</u> *******</h3>
 
-                    <!-- To -->
-                    <div class="lg:col-span-3 flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 transition border-b lg:border-b-0 lg:border-r border-slate-200">
-                        <i class="fa-solid fa-location-dot text-blue-600 text-sm"></i>
-                        <div class="w-full">
-                            <label id="lblSearchTo" for="searchTo" class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">To</label>
-                            <input type="text" id="searchTo" placeholder="City or place" class="w-full bg-transparent text-sm font-bold text-slate-900 focus:outline-none placeholder:text-slate-400 placeholder:font-normal">
-                        </div>
-                    </div>
+                <table class="top-pages-table">
+                    <tbody>
+                        <tr>
+                            <td><a href="#result-sec">Bharat Result</a></td>
+                            <td><a href="#result-sec">UP Police Result</a></td>
+                            <td><a href="#result-sec">Bihar Police Result</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="#latest-jobs-sec">Sarkari Exam</a></td>
+                            <td><a href="#result-sec">SarkariResultUpAll Hindi</a></td>
+                            <td><a href="#admit-card-sec">Sarkari Result NTPC</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="#result-sec">Sarkari Result 2026</a></td>
+                            <td><a href="#">SarkariResultUpAll.com</a></td>
+                            <td><a href="#latest-jobs-sec">Sarkari</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="#latest-jobs-sec">Sarkari Naukri</a></td>
+                            <td><a href="#result-sec">Sarkari Result 10th</a></td>
+                            <td><a href="#admit-card-sec">Sarkari Result Center</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="#iti-jobs-sec">Sarkari Result 10+2</a></td>
+                            <td><a href="#">SarkariResultUpAll</a></td>
+                            <td><a href="#latest-jobs-sec">Sarkari Result SSC</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                    <!-- Departure Date (Restricted to 14 Days) -->
-                    <div class="lg:col-span-2 flex items-center gap-2.5 px-3.5 py-3 rounded-2xl hover:bg-slate-50 transition border-b sm:border-b-0 sm:border-r border-slate-200">
-                        <i class="fa-regular fa-calendar text-slate-400 text-sm"></i>
-                        <div class="w-full">
-                            <label id="lblSearchDate" for="searchDate" class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Departure</label>
-                            <input type="date" id="searchDate" class="w-full bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer">
-                        </div>
-                    </div>
+            <div class="seo-red-banner">SarkariResultUpAll.com 10+2 Latest Job & Updates</div>
 
-                    <!-- Category / Vehicle Filter -->
-                    <div class="lg:col-span-2 flex items-center gap-2.5 px-3.5 py-3 rounded-2xl hover:bg-slate-50 transition">
-                        <i class="fa-solid fa-layer-group text-slate-400 text-sm"></i>
-                        <div class="w-full">
-                            <label id="lblSearchCategory" for="searchCategory" class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Category</label>
-                            <select id="searchCategory" class="w-full bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer">
-                                <option value="all">All Rides & Stays</option>
-                                <option value="Car">Car</option>
-                                <option value="Bike">Bike</option>
-                                <option value="Bus">Bus</option>
-                                <option value="Truck">Truck</option>
-                                <option value="Stay">Homestay / Room</option>
-                            </select>
-                        </div>
-                    </div>
+            <!-- Discover More Links Box -->
+            <div class="discover-more-box">
+                <h4>Discover more on SarkariResultUpAll.com</h4>
+                <a href="#admission-sec" class="discover-item"><span>Scholarship information platform (UP & National)</span> <span>&rsaquo;</span></a>
+                <a href="#latest-jobs-sec" class="discover-item"><span>Career news & latest job alerts portal</span> <span>&rsaquo;</span></a>
+                <a href="#tools-section" class="discover-item"><span>Sarkari CSC & Student Document Services</span> <span>&rsaquo;</span></a>
+                <a href="#admit-card-sec" class="discover-item"><span>Government exam resources & Entrance exam information</span> <span>&rsaquo;</span></a>
+            </div>
 
-                    <!-- Search Button -->
-                    <div class="lg:col-span-2">
-                        <button onclick="filterListings()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-4 px-6 rounded-2xl transition shadow-md shadow-blue-600/20 flex items-center justify-center gap-2 cursor-pointer text-sm">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <span id="btnSearchText">Search</span>
-                        </button>
-                    </div>
+            <p class="seo-para">
+                Most Recent Sarkari Work, Sarkari Test Result, Most Recent Online Form, Admit Card, Answer Key, Syllabus, Scholarship Grant, and Official Notices are updated daily on <strong>SarkariResultUpAll.com</strong>. Whether you are checking UP Board Class 10th & 12th Result, UP Police Bharti, SSC GD, Railway NTPC, or UPSSSC PET, you get direct server links consistently on one page.
+            </p>
+
+            <div class="seo-red-banner">SarkariResultUpAll.com — Uttar Pradesh & All India Results</div>
+            <p class="seo-para">
+                <strong>SarkariResultUpAll.com</strong> is a dedicated portal in India that gives complete data about Sarkari Work Tests, Sarkari Result 2026, and related updates. It helps lakhs of students across Uttar Pradesh (Etawah, Prayagraj, Lucknow, Kanpur, Varanasi, Agra, Gorakhpur, etc.) secure accurate information about Government Position Openings, Admit Cards, Test Dates, and Results.
+            </p>
+
+            <div class="seo-red-banner">Sarkari Result UP & Bihar Special Updates</div>
+            <p class="seo-para">
+                Each data connected with Sarkari Test Result in UP and Bihar can be seen here including UPMSP 10th & 12th Result, UPPSC, UPSSSC, OFSS Bihar, Bihar Board 10th & 12th Outcome, Bihar Police 2026, BPSC TRE 4.0 Teacher Recruitment, and 10+2 Most Recent Govt Work.
+            </p>
+
+            <div class="seo-red-banner">SarkariResultUpAll.com Hindi (उत्तर प्रदेश विशेष)</div>
+            <p class="seo-para">
+                Uttar Pradesh (<strong>SarkariResultUpAll.com UP Board</strong>) is a state where lakhs of young students appear for competitive exams consistently to secure government positions. Here you will get UP Board Result 2026-27, UP Police Constable & SI Result, UP Scholarship Status, UPSSSC Lekhpal, and all district-level ECCE Educator & Anganwadi notifications in simple Hindi and English.
+            </p>
+
+            <div class="seo-red-banner">SarkariResultUpAll.com Official Website & Disclaimer</div>
+            <p class="seo-para">
+                <strong>SarkariResultUpAll.com</strong> presents all the latest updates such as Results, Online Forms, Job Notifications, Exam Results 2026, Employment News, Information in Hindi, Government Job Details, and Important Notices.
+            </p>
+            <p class="disclaimer-note">
+                &bull; <strong>Disclaimer:</strong> This Website (<strong>SarkariResultUpAll.com</strong>) is an independent educational and career information portal and is NOT associated with any official government organization. All information provided is for general informational purposes only, and visitors are advised to verify details from the official notification of the concerning department before relying on it.
+            </p>
+
+            <!-- FAQ Section -->
+            <div class="faq-box">
+                <h2>FAQ – SarkariResultUpAll.com</h2>
+                <div class="faq-item">
+                    <h4>Q1. What is SarkariResultUpAll.com?</h4>
+                    <p><strong>SarkariResultUpAll.com</strong> is a fast, student-friendly portal where you can find the latest Sarkari Job vacancies, UP Board & CBSE Exam Results, Admit Cards, Syllabus, and free document tools in one place.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Q2. How can I download Official PDF notifications and Admit Cards?</h4>
+                    <p>Simply click on any job or admit card link in the boxes above. A clean details window will open with direct official server links and PDF download buttons.</p>
                 </div>
             </div>
+        </section>
 
-            <!-- Show Stays Filter Checkbox & Schedule Notice -->
-            <div class="max-w-5xl mx-auto mt-3.5 px-2 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
-                <label class="inline-flex items-center gap-2 cursor-pointer select-none font-semibold">
-                    <input type="checkbox" id="showStaysToggle" checked onchange="filterListings()" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer">
-                    <span id="lblShowStays">Include verified homestays & rooms in search results</span>
-                </label>
-                <span id="lblScheduleRule" class="text-slate-500 font-medium">
-                    <i class="fa-regular fa-clock text-blue-600 mr-1"></i> Active scheduling window: Up to 14 days (2 weeks)
-                </span>
-            </div>
-        </div>
-    </header>
+    </div>
 
-    <!-- 3 VALUE PILLARS SECTION -->
-    <section class="max-w-6xl mx-auto px-4 py-14 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="space-y-2.5">
-            <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center text-xl">
-                <i class="fa-solid fa-suitcase-rolling"></i>
-            </div>
-            <h3 id="pillar1Title" class="text-lg font-extrabold text-slate-900">Travel everywhere</h3>
-            <p id="pillar1Desc" class="text-sm text-slate-600 leading-relaxed">
-                Explore routes across India with cars, bikes, buses, trucks, and comfortable local homestays at your destination.
-            </p>
-        </div>
-        <div class="space-y-2.5">
-            <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center text-xl">
-                <i class="fa-solid fa-coins"></i>
-            </div>
-            <h3 id="pillar2Title" class="text-lg font-extrabold text-slate-900">Prices like nowhere</h3>
-            <p id="pillar2Desc" class="text-sm text-slate-600 leading-relaxed">
-                Benefit from shared travel costs and direct-from-host room tariffs without middleman commission fees.
-            </p>
-        </div>
-        <div class="space-y-2.5">
-            <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center text-xl">
-                <i class="fa-solid fa-user-shield"></i>
-            </div>
-            <h3 id="pillar3Title" class="text-lg font-extrabold text-slate-900">Two-Way Safety Proof</h3>
-            <p id="pillar3Desc" class="text-sm text-slate-600 leading-relaxed">
-                Both vehicle owners and passengers are verified with Photo, Mobile Number, and Govt ID proof for complete peace of mind.
-            </p>
-        </div>
-    </section>
-
-    <!-- LIVE LISTINGS FEED (RIDES & HOMESTAYS) -->
-    <main id="listingsSection" class="max-w-6xl mx-auto px-4 py-8">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <div>
-                <h2 id="feedHeading" class="text-2xl sm:text-3xl font-extrabold text-slate-900">Available Rides & Homestays</h2>
-                <p id="feedSubheading" class="text-xs sm:text-sm text-slate-500 mt-0.5">Click on any photo to view full gallery or click Book Now for instant green-tick confirmation.</p>
-            </div>
-            <button onclick="resetFilters()" id="btnResetFilters" class="self-start sm:self-auto px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition cursor-pointer">
-                Show All Listings
-            </button>
-        </div>
-
-        <!-- Cards Grid -->
-        <div id="listingsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Dynamically Injected via script.js -->
-        </div>
-    </main>
-
-    <!-- TOP CARPOOL ROUTES (DARK NAVY BAND) -->
-    <section class="bg-[#051c2c] text-white py-14 px-4 my-12">
-        <div class="max-w-6xl mx-auto">
-            <h2 id="topRoutesHeading" class="text-2xl font-extrabold mb-6">Top carpool routes</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <button onclick="quickRoute('Gurgaon', 'Rohtak')" class="bg-white text-slate-900 p-5 rounded-2xl flex items-center justify-between font-extrabold text-sm hover:bg-blue-50 transition shadow-md cursor-pointer">
-                    <span>Gurgaon <i class="fa-solid fa-arrow-right mx-1.5 text-blue-600"></i> Rohtak</span>
-                    <i class="fa-solid fa-chevron-right text-slate-400"></i>
-                </button>
-                <button onclick="quickRoute('Dadri', 'Gurgaon')" class="bg-white text-slate-900 p-5 rounded-2xl flex items-center justify-between font-extrabold text-sm hover:bg-blue-50 transition shadow-md cursor-pointer">
-                    <span>Dadri <i class="fa-solid fa-arrow-right mx-1.5 text-blue-600"></i> Gurgaon</span>
-                    <i class="fa-solid fa-chevron-right text-slate-400"></i>
-                </button>
-                <button onclick="quickRoute('Meerut', 'Ghaziabad')" class="bg-white text-slate-900 p-5 rounded-2xl flex items-center justify-between font-extrabold text-sm hover:bg-blue-50 transition shadow-md cursor-pointer">
-                    <span>Meerut <i class="fa-solid fa-arrow-right mx-1.5 text-blue-600"></i> Ghaziabad</span>
-                    <i class="fa-solid fa-chevron-right text-slate-400"></i>
-                </button>
-            </div>
-            <div class="mt-6 flex justify-end">
-                <button onclick="openInfoPopup('moreRoutes')" id="btnMoreRoutes" class="px-5 py-2.5 bg-white text-slate-900 hover:bg-slate-100 font-bold text-xs rounded-full transition cursor-pointer">
-                    More popular routes
-                </button>
+    <!-- Dark Blue Footer: Connect With Us -->
+    <footer class="connect-footer">
+        <div class="connect-box">
+            <h3>Connect With Us</h3>
+            <div class="social-grid">
+                <a href="#">SarkariResultUpAll @X (Twitter)</a>
+                <a href="#">SarkariResultUpAll @Telegram</a>
+                <a href="#">SarkariResultUpAll @WhatsApp</a>
+                <a href="#">SarkariResultUpAll @Instagram</a>
+                <a href="#">SarkariResultUpAll @Facebook</a>
+                <a href="#">SarkariResultUpAll @YouTube</a>
+                <a href="#">SarkariResultUpAll @Mobile App</a>
+                <a href="#tools-section">SarkariResultUpAll @Tools</a>
             </div>
         </div>
-    </section>
-
-    <!-- SHARE YOUR RIDE / DRIVER CTA BANNER -->
-    <section class="max-w-6xl mx-auto px-4 my-12">
-        <div class="bg-[#051c2c] text-white rounded-3xl p-8 sm:p-12 text-center shadow-xl">
-            <h2 id="ctaShareTitle" class="text-2xl sm:text-3xl font-extrabold mb-3">Share your ride or spare room. Cut your costs.</h2>
-            <p id="ctaShareDesc" class="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto mb-6">
-                Whether you drive a car, bike, bus, or truck, or have a clean homestay room for travellers—publish your listing in seconds for free.
-            </p>
-            <button onclick="openModal('publishModal')" class="px-6 py-3.5 bg-white text-slate-900 hover:bg-blue-50 font-extrabold text-sm rounded-full transition inline-flex items-center gap-2 cursor-pointer shadow-md">
-                <i class="fa-solid fa-arrow-right text-blue-600"></i>
-                <span id="ctaShareBtn">Publish your listing</span>
-            </button>
-        </div>
-    </section>
-
-    <!-- HELP CENTRE / FAQ SECTION -->
-    <section class="max-w-6xl mx-auto px-4 py-12 border-t border-slate-200">
-        <h2 id="faqHeading" class="text-2xl sm:text-3xl font-extrabold text-center text-slate-900 mb-10">YatriSetu Help Centre</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
-            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-                <h4 class="font-extrabold text-base text-slate-900">How does Passenger Verification work?</h4>
-                <p class="text-slate-600 leading-relaxed">Users can register once with their Name, Mobile Number, Govt ID last 4 digits, and Photo. Every booking attaches this proof so the vehicle owner knows exactly who is travelling.</p>
-                <button onclick="openModal('registerModal')" class="text-blue-600 font-bold text-xs hover:underline cursor-pointer">Register Profile Now</button>
+        <div class="footer-bottom">
+            <div class="footer-copy">
+                <p>Copyright &copy; 2026 | <strong>SarkariResultUpAll.com</strong></p>
+                <p>Sarkari Result UP All™ — Fast & Trusted Student Portal <span class="yojana-badge">Sarkari Yojana & Job Updates</span></p>
             </div>
-            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-                <h4 class="font-extrabold text-base text-slate-900">How do I publish a ride or room with photos?</h4>
-                <p class="text-slate-600 leading-relaxed">Click 'Offer a ride' at the top, select Ride or Homestay, fill in vehicle number or address details, and upload photos directly from your phone or computer.</p>
-                <button onclick="openInfoPopup('faqPublish')" class="text-blue-600 font-bold text-xs hover:underline cursor-pointer">Read more</button>
+            <div class="footer-links">
+                <a href="#" data-cat="home">Home</a>
+                <a href="#tools-section">Tools</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#" class="disclaimer-link">Disclaimer</a>
             </div>
-            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-                <h4 class="font-extrabold text-base text-slate-900">How long do listings stay active?</h4>
-                <p class="text-slate-600 leading-relaxed">To keep our feed fresh and accurate, all rides and bookings can be scheduled up to 2 weeks (14 days) in advance and are automatically cleaned up after 14 days.</p>
-                <button onclick="openInfoPopup('faqExpiry')" class="text-blue-600 font-bold text-xs hover:underline cursor-pointer">Read more</button>
-            </div>
-            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-                <h4 class="font-extrabold text-base text-slate-900">Where can I see my confirmed bookings?</h4>
-                <p class="text-slate-600 leading-relaxed">All your confirmed tickets are saved in your browser inside the 'My Bookings' section at the top bar—with direct WhatsApp and Phone Call buttons.</p>
-                <button onclick="openModal('myBookingsModal')" class="text-blue-600 font-bold text-xs hover:underline cursor-pointer">View My Bookings</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="bg-slate-100 border-t border-slate-200 pt-12 pb-8 px-4 text-xs text-slate-600">
-        <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-            <div>
-                <h4 class="font-extrabold text-slate-900 mb-3 text-sm">Top Carpool Routes</h4>
-                <ul class="space-y-2">
-                    <li><button onclick="quickRoute('Gurgaon', 'Rohtak')" class="hover:text-blue-600 cursor-pointer">Gurgaon ➔ Rohtak</button></li>
-                    <li><button onclick="quickRoute('Dadri', 'Gurgaon')" class="hover:text-blue-600 cursor-pointer">Dadri ➔ Gurgaon</button></li>
-                    <li><button onclick="quickRoute('Delhi', 'Agra')" class="hover:text-blue-600 cursor-pointer">Delhi ➔ Agra</button></li>
-                    <li><button onclick="quickRoute('Meerut', 'Ghaziabad')" class="hover:text-blue-600 cursor-pointer">Meerut ➔ Ghaziabad</button></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-extrabold text-slate-900 mb-3 text-sm">Vehicle Categories</h4>
-                <ul class="space-y-2">
-                    <li><button onclick="filterByCategory('Car')" class="hover:text-blue-600 cursor-pointer">Car Share</button></li>
-                    <li><button onclick="filterByCategory('Bike')" class="hover:text-blue-600 cursor-pointer">Bike Pool</button></li>
-                    <li><button onclick="filterByCategory('Bus')" class="hover:text-blue-600 cursor-pointer">Intercity Bus</button></li>
-                    <li><button onclick="filterByCategory('Truck')" class="hover:text-blue-600 cursor-pointer">Commercial Truck</button></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-extrabold text-slate-900 mb-3 text-sm">Homestay Cities</h4>
-                <ul class="space-y-2">
-                    <li><button onclick="quickRoute('Jaipur', 'Jaipur')" class="hover:text-blue-600 cursor-pointer">Jaipur Homestays</button></li>
-                    <li><button onclick="quickRoute('Agra', 'Agra')" class="hover:text-blue-600 cursor-pointer">Agra Family Rooms</button></li>
-                    <li><button onclick="quickRoute('Varanasi', 'Varanasi')" class="hover:text-blue-600 cursor-pointer">Varanasi Stays</button></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-extrabold text-slate-900 mb-3 text-sm">YatriSetu Platform</h4>
-                <p class="leading-relaxed mb-3">India's community-driven intercity ride-sharing and homestay discovery network.</p>
-                <span id="cloudStatusBadge" class="inline-flex items-center gap-1.5 text-emerald-600 font-extrabold"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> 24/7 Cloud Live</span>
-            </div>
-        </div>
-        <div class="max-w-6xl mx-auto border-t border-slate-200 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <span class="font-bold text-slate-800">YatriSetu, 2026 &copy; All Rights Reserved</span>
-            <span class="text-slate-500">Protected by Client-Side Input Validation & Passenger ID Proof</span>
         </div>
     </footer>
 
-    <!-- ==========================================
-         MODAL 1: USER REGISTRATION & SAFETY PROFILE
-         (No Paid OTP Required - Instant Local Profile)
-    =========================================== -->
-    <div id="registerModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/65 backdrop-blur-md p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 relative shadow-2xl border border-slate-200 max-h-[92vh] overflow-y-auto animate-modal">
-            <button onclick="closeModal('registerModal')" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center cursor-pointer">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-xl shadow-md">
-                    <i class="fa-solid fa-user-check"></i>
-                </div>
-                <div>
-                    <h3 class="text-xl font-extrabold text-slate-900">User Registration</h3>
-                    <p class="text-xs text-slate-500">One-time setup for instant verified bookings (No OTP required)</p>
-                </div>
+    <!-- POST DETAILS MODAL (Clean: Only Post Date/Update & Short Info) -->
+    <div id="postModal" class="modal-backdrop">
+        <div class="modal-window">
+            <div class="modal-top-bar">
+                <span>SarkariResultUpAll.com — Post Details & Official Links</span>
+                <button type="button" class="modal-close-btn" id="closePostModalBtn">X Close</button>
             </div>
-
-            <form id="userRegisterForm" onsubmit="saveUserProfile(event)" class="space-y-3.5 text-xs sm:text-sm">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Full Name (यूजर का नाम) *</label>
-                    <input type="text" id="regUserName" required maxlength="45" placeholder="e.g. Sidhu Kumar" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-semibold focus:outline-none focus:border-blue-600">
+            <div class="modal-body">
+                <div class="meta-row">
+                    <div class="meta-label">Post Date / Update:</div>
+                    <div class="meta-value" id="modalPostDate">29 October 2026 | <strong>10:15 AM</strong></div>
+                </div>
+                <div class="meta-row">
+                    <div class="meta-label">Short Information:</div>
+                    <div class="meta-value" id="modalShortInfo">Details and official direct server links are given below.</div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Mobile Number (मोबाइल) *</label>
-                        <input type="tel" id="regUserPhone" required pattern="[6-9][0-9]{9}" maxlength="10" placeholder="9876543210" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-semibold focus:outline-none focus:border-blue-600">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Emergency Contact No. *</label>
-                        <input type="tel" id="regEmergencyPhone" required pattern="[6-9][0-9]{9}" maxlength="10" placeholder="Family/Friend No." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-semibold focus:outline-none focus:border-blue-600">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Govt / Student ID Type *</label>
-                        <select id="regIdType" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-bold text-slate-800 focus:outline-none focus:border-blue-600">
-                            <option value="Aadhaar Card">Aadhaar Card</option>
-                            <option value="Driving License">Driving License</option>
-                            <option value="Voter ID">Voter ID Card</option>
-                            <option value="Student / Office ID">Student / Office ID</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">ID Last 4 Digits (प्रूफ नंबर) *</label>
-                        <input type="text" id="regIdDigits" required pattern="[0-9A-Za-z]{4}" maxlength="4" placeholder="e.g. 4829" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-bold uppercase focus:outline-none focus:border-blue-600">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Upload Your Photo / Selfie (यात्री की फोटो)</label>
-                    <input type="file" id="regUserPhoto" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
-                    <span class="text-[11px] text-slate-400 block mt-1">Shown to driver/host on booking ticket as identity proof.</span>
-                </div>
-
-                <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-2xl shadow-lg shadow-blue-600/20 transition cursor-pointer mt-2">
-                    <i class="fa-solid fa-shield-halved mr-1"></i> Save & Verify Profile
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- ==========================================
-         MODAL 2: PUBLISH RIDE OR HOMESTAY
-    =========================================== -->
-    <div id="publishModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/65 backdrop-blur-md p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 relative shadow-2xl border border-slate-200 max-h-[92vh] overflow-y-auto animate-modal">
-            <button onclick="closeModal('publishModal')" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center cursor-pointer">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-
-            <h3 class="text-xl font-extrabold text-slate-900 mb-1">Offer a Ride or Homestay</h3>
-            <p class="text-xs text-slate-500 mb-5">Listings stay active for 14 days (2 weeks) and are saved automatically.</p>
-
-            <!-- Tab Switcher -->
-            <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-2xl mb-5">
-                <button type="button" id="tabBtnRide" onclick="switchPublishTab('ride')" class="py-2.5 rounded-xl font-extrabold text-xs bg-blue-600 text-white shadow-sm transition cursor-pointer">
-                    <i class="fa-solid fa-car-side mr-1"></i> Publish a Ride
-                </button>
-                <button type="button" id="tabBtnStay" onclick="switchPublishTab('stay')" class="py-2.5 rounded-xl font-extrabold text-xs text-slate-600 hover:text-slate-900 transition cursor-pointer">
-                    <i class="fa-solid fa-house-chimney mr-1"></i> Publish Homestay
-                </button>
-            </div>
-
-            <!-- FORM A: RIDE SHARING (CAR / BIKE / BUS / TRUCK) -->
-            <form id="formPublishRide" onsubmit="submitRideForm(event)" class="space-y-3.5 text-xs sm:text-sm">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Driver / Operator Name *</label>
-                        <input type="text" id="rDriverName" required maxlength="50" placeholder="e.g. Rajesh Verma" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-blue-600 font-semibold">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Mobile Number (10 Digits) *</label>
-                        <input type="tel" id="rDriverPhone" required pattern="[6-9][0-9]{9}" maxlength="10" placeholder="9876543210" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-blue-600 font-semibold">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Vehicle Category *</label>
-                        <select id="rVehicleCategory" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-blue-600 font-bold text-slate-800">
-                            <option value="Car">Car (कार)</option>
-                            <option value="Bike">Bike (बाइक)</option>
-                            <option value="Bus">Bus (बस)</option>
-                            <option value="Truck">Truck (ट्रक)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Vehicle Number & Model *</label>
-                        <input type="text" id="rVehicleNumber" required maxlength="35" placeholder="UP 75 AB 1234 (Swift)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 uppercase focus:outline-none focus:border-blue-600 font-semibold">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Going From (City/Address) *</label>
-                        <input type="text" id="rFromCity" required maxlength="40" placeholder="e.g. Etawah / Gurgaon" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-blue-600 font-semibold">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Going To (Destination) *</label>
-                        <input type="text" id="rToCity" required maxlength="40" placeholder="e.g. Delhi / Rohtak" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-blue-600 font-semibold">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-3 gap-2.5">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Travel Date *</label>
-                        <input type="date" id="rTravelDate" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2.5 text-xs font-bold focus:outline-none focus:border-blue-600">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Seats Left *</label>
-                        <input type="number" id="rSeats" required min="1" max="50" value="3" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-bold focus:outline-none focus:border-blue-600">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Price / Seat (₹) *</label>
-                        <input type="number" id="rPrice" required min="10" max="50000" placeholder="350" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-bold focus:outline-none focus:border-blue-600">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Upload Vehicle Photo (Optional - Multiple Allowed)</label>
-                    <input type="file" id="rPhotos" accept="image/*" multiple class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
-                </div>
-
-                <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-2xl shadow-lg shadow-blue-600/20 transition cursor-pointer mt-2">
-                    Publish Ride Now
-                </button>
-            </form>
-
-            <!-- FORM B: HOMESTAY / ROOM LISTING -->
-            <form id="formPublishStay" onsubmit="submitStayForm(event)" class="space-y-3.5 text-xs sm:text-sm hidden">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Host / Owner Name *</label>
-                        <input type="text" id="sHostName" required maxlength="50" placeholder="e.g. Priya Sharma" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-blue-600 font-semibold">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Mobile Number (10 Digits) *</label>
-                        <input type="tel" id="sHostPhone" required pattern="[6-9][0-9]{9}" maxlength="10" placeholder="9876543210" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-blue-600 font-semibold">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">City / Town *</label>
-                        <input type="text" id="sCity" required maxlength="40" placeholder="e.g. Jaipur / Agra" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-blue-600 font-semibold">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Available From Date *</label>
-                        <input type="date" id="sAvailableDate" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold focus:outline-none focus:border-blue-600">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Full Address & Room Amenities *</label>
-                    <input type="text" id="sAddress" required maxlength="90" placeholder="Near Station, AC Room, Free Wi-Fi & Parking" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-blue-600 font-semibold">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Rooms Available *</label>
-                        <input type="number" id="sRooms" required min="1" max="20" value="2" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-bold focus:outline-none focus:border-blue-600">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Price per Night (₹) *</label>
-                        <input type="number" id="sPrice" required min="100" max="50000" placeholder="799" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-bold focus:outline-none focus:border-blue-600">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Upload Room / House Photos (Multiple Allowed)</label>
-                    <input type="file" id="sPhotos" accept="image/*" multiple class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
-                </div>
-
-                <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-2xl shadow-lg shadow-blue-600/20 transition cursor-pointer mt-2">
-                    Publish Homestay Now
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- ==========================================
-         MODAL 3: PASSENGER VERIFICATION & PHONEPE-STYLE
-         GREEN TICK CONFIRMATION POPUP
-    =========================================== -->
-    <div id="bookingModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 backdrop-blur-md p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 relative shadow-2xl border border-slate-200 max-h-[94vh] overflow-y-auto animate-modal">
-            <button onclick="closeModal('bookingModal')" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center cursor-pointer z-10">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-
-            <!-- STEP 1: PASSENGER IDENTITY & BOOKING FORM -->
-            <div id="bookingStepForm">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-11 h-11 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
-                        <i class="fa-solid fa-user-shield"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-extrabold text-slate-900">Passenger Verification & Booking</h3>
-                        <p class="text-[11px] text-slate-500">Your ID proof is shared with the provider for safety</p>
-                    </div>
-                </div>
-
-                <!-- Selected Ride/Stay Summary -->
-                <div id="selectedItemPreview" class="bg-slate-50 border border-slate-200 rounded-2xl p-3 mb-3.5 text-xs space-y-1"></div>
-
-                <form id="confirmBookingForm" onsubmit="processBookingConfirmation(event)" class="space-y-3 text-xs">
-                    <input type="hidden" id="bookListingId">
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                        <div>
-                            <label class="block font-bold text-slate-700 mb-1">Passenger Name *</label>
-                            <input type="text" id="passengerName" required maxlength="45" placeholder="Your Full Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-semibold focus:outline-none focus:border-blue-600">
-                        </div>
-                        <div>
-                            <label class="block font-bold text-slate-700 mb-1">Mobile Number *</label>
-                            <input type="tel" id="passengerPhone" required pattern="[6-9][0-9]{9}" maxlength="10" placeholder="9876543210" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-semibold focus:outline-none focus:border-blue-600">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2.5">
-                        <div>
-                            <label class="block font-bold text-slate-700 mb-1">ID Proof Type *</label>
-                            <select id="passengerIdType" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 font-bold text-slate-800 focus:outline-none focus:border-blue-600">
-                                <option value="Aadhaar Card">Aadhaar Card</option>
-                                <option value="Driving License">Driving License</option>
-                                <option value="Voter ID">Voter ID</option>
-                                <option value="Student/Office ID">Student/Office ID</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block font-bold text-slate-700 mb-1">ID Last 4 Digits *</label>
-                            <input type="text" id="passengerIdDigits" required pattern="[0-9A-Za-z]{4}" maxlength="4" placeholder="e.g. 4829" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold uppercase focus:outline-none focus:border-blue-600">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2.5">
-                        <div>
-                            <label class="block font-bold text-slate-700 mb-1">Emergency No. *</label>
-                            <input type="tel" id="passengerEmergency" required pattern="[6-9][0-9]{9}" maxlength="10" placeholder="Family Mobile No." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-semibold focus:outline-none focus:border-blue-600">
-                        </div>
-                        <div>
-                            <label class="block font-bold text-slate-700 mb-1">Seats / Rooms *</label>
-                            <input type="number" id="passengerQty" required min="1" max="10" value="1" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold focus:outline-none focus:border-blue-600">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">Passenger Photo / Selfie (Optional if registered)</label>
-                        <input type="file" id="passengerPhotoInput" accept="image/*" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:font-bold file:bg-blue-50 file:text-blue-700 cursor-pointer">
-                    </div>
-
-                    <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-600/25 transition cursor-pointer mt-2 flex items-center justify-center gap-2 text-sm">
-                        <i class="fa-solid fa-shield-check"></i> Verify & Confirm Booking
-                    </button>
-                </form>
-            </div>
-
-            <!-- STEP 2: PHONEPE-STYLE GREEN TICK CONFIRMATION SCREEN -->
-            <div id="bookingStepSuccess" class="hidden text-center pt-2">
-                <!-- PhonePe Style Animated Green Checkmark Circle -->
-                <div class="phonepe-success-wrapper mx-auto mb-3">
-                    <div class="phonepe-pulse-ring"></div>
-                    <div class="phonepe-check-circle">
-                        <svg class="phonepe-check-svg" viewBox="0 0 52 52">
-                            <path class="phonepe-check-path" fill="none" d="M14 27l8 8 16-16"/>
-                        </svg>
-                    </div>
-                </div>
-
-                <span class="px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-extrabold text-[11px] uppercase tracking-wider inline-flex items-center gap-1">
-                    <i class="fa-solid fa-circle-check"></i> Booking Successful
-                </span>
-                <h3 class="text-2xl font-black text-slate-900 mt-1.5">Booking Confirmed!</h3>
-                <p class="text-xs text-slate-500 mt-0.5 mb-4">बुकिंग सफल! अब आप नीचे क्लिक करके WhatsApp या कॉल पर बात कर सकते हैं।</p>
-
-                <!-- Ticket & Passenger Verification Receipt -->
-                <div id="confirmedTicketBox" class="text-left bg-slate-50 border-2 border-dashed border-emerald-400 rounded-2xl p-4 text-xs space-y-2 mb-4"></div>
-
-                <!-- Primary Action Buttons: Direct WhatsApp Chat & Call -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    <a id="directWaBtn" href="#" target="_blank" rel="noopener noreferrer" class="py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/25 transition">
-                        <i class="fa-brands fa-whatsapp text-base"></i> Open WhatsApp Chat
-                    </a>
-                    <a id="directCallBtn" href="#" class="py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-2xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20 transition">
-                        <i class="fa-solid fa-phone-volume"></i> Call Provider Now
-                    </a>
-                </div>
-                <button onclick="closeModal('bookingModal')" class="w-full py-2.5 mt-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs cursor-pointer">
-                    Done / बंद करें
-                </button>
+                <table class="modal-details-table">
+                    <thead>
+                        <tr>
+                            <th colspan="2" class="modal-post-main-title" id="modalMainHeading">Post Title Here</th>
+                        </tr>
+                        <tr class="modal-sub-headers">
+                            <th>Important Dates (2026)</th>
+                            <th>Age Limit & Verification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <ul class="modal-bullet-list">
+                                    <li>Notification / Update Date: <strong id="modalDateOnly">29 Oct 2026</strong></li>
+                                    <li>Update Timing: <strong id="modalTimeOnly">10:15 AM</strong></li>
+                                </ul>
+                            </td>
+                            <td>
+                                <ul class="modal-bullet-list">
+                                    <li>Minimum / Maximum Age: As per official notification rules.</li>
+                                    <li>Candidates are advised to verify details on the official portal.</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th colspan="2" class="useful-links-header">Some Useful Important Links</th>
+                        </tr>
+                        <tr>
+                            <td class="link-action-label" id="modalActionLabel">Download / Apply Official Link</td>
+                            <td class="link-action-cell">
+                                <a href="#" target="_blank" rel="noopener noreferrer" id="modalPrimaryBtn" class="server-btn">Click Here (Official Server 1)</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="link-action-label">Download Official Notification / PDF</td>
+                            <td class="link-action-cell">
+                                <a href="#" target="_blank" rel="noopener noreferrer" id="modalPdfBtn" class="server-btn pdf-btn">Download Notification PDF</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="link-action-label">Official Website & All Updates</td>
+                            <td class="link-action-cell">
+                                <a href="#" target="_blank" rel="noopener noreferrer" id="modalOfficialSiteBtn" class="server-btn secondary-btn">Official Website</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
-    <!-- ==========================================
-         MODAL 4: MY BOOKINGS WALLET (PERSISTENT)
-    =========================================== -->
-    <div id="myBookingsModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/65 backdrop-blur-md p-4">
-        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-7 relative shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto animate-modal">
-            <button onclick="closeModal('myBookingsModal')" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center cursor-pointer">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            <h3 class="text-xl font-extrabold text-slate-900 mb-1">My Confirmed Bookings</h3>
-            <p class="text-xs text-slate-500 mb-5">Saved securely with Passenger ID Proof (Auto-cleans after 14 days)</p>
-
-            <div id="myBookingsList" class="space-y-3"></div>
+    <!-- Interactive Tool Modal -->
+    <div id="toolModal" class="modal-backdrop">
+        <div class="modal-window tool-modal-window">
+            <div class="modal-top-bar">
+                <span id="toolModalTitle">SarkariResultUpAll.com Tool</span>
+                <button type="button" class="modal-close-btn" id="closeToolModalBtn">X Close</button>
+            </div>
+            <div class="modal-body" id="toolModalBody"></div>
         </div>
     </div>
 
-    <!-- ==========================================
-         MODAL 5: MULTI-PHOTO GALLERY VIEWER & INFO POPUP
-    =========================================== -->
-    <div id="galleryModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
-        <div class="bg-white rounded-3xl max-w-xl w-full p-5 relative shadow-2xl animate-modal">
-            <button onclick="closeModal('galleryModal')" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center cursor-pointer z-10">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            <h4 id="galleryTitle" class="font-extrabold text-base text-slate-900 mb-3 pr-10">Photos</h4>
-            <div id="galleryImagesContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[70vh] overflow-y-auto"></div>
-        </div>
-    </div>
-
-    <!-- Main Application JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
