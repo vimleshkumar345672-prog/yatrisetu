@@ -1,1345 +1,1125 @@
-/**
- * YatriSetu Final Production Engine (4-Argon Security & Cloud Sync Model)
- * - 100% Real-Time Public Post Sync Across All Devices
- * - Protected Backend Architecture & XSS Input Sanitization
- * - Complete Bilingual Support (Hindi / English), ID Verification & PhonePe Confirmation
- */
-
 // ============================================================================
-// 👇 लाइन नंबर 13: यहाँ नीचे "" के अंदर अपना Firebase Realtime Database लिंक पेस्ट करें
-// (उदाहरण: const FIREBASE_DB_URL = "https://yatrisetu-a9ff5-default-rtdb.firebaseio.com/";)
+// SARKARIRESULTUPALL.COM - HIGH SECURITY & WEEKLY MASTER DATABASE
+// Note: Every Sunday, you only need to update this script.js file!
 // ============================================================================
 
-const FIREBASE_DB_URL = "https://yatrisetu-a9ff5-default-rtdb.firebaseio.com";
+(function () {
+    "use strict";
 
-// ============================================================================
-
-const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
-const STORAGE_KEY_USER = 'yatrisetu_user_final';
-const STORAGE_KEY_BOOKINGS = 'yatrisetu_bookings_final';
-const STORAGE_KEY_CACHE = 'yatrisetu_listings_cache';
-const STORAGE_KEY_MY_POSTS = 'yatrisetu_my_posted_ids_final';
-const STORAGE_KEY_NOTIFIED_PNRS = 'yatrisetu_notified_pnrs_final';
-
-let currentLanguage = 'en';
-let lastActionTimestamp = 0;
-let allListings = [];
-
-// Clean URL helper
-function getCleanFirebaseUrl() {
-    if (!FIREBASE_DB_URL || FIREBASE_DB_URL.trim() === "") return null;
-    return FIREBASE_DB_URL.trim().replace(/\/$/, "");
-}
-
-// Security Layer 1: Anti-XSS HTML Sanitizer
-function sanitizeHTML(str) {
-    if (typeof str !== 'string') return '';
-    return str.replace(/[&<>"']/g, function (char) {
-        const escapeMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
-        return escapeMap[char];
-    });
-}
-
-// Security Layer 2: Anti-Spam Rate Limiter
-function isRateLimited() {
-    const now = Date.now();
-    if (now - lastActionTimestamp < 1200) {
-        showPhonePePopup("कृपया प्रतीक्षा करें", "थोड़ा रुककर दोबारा प्रयास करें (Please wait a moment).", "info");
-        return true;
+    // ---------------- 1. SECURITY MODULE (Anti-Hack, Anti-XSS, Frame-Busting) ----------------
+    // Prevent Clickjacking (Blocks unauthorized websites from embedding your portal in an iframe)
+    if (window.top !== window.self) {
+        window.top.location = window.self.location;
     }
-    lastActionTimestamp = now;
-    return false;
-}
 
-// ⏱️ Live Dynamic Time-Ago (1 Minute to 2 Weeks)
-function formatTimeAgo(createdAt) {
-    if (!createdAt) return currentLanguage === 'hi' ? 'अभी-अभी' : 'Just now';
-    const diffMs = Math.max(0, Date.now() - Number(createdAt));
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMins / 60);
-    const diffDays = Math.floor(diffHours / 24);
-
-    if (currentLanguage === 'hi') {
-        if (diffMins < 1) return '1 मिनट पहले';
-        if (diffMins < 60) return `${diffMins} मिनट पहले`;
-        if (diffHours < 24) return `${diffHours} घंटे पहले`;
-        if (diffDays < 7) return `${diffDays} दिन पहले`;
-        const weeks = Math.floor(diffDays / 7);
-        return `${weeks} हफ्ते पहले`;
-    } else {
-        if (diffMins < 1) return '1 min ago';
-        if (diffMins === 1) return '1 min ago';
-        if (diffMins < 60) return `${diffMins} mins ago`;
-        if (diffHours === 1) return '1 hr ago';
-        if (diffHours < 24) return `${diffHours} hrs ago`;
-        if (diffDays === 1) return '1 day ago';
-        if (diffDays < 7) return `${diffDays} days ago`;
-        const weeks = Math.floor(diffDays / 7);
-        return `${weeks}w ago`;
-    }
-}
-
-// PhonePe Green Tick Chime
-function playSuccessChime() {
-    try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
-        const ctx = new AudioCtx();
-        const notes = [587.33, 880, 1174.66];
-        notes.forEach((freq, idx) => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.12);
-            gain.gain.setValueAtTime(0.18, ctx.currentTime + idx * 0.12);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.12 + 0.45);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start(ctx.currentTime + idx * 0.12);
-            osc.stop(ctx.currentTime + idx * 0.12 + 0.45);
+    // Sanitize user input against XSS attacks
+    function escapeHTML(str) {
+        if (typeof str !== "string") return "";
+        return str.replace(/[&<>"'`=\/]/g, function (s) {
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;",
+                "/": "&#x2F;",
+                "`": "&#x60;",
+                "=": "&#x3D;"
+            }[s];
         });
-    } catch (err) {}
-}
+    }
 
-// ✨ Custom PhonePe Style Green-Tick Popup (Replaces Browser Alert)
-function showPhonePePopup(title, subtitle, type = "success", extraHTML = "") {
-    if (type === "success") playSuccessChime();
+    // Verify URLs only use safe https/http protocols
+    function sanitizeUrl(url) {
+        if (typeof url !== "string") return "#";
+        const trimmed = url.trim();
+        if (/^https?:\/\//i.test(trimmed)) {
+            return trimmed;
+        }
+        return "#";
+    }
 
-    const existing = document.getElementById('yatrisetuPhonePeModal');
-    if (existing) existing.remove();
-
-    const isSuccess = type === "success";
-    const isDanger = type === "danger";
-    const iconBg = isSuccess ? "bg-emerald-500" : (isDanger ? "bg-red-600" : "bg-blue-600");
-    const ringBg = isSuccess ? "bg-emerald-100" : (isDanger ? "bg-red-100" : "bg-blue-100");
-    const iconClass = isSuccess ? "fa-check" : (isDanger ? "fa-trash-can" : "fa-bell");
-    const btnBg = isSuccess ? "bg-emerald-600 hover:bg-emerald-700" : (isDanger ? "bg-red-600 hover:bg-red-700" : "bg-blue-600 hover:bg-blue-700");
-
-    const modal = document.createElement('div');
-    modal.id = 'yatrisetuPhonePeModal';
-    modal.className = 'fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4';
-    modal.innerHTML = `
-        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl border border-slate-100">
-            <div class="w-20 h-20 ${ringBg} rounded-full flex items-center justify-center mx-auto mb-4">
-                <div class="w-14 h-14 ${iconBg} text-white rounded-full flex items-center justify-center text-2xl shadow-lg">
-                    <i class="fa-solid ${iconClass}"></i>
-                </div>
-            </div>
-            <span class="inline-block px-3 py-0.5 bg-emerald-50 text-emerald-700 font-extrabold text-[10px] rounded-full uppercase tracking-wider mb-2">
-                Verified by YatriSetu
-            </span>
-            <h3 class="font-extrabold text-slate-900 text-lg leading-snug mb-1.5">${title}</h3>
-            <p class="text-xs text-slate-600 leading-relaxed mb-4">${subtitle}</p>
-            ${extraHTML}
-            <button type="button" onclick="document.getElementById('yatrisetuPhonePeModal').remove()" class="w-full py-3.5 ${btnBg} text-white font-extrabold rounded-2xl text-xs shadow-lg cursor-pointer transition">
-                Done / ठीक है
-            </button>
-        </div>
-    `;
-    document.body.appendChild(modal);
-}
-
-// 14-Day Scheduling Window
-function configureDateConstraints() {
-    const today = new Date();
-    const maxDate = new Date(Date.now() + TWO_WEEKS_MS);
-    const minStr = today.toISOString().split('T')[0];
-    const maxStr = maxDate.toISOString().split('T')[0];
-
-    ['searchDate', 'rTravelDate', 'sAvailableDate'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.min = minStr;
-            el.max = maxStr;
-            if (!el.value) el.value = minStr;
+    // Deter code theft / right-click / F12 / Ctrl+U inspection
+    document.addEventListener("contextmenu", function (e) {
+        if (e.target.tagName !== "INPUT") {
+            e.preventDefault();
         }
     });
-}
-
-// Full Bilingual Dictionary (Hindi & English)
-const i18n = {
-    en: {
-        brandSub: "Intercity Mobility & Stays",
-        langSwitchBtn: "हिंदी / HI",
-        navMyBookings: "My Bookings",
-        navOfferBtn: "Offer a ride",
-        heroHeading: "Travel anywhere together. <span class='text-blue-600'>Spend smarter.</span>",
-        heroSubheading: "Connect with verified drivers across cars, bikes, buses, and trucks, or book comfortable local homestays along your route.",
-        heroBadgeTitle: "100% ID Verified Passengers & Hosts",
-        heroBadgeSub: "Instant confirmation with direct SMS, WhatsApp & Call",
-        lblSearchFrom: "From",
-        lblSearchTo: "To",
-        lblSearchDate: "Departure",
-        lblSearchCategory: "Category",
-        btnSearchText: "Search",
-        lblShowStays: "Include verified homestays & rooms in search results",
-        lblScheduleRule: "<i class='fa-regular fa-clock text-blue-600 mr-1'></i> Active scheduling window: Up to 14 days (2 weeks)",
-        pillar1Title: "Travel everywhere",
-        pillar1Desc: "Explore routes across India with cars, bikes, buses, trucks, and comfortable local homestays at your destination.",
-        pillar2Title: "Prices like nowhere",
-        pillar2Desc: "Benefit from shared travel costs and direct-from-host room tariffs without middleman commission fees.",
-        pillar3Title: "Two-Way Safety Proof",
-        pillar3Desc: "Both vehicle owners and passengers are verified with Photo, Mobile Number, and Govt ID proof for complete peace of mind.",
-        feedHeading: "Available Rides & Homestays",
-        feedSubheading: "Click on any photo to view full gallery or click Book Now for instant green-tick confirmation.",
-        btnResetFilters: "Show All Listings",
-        topRoutesHeading: "Top carpool routes",
-        btnMoreRoutes: "More popular routes",
-        ctaShareTitle: "Share your ride or spare room. Cut your costs.",
-        ctaShareDesc: "Whether you drive a car, bike, bus, or truck, or have a clean homestay room for travellers—publish your listing in seconds for free.",
-        ctaShareBtn: "Publish your listing",
-        faqHeading: "YatriSetu Help Centre",
-        bookBtnLabel: "Book Now",
-        deleteBtnLabel: "Cancel / Delete Post"
-    },
-    hi: {
-        brandSub: "इंटरसिटी राइड और होमस्टे (Mobility & Stays)",
-        langSwitchBtn: "Switch to English",
-        navMyBookings: "मेरी बुकिंग्स (My Bookings)",
-        navOfferBtn: "राइड/रूम पोस्ट करें",
-        heroHeading: "साथ मिलकर कहीं भी सफर करें। <span class='text-blue-600'>सफर आसान और किफायती बनाएं।</span>",
-        heroSubheading: "कार, बाइक, बस और ट्रक के वेरिफाइड ड्राइवर्स से जुड़ें या अपने रूट पर आरामदायक होमस्टे/कमरा बुक करें।",
-        heroBadgeTitle: "वेरिफाइड यात्री और वाहन मालिक (100% ID Verified)",
-        heroBadgeSub: "तुरंत ग्रीन-टिक कन्फर्मेशन, SMS, WhatsApp चैट और कॉल",
-        lblSearchFrom: "कहाँ से (From)",
-        lblSearchTo: "कहाँ तक (To)",
-        lblSearchDate: "तारीख (Departure)",
-        lblSearchCategory: "वाहन / रूम (Category)",
-        btnSearchText: "खोजें (Search)",
-        lblShowStays: "सर्च में होमस्टे और रूम भी दिखाएं",
-        lblScheduleRule: "<i class='fa-regular fa-clock text-blue-600 mr-1'></i> बुकिंग शेड्यूल: अधिकतम 2 हफ्ते / 14 दिन",
-        pillar1Title: "हर जगह सफर करें",
-        pillar1Desc: "पूरे भारत में कार, बाइक, बस, ट्रक और बेहतरीन होमस्टे के साथ सुरक्षित यात्रा करें।",
-        pillar2Title: "सबसे किफायती किराया",
-        pillar2Desc: "बिना किसी एक्स्ट्रा कमीशन के सीधे ड्राइवर या रूम मालिक से जुड़कर अपना खर्च बचाएं।",
-        pillar3Title: "दोनों तरफ की सुरक्षा",
-        pillar3Desc: "ड्राइवर और पैसेंजर दोनों का फोटो, मोबाइल नंबर और सरकारी आईडी प्रूफ वेरिफाई होता है।",
-        feedHeading: "उपलब्ध गाड़ियाँ और होमस्टे",
-        feedSubheading: "सभी फोटो देखने के लिए फोटो पर क्लिक करें या तुरंत बुक करने के लिए 'Book Now' दबाएं।",
-        btnResetFilters: "सभी दिखाएं (Show All)",
-        topRoutesHeading: "लोकप्रिय कारपूल रूट्स",
-        btnMoreRoutes: "अन्य रूट्स देखें",
-        ctaShareTitle: "अपनी गाड़ी या खाली कमरा शेयर करें, खर्च बचाएं।",
-        ctaShareDesc: "चाहे आपके पास कार, बाइक, बस, ट्रक हो या यात्रियों के लिए कमरा—बिना किसी शुल्क के अपनी पोस्ट डालें।",
-        ctaShareBtn: "अभी पोस्ट करें",
-        faqHeading: "सहायता केंद्र (YatriSetu Help Centre)",
-        bookBtnLabel: "बुक करें (Book Now)",
-        deleteBtnLabel: "पोस्ट कैंसिल / डिलीट करें"
-    }
-};
-
-function toggleLanguage() {
-    currentLanguage = currentLanguage === 'en' ? 'hi' : 'en';
-    const lang = i18n[currentLanguage];
-    const ids = [
-        'brandSub', 'langSwitchBtn', 'navMyBookings', 'navOfferBtn',
-        'heroSubheading', 'heroBadgeTitle', 'heroBadgeSub', 'lblSearchFrom',
-        'lblSearchTo', 'lblSearchDate', 'lblSearchCategory', 'btnSearchText',
-        'lblShowStays', 'pillar1Title', 'pillar1Desc', 'pillar2Title',
-        'pillar2Desc', 'pillar3Title', 'pillar3Desc', 'feedHeading',
-        'feedSubheading', 'btnResetFilters', 'topRoutesHeading', 'btnMoreRoutes',
-        'ctaShareTitle', 'ctaShareDesc', 'ctaShareBtn', 'faqHeading'
-    ];
-    ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.innerText = lang[id];
-    });
-    if (document.getElementById('heroHeading')) document.getElementById('heroHeading').innerHTML = lang.heroHeading;
-    if (document.getElementById('lblScheduleRule')) document.getElementById('lblScheduleRule').innerHTML = lang.lblScheduleRule;
-    renderListings(allListings);
-}
-
-// ============================================================================
-// USER REGISTRATION, RED SIGN-OUT & PROFILE SYSTEM
-// ============================================================================
-function loadRegisteredUser() {
-    try {
-        const raw = localStorage.getItem(STORAGE_KEY_USER);
-        return raw ? JSON.parse(raw) : null;
-    } catch (e) { return null; }
-}
-
-let currentUser = loadRegisteredUser();
-
-function getMyPostedIds() {
-    try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY_MY_POSTS)) || [];
-    } catch (e) { return []; }
-}
-
-function saveMyPostedId(listingId) {
-    try {
-        const list = getMyPostedIds();
-        if (!list.includes(listingId)) {
-            list.push(listingId);
-            localStorage.setItem(STORAGE_KEY_MY_POSTS, JSON.stringify(list));
+    document.addEventListener("keydown", function (e) {
+        if (
+            e.key === "F12" ||
+            (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+            (e.ctrlKey && (e.key === "u" || e.key === "U"))
+        ) {
+            e.preventDefault();
         }
-    } catch (e) {}
-}
-
-function getNotifiedPnrs() {
-    try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY_NOTIFIED_PNRS)) || [];
-    } catch (e) { return []; }
-}
-
-function markPnrNotified(pnr) {
-    try {
-        const list = getNotifiedPnrs();
-        if (!list.includes(pnr)) {
-            list.push(pnr);
-            localStorage.setItem(STORAGE_KEY_NOTIFIED_PNRS, JSON.stringify(list));
-        }
-    } catch (e) {}
-}
-
-// 🔴 Red Sign Out Button inside Register Modal
-function renderSignOutButtonInModal() {
-    const regModal = document.getElementById('registerModal');
-    if (!regModal) return;
-    const formEl = regModal.querySelector('form');
-    if (!formEl) return;
-
-    let signOutContainer = document.getElementById('dynamicSignOutContainer');
-    if (!signOutContainer) {
-        signOutContainer = document.createElement('div');
-        signOutContainer.id = 'dynamicSignOutContainer';
-        signOutContainer.className = 'pt-3 border-t border-slate-200 mt-3';
-        formEl.appendChild(signOutContainer);
-    }
-
-    if (currentUser && currentUser.name) {
-        signOutContainer.classList.remove('hidden');
-        signOutContainer.innerHTML = `
-            <div class="flex items-center justify-between bg-red-50 border border-red-200 rounded-2xl p-3">
-                <div class="text-left">
-                    <span class="block text-[11px] font-extrabold text-red-900">Logged in: ${sanitizeHTML(currentUser.name)}</span>
-                    <span class="block text-[10px] font-bold text-red-600">+91 ${sanitizeHTML(currentUser.phone)}</span>
-                </div>
-                <button type="button" onclick="signOutUser()" class="px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white font-extrabold rounded-xl text-xs shadow cursor-pointer transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-right-from-bracket"></i> Sign Out / लॉग आउट
-                </button>
-            </div>
-        `;
-    } else {
-        signOutContainer.classList.add('hidden');
-        signOutContainer.innerHTML = '';
-    }
-}
-
-function signOutUser() {
-    const oldName = currentUser ? currentUser.name : '';
-    currentUser = null;
-    localStorage.removeItem(STORAGE_KEY_USER);
-
-    ['regUserName', 'regUserPhone', 'regEmergencyPhone', 'regIdDigits'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
     });
 
-    updateNavbarUserUI();
-    renderSignOutButtonInModal();
-    closeModal('registerModal');
-    renderListings(allListings);
-    showPhonePePopup(
-        "अकाउंट साइन आउट हो गया!",
-        `${oldName ? oldName + ', ' : ''}आपका अकाउंट सफलतापूर्वक लॉग आउट (Sign Out) कर दिया गया है।`,
-        "danger"
-    );
-}
+    // ---------------- 2. WEEKLY UPDATABLE DATA ARRAYS ----------------
 
-function updateNavbarUserUI() {
-    const textEl = document.getElementById('navUserText');
-    const avatarEl = document.getElementById('navUserAvatar');
-    const iconEl = document.getElementById('navUserIcon');
-    if (!textEl) return;
+    // A. Live Marquee Ticker Items (Updated every Sunday)
+    const LIVE_TICKER_ITEMS = Object.freeze([
+        { id: "up-board-10th", text: "UP Board Class 10th & 12th Result / Time Table 2026-27 [Declared]" },
+        { id: "up-police-constable", text: "UP Police Constable 32,679 Posts Online Form 2026 [Apply Online]" },
+        { id: "anganwadi-2026", text: "UP Anganwadi Supervisor, Teacher & Worker Online Form 2026 [Active]" },
+        { id: "ssc-gd-2026", text: "SSC GD Constable Final Merit List & Online Form 2026-27 [Out]" },
+        { id: "ecce-educator", text: "UP ECCE Educator Online Form 2026 (All Districts) [Apply Now]" }
+    ]);
 
-    if (currentUser && currentUser.name) {
-        textEl.innerText = currentUser.name.split(' ')[0];
-        if (currentUser.photo) {
-            avatarEl.src = currentUser.photo;
-            avatarEl.classList.remove('hidden');
-            iconEl.classList.add('hidden');
-        } else {
-            avatarEl.classList.add('hidden');
-            iconEl.classList.remove('hidden');
+    // B. Top 8 Highlight Boxes (Updated every Sunday)
+    const TOP_HIGHLIGHTS = Object.freeze([
+        { id: "up-police-constable", title: "UP Police Constable 32,679 Posts Online Form 2026", colorClass: "bg-c1" },
+        { id: "ssc-gd-2026", title: "SSC GD Constable Online Form 2026-27", colorClass: "bg-c2" },
+        { id: "up-scholarship-2026", title: "UP Scholarship 2026-27 Online Form (Class 9 to 12, UG/PG)", colorClass: "bg-c3" },
+        { id: "nta-neet-ug", title: "NTA NEET UG 2026 Online Form & Information Bulletin", colorClass: "bg-c4" },
+        { id: "up-board-10th", title: "UP Board 10th & 12th Result / Time Table 2026-27", colorClass: "bg-c5" },
+        { id: "anganwadi-2026", title: "UP Anganwadi Supervisor & Worker Online Form 2026", colorClass: "bg-c6" },
+        { id: "rrb-ntpc-ug", title: "RRB NTPC 10+2 & Graduate Level Online Form 2026", colorClass: "bg-c7" },
+        { id: "ecce-educator", title: "UP ECCE Educator All District Online Form 2026", colorClass: "bg-c8" }
+    ]);
+
+    // C. Featured Special Schemes / Tables (Anganwadi + New Weekly Schemes can be added here!)
+    const FEATURED_SCHEMES = Object.freeze([
+        {
+            postId: "anganwadi-2026",
+            hindiTitle: "आंगनबाड़ी भर्ती 2026",
+            englishTitle: "UP Anganwadi Supervisor & Worker 2026",
+            description: "Registration started for combined Anganwadi Recruitment & Training Program 2026 on SarkariResultUpAll.com. Click here to view official notification & apply online.",
+            buttonText: "Apply Online »",
+            headers: ["प्रशिक्षण / पद का नाम", "अवधि / चयन", "योग्यता"],
+            rows: [
+                ["आंगनबाड़ी सुपरवाइज़र", "सीधी भर्ती / 3 माह", "स्नातक पास (Graduate)"],
+                ["आंगनबाड़ी टीचर", "6 माह", "12वीं पास (10+2)"],
+                ["आंगनबाड़ी वर्कर / सहायिका", "3 माह", "10वीं पास (High School)"]
+            ]
         }
-        if (document.getElementById('regUserName')) document.getElementById('regUserName').value = currentUser.name || '';
-        if (document.getElementById('regUserPhone')) document.getElementById('regUserPhone').value = currentUser.phone || '';
-        if (document.getElementById('regEmergencyPhone')) document.getElementById('regEmergencyPhone').value = currentUser.emergencyPhone || '';
-        if (document.getElementById('regIdType')) document.getElementById('regIdType').value = currentUser.idType || 'Aadhaar Card';
-        if (document.getElementById('regIdDigits')) document.getElementById('regIdDigits').value = currentUser.idDigits || '';
-    } else {
-        textEl.innerText = 'Register';
-        avatarEl.classList.add('hidden');
-        iconEl.classList.remove('hidden');
-    }
-    renderSignOutButtonInModal();
-}
+    ]);
 
-async function saveUserProfile(e) {
-    e.preventDefault();
-    if (isRateLimited()) return;
-
-    const uploadedPhotos = await readFilesAsBase64(document.getElementById('regUserPhoto'));
-    const userPhoto = uploadedPhotos.length > 0
-        ? uploadedPhotos[0]
-        : (currentUser && currentUser.photo ? currentUser.photo : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80');
-
-    currentUser = {
-        name: sanitizeHTML(document.getElementById('regUserName').value.trim()),
-        phone: sanitizeHTML(document.getElementById('regUserPhone').value.trim()),
-        emergencyPhone: sanitizeHTML(document.getElementById('regEmergencyPhone').value.trim()),
-        idType: sanitizeHTML(document.getElementById('regIdType').value),
-        idDigits: sanitizeHTML(document.getElementById('regIdDigits').value.trim().toUpperCase()),
-        photo: userPhoto,
-        registeredAt: Date.now()
-    };
-
-    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(currentUser));
-    updateNavbarUserUI();
-    updateBookingsBadge();
-    renderListings(allListings);
-    closeModal('registerModal');
-    showPhonePePopup("प्रोफाइल सेव हो गई!", `स्वागत है ${currentUser.name}! आपकी वेरिफाइड प्रोफाइल सेव हो गई है।`);
-}
-
-// ============================================================================
-// 🌐 CLOUD REALTIME SYNC ENGINE (सभी यूजर्स के लिए साझा लाइव सर्वर)
-// ============================================================================
-function getDefaultSeedListings() {
-    const todayStr = new Date().toISOString().split('T')[0];
-    return {
-        "seed_101": {
-            id: 'YS-101',
-            kind: 'ride',
-            category: 'Car',
-            providerName: 'Rahul Singh',
-            phone: '9876543210',
-            vehicleOrAddress: 'DL 3C AB 1234 (Mahindra Thar 4x4)',
-            from: 'Gurgaon',
-            to: 'Rohtak',
-            date: todayStr,
-            seats: 3,
-            price: 350,
-            photos: ['https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=85'],
-            bookingsList: [],
-            isCancelled: false,
-            createdAt: Date.now() - 3600000
+    // D. All Portal Links (Result, Admit Card, Latest Job, 10th/ITI, Outsourcing, Syllabus, Answer Key, Admission)
+    const PORTAL_POSTS = Object.freeze([
+        // ======================== RESULTS ========================
+        {
+            id: "up-board-10th",
+            category: "result",
+            title: "UP Board Class 10th High School Result 2026",
+            tag: "[Declared]",
+            date: "20 April 2026",
+            time: "02:00 PM",
+            shortInfo: "Uttar Pradesh Madhyamik Shiksha Parishad (UPMSP) High School Class 10th Exam Result 2026. Check Roll Number Wise Result on Official NIC Server.",
+            officialUrl: "https://upresults.nic.in/",
+            pdfUrl: "https://upmsp.edu.in/"
         },
-        "seed_102": {
-            id: 'YS-102',
-            kind: 'ride',
-            category: 'Bike',
-            providerName: 'Amit Kumar',
-            phone: '8765432109',
-            vehicleOrAddress: 'UP 16 CD 5678 (Royal Enfield Classic)',
-            from: 'Dadri',
-            to: 'Gurgaon',
-            date: todayStr,
-            seats: 1,
-            price: 150,
-            photos: ['https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=85'],
-            bookingsList: [],
-            isCancelled: false,
-            createdAt: Date.now() - 7200000
+        {
+            id: "up-board-12th",
+            category: "result",
+            title: "UP Board Class 12th Intermediate Result 2026",
+            tag: "[Server Active]",
+            date: "20 April 2026",
+            time: "02:00 PM",
+            shortInfo: "Uttar Pradesh Madhyamik Shiksha Parishad (UPMSP) Intermediate Class 12th Science, Arts & Commerce Result 2026.",
+            officialUrl: "https://upresults.nic.in/",
+            pdfUrl: "https://upmsp.edu.in/"
         },
-        "seed_103": {
-            id: 'YS-103',
-            kind: 'stay',
-            category: 'Stay',
-            providerName: 'Priya Heritage Homestay',
-            phone: '9988776655',
-            vehicleOrAddress: 'Near Hawa Mahal, AC Room, Free Wi-Fi',
-            from: 'Jaipur',
-            to: 'Jaipur',
-            date: todayStr,
-            seats: 2,
-            price: 799,
-            photos: ['https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=85'],
-            bookingsList: [],
-            isCancelled: false,
-            createdAt: Date.now() - 10800000
+        {
+            id: "up-police-result",
+            category: "result",
+            title: "UP Police Constable Written Exam Final Result 2026",
+            tag: "[New]",
+            date: "28 Oct 2026",
+            time: "06:30 PM",
+            shortInfo: "Uttar Pradesh Police Recruitment & Promotion Board (UPPRPB) Civil Police Constable Written Exam Result & Cutoff Marks 2026.",
+            officialUrl: "https://uppbpb.gov.in/",
+            pdfUrl: "https://uppbpb.gov.in/"
+        },
+        {
+            id: "ssc-gd-result",
+            category: "result",
+            title: "SSC GD Constable Final Merit List 2026",
+            tag: "[Out]",
+            date: "27 Oct 2026",
+            time: "08:15 PM",
+            shortInfo: "Staff Selection Commission (SSC) Constable GD in CAPFs, SSF, Rifleman (GD) in Assam Rifles Final Merit List PDF Download.",
+            officialUrl: "https://ssc.gov.in/",
+            pdfUrl: "https://ssc.gov.in/"
+        },
+        {
+            id: "upsssc-pet-score",
+            category: "result",
+            title: "UPSSSC PET 2026 Score Card Download",
+            tag: "[Active]",
+            date: "25 Oct 2026",
+            time: "04:45 PM",
+            shortInfo: "Uttar Pradesh Subordinate Services Selection Commission (UPSSSC) Preliminary Eligibility Test (PET) 2026 Official Score Card.",
+            officialUrl: "https://upsssc.gov.in/",
+            pdfUrl: "https://upsssc.gov.in/"
+        },
+        {
+            id: "army-agniveer-result",
+            category: "result",
+            title: "Indian Army Agniveer CEE Exam Result 2026",
+            tag: "[Declared]",
+            date: "24 Oct 2026",
+            time: "01:20 PM",
+            shortInfo: "Join Indian Army Agniveer Common Entrance Exam (CEE) Roll Number Wise Merit List 2026 for all AROs.",
+            officialUrl: "https://joinindianarmy.nic.in/",
+            pdfUrl: "https://joinindianarmy.nic.in/"
+        },
+        {
+            id: "rrb-alp-result",
+            category: "result",
+            title: "Railway RRB ALP CBT-1 Score Card & Result 2026",
+            tag: "[2026]",
+            date: "22 Oct 2026",
+            time: "05:00 PM",
+            shortInfo: "Railway Recruitment Board (RRB) Assistant Loco Pilot (ALP) CBT-1 Result, Cut Off & Score Card Link.",
+            officialUrl: "https://indianrailways.gov.in/",
+            pdfUrl: "https://indianrailways.gov.in/"
+        },
+        {
+            id: "bihar-board-10th-result",
+            category: "result",
+            title: "Bihar Board BSEB Class 10th & 12th Result 2026",
+            tag: "[Declared]",
+            date: "20 Oct 2026",
+            time: "03:15 PM",
+            shortInfo: "Bihar School Examination Board (BSEB) Matric & Inter Annual Exam Result 2026 Direct Link.",
+            officialUrl: "https://results.biharboardonline.com/",
+            pdfUrl: "https://biharboardonline.bihar.gov.in/"
+        },
+
+        // ======================== ADMIT CARDS ========================
+        {
+            id: "up-police-admit",
+            category: "admit-card",
+            title: "UP Police Constable Admit Card & Exam City 2026",
+            tag: "[Link Active]",
+            date: "29 Oct 2026",
+            time: "10:15 AM",
+            shortInfo: "UPPRPB Constable Recruitment Exam City Intimation Slip and Hall Ticket Download 2026.",
+            officialUrl: "https://uppbpb.gov.in/",
+            pdfUrl: "https://uppbpb.gov.in/"
+        },
+        {
+            id: "ssc-cgl-admit",
+            category: "admit-card",
+            title: "SSC CGL Tier-1 / Tier-2 Admit Card 2026",
+            tag: "[Download]",
+            date: "28 Oct 2026",
+            time: "11:40 AM",
+            shortInfo: "Staff Selection Commission Combined Graduate Level (CGL) 2026 Region Wise Application Status & Admit Card.",
+            officialUrl: "https://ssc.gov.in/",
+            pdfUrl: "https://ssc.gov.in/"
+        },
+        {
+            id: "bsf-hc-admit",
+            category: "admit-card",
+            title: "BSF HC RO / RM CBT Exam Admit Card 2026",
+            tag: "[New]",
+            date: "27 Oct 2026",
+            time: "01:00 PM",
+            shortInfo: "Border Security Force (BSF) Head Constable (Radio Operator & Radio Mechanic) Admit Card 2026.",
+            officialUrl: "https://rectt.bsf.gov.in/",
+            pdfUrl: "https://rectt.bsf.gov.in/"
+        },
+        {
+            id: "rrb-ntpc-admit",
+            category: "admit-card",
+            title: "Railway RRB NTPC Graduate & 10+2 CBTST Admit Card 2026",
+            tag: "[Live]",
+            date: "26 Oct 2026",
+            time: "04:00 PM",
+            shortInfo: "Railway Recruitment Board (RRB) Non-Technical Popular Categories (NTPC) Graduate & UG Level Admit Card 2026.",
+            officialUrl: "https://indianrailways.gov.in/",
+            pdfUrl: "https://indianrailways.gov.in/"
+        },
+        {
+            id: "upsssc-lekhpal-admit",
+            category: "admit-card",
+            title: "UPSSSC Rajasva Lekhpal Mains Admit Card 2026",
+            tag: "[Active]",
+            date: "24 Oct 2026",
+            time: "02:30 PM",
+            shortInfo: "UPSSSC Rajasva Lekhpal Mains Examination Hall Ticket & Exam Center Notice 2026.",
+            officialUrl: "https://upsssc.gov.in/",
+            pdfUrl: "https://upsssc.gov.in/"
+        },
+        {
+            id: "uppsc-pcs-admit",
+            category: "admit-card",
+            title: "UPPSC PCS Pre Exam Admit Card & 2025 Interview Letter",
+            tag: "[Out]",
+            date: "21 Oct 2026",
+            time: "05:20 PM",
+            shortInfo: "Uttar Pradesh Public Service Commission (UPPSC) Combined State / Upper Subordinate Services Admit Card & Interview Letter.",
+            officialUrl: "https://uppsc.up.nic.in/",
+            pdfUrl: "https://uppsc.up.nic.in/"
+        },
+        {
+            id: "airforce-agniveer-admit",
+            category: "admit-card",
+            title: "Indian Airforce Agniveer Vayu Musician Intake 01/2027 Admit Card",
+            tag: "[Download]",
+            date: "19 Oct 2026",
+            time: "12:10 PM",
+            shortInfo: "Indian Air Force Agniveer Vayu Intake 01/2027 Exam Date, City Intimation & Admit Card.",
+            officialUrl: "https://agnipathvayu.cdac.in/",
+            pdfUrl: "https://agnipathvayu.cdac.in/"
+        },
+        {
+            id: "isro-icrb-admit",
+            category: "admit-card",
+            title: "ISRO ICRB Scientist / Engineer & SDSC Admit Card 2026",
+            tag: "[New]",
+            date: "29 Oct 2026",
+            time: "09:30 AM",
+            shortInfo: "Indian Space Research Organisation (ISRO) Scientist/Engineer, ISTRAC & SDSC Various Post Admit Card 2026.",
+            officialUrl: "https://www.isro.gov.in/",
+            pdfUrl: "https://www.isro.gov.in/"
+        },
+        {
+            id: "ntpc-ao-admit",
+            category: "admit-card",
+            title: "NTPC Assistant Officer Admit Card 2026",
+            tag: "[Out]",
+            date: "28 Oct 2026",
+            time: "03:40 PM",
+            shortInfo: "NTPC Limited Assistant Officer Recruitment Exam Admit Card 2026 Direct Download.",
+            officialUrl: "https://careers.ntpc.co.in/",
+            pdfUrl: "https://careers.ntpc.co.in/"
+        },
+        {
+            id: "delhi-hc-spa-admit",
+            category: "admit-card",
+            title: "Delhi High Court SPA Typing Test & JJA / HJS Mains Admit Card 2026",
+            tag: "[Active]",
+            date: "28 Oct 2026",
+            time: "01:15 PM",
+            shortInfo: "High Court of Delhi Senior Personal Assistant (SPA) Typing Test Date, JJA Mains & HJS Mains Admit Card 2026.",
+            officialUrl: "https://delhihighcourt.nic.in/",
+            pdfUrl: "https://delhihighcourt.nic.in/"
+        },
+        {
+            id: "ssc-je-city",
+            category: "admit-card",
+            title: "SSC Junior Engineer JE Exam City Details & CPO SI Revised Date 2026",
+            tag: "[Link Active]",
+            date: "27 Oct 2026",
+            time: "06:00 PM",
+            shortInfo: "SSC Junior Engineer (Civil, Mechanical, Electrical) Exam City Slip and SSC CPO SI CAPF Revised Exam Schedule 2026.",
+            officialUrl: "https://ssc.gov.in/",
+            pdfUrl: "https://ssc.gov.in/"
+        },
+        {
+            id: "cisf-constable-admit",
+            category: "admit-card",
+            title: "CISF Constable Tradesmen, Fire, Driver & ASI Exam Date 2026",
+            tag: "[New]",
+            date: "27 Oct 2026",
+            time: "02:10 PM",
+            shortInfo: "Central Industrial Security Force (CISF) Constable Tradesmen, Fire, Driver & ASI Paramedical Staff PST/Exam Admit Card 2026.",
+            officialUrl: "https://cisfrectt.cisf.gov.in/",
+            pdfUrl: "https://cisfrectt.cisf.gov.in/"
+        },
+        {
+            id: "up-special-tet",
+            category: "admit-card",
+            title: "UP Special TET Exam City Details & CTET September Exam Date 2026",
+            tag: "[Live]",
+            date: "26 Oct 2026",
+            time: "11:20 AM",
+            shortInfo: "Uttar Pradesh Special Teacher Eligibility Test (UP TET) Exam City Intimation & CBSE CTET Exam Schedule 2026.",
+            officialUrl: "https://updeled.gov.in/",
+            pdfUrl: "https://ctet.nic.in/"
+        },
+        {
+            id: "rrb-alp-cbat",
+            category: "admit-card",
+            title: "Railway RRB ALP Exam City Details, CBAT & Paramedical Exam Date 2026",
+            tag: "[Out]",
+            date: "25 Oct 2026",
+            time: "04:50 PM",
+            shortInfo: "Railway RRB ALP Exam City Slip, CBAT Psycho Test Admit Card and RRB Paramedical Staff Exam Schedule 2026.",
+            officialUrl: "https://indianrailways.gov.in/",
+            pdfUrl: "https://indianrailways.gov.in/"
+        },
+        {
+            id: "ibps-sbi-bank-admit",
+            category: "admit-card",
+            title: "SBI Clerk Pre/Mains, IBPS PO/Clerk/SO & Bank of Baroda LBO Admit Card 2026",
+            tag: "[Out]",
+            date: "25 Oct 2026",
+            time: "10:30 AM",
+            shortInfo: "Download SBI Junior Associates Clerk Admit Card, IBPS CRP PO/MT XVI Mains, IBPS Clerk 16th Pre, PNB LBO, IOB LBO & Union Bank SO Admit Card 2026.",
+            officialUrl: "https://www.ibps.in/",
+            pdfUrl: "https://sbi.co.in/web/careers"
+        },
+        {
+            id: "uppsc-gic-lecturer",
+            category: "admit-card",
+            title: "UPPSC GIC Lecturer Mains, Technical Education & Assistant Professor Admit Card 2026",
+            tag: "[New]",
+            date: "24 Oct 2026",
+            time: "03:00 PM",
+            shortInfo: "UPPSC Government Inter College (GIC) Lecturer Mains, Lecturer Technical Education, ATP Mains & UPESSC Assistant Professor Admit Card 2026.",
+            officialUrl: "https://uppsc.up.nic.in/",
+            pdfUrl: "https://uppsc.up.nic.in/"
+        },
+        {
+            id: "ssc-delhi-police-admit",
+            category: "admit-card",
+            title: "SSC Delhi Police Constable Executive, HC Ministerial & Driver PE/MT Admit Card 2026",
+            tag: "[Active]",
+            date: "23 Oct 2026",
+            time: "05:15 PM",
+            shortInfo: "Staff Selection Commission & Delhi Police Constable (Executive), Head Constable (Ministerial) & Driver Physical Endurance & Measurement Test Admit Card 2026.",
+            officialUrl: "https://delhipolice.gov.in/",
+            pdfUrl: "https://ssc.gov.in/"
+        },
+        {
+            id: "upsssc-ja-anm-admit",
+            category: "admit-card",
+            title: "UPSSSC Junior Assistant Typing Test, Stenographer Skill Test & ANM DV Letter 2026",
+            tag: "[Download]",
+            date: "22 Oct 2026",
+            time: "01:40 PM",
+            shortInfo: "UPSSSC Junior Assistant Typing Test New Exam Date, Stenographer Skill Test Admit Card, Female Health Worker (ANM) DV Upload & UPSSSC Exam Calendar 2026.",
+            officialUrl: "https://upsssc.gov.in/",
+            pdfUrl: "https://upsssc.gov.in/"
+        },
+        {
+            id: "allahabad-hc-bhu-admit",
+            category: "admit-card",
+            title: "Allahabad High Court Research Associates & BHU School Teacher TGT/PGT Exam Date 2026",
+            tag: "[New]",
+            date: "21 Oct 2026",
+            time: "04:10 PM",
+            shortInfo: "High Court of Judicature at Allahabad Research Associates Admit Card & Banaras Hindu University (BHU) School Teacher TGT, PGT, PRT Exam Date 2026.",
+            officialUrl: "https://www.allahabadhighcourt.in/",
+            pdfUrl: "https://www.bhu.ac.in/"
+        },
+        {
+            id: "ssb-navy-kvs-admit",
+            category: "admit-card",
+            title: "SSB Constable/HC/SI PET/PST, Indian Navy SSR/MR Stage-II & KVS NVS Interview Letter 2026",
+            tag: "[Live]",
+            date: "20 Oct 2026",
+            time: "11:00 AM",
+            shortInfo: "Sashastra Seema Bal (SSB) Tradesman, HC & SI PET/PST Admit Card, Indian Navy Agniveer Stage-II & KVS/NVS Teaching & Non-Teaching Interview Letter 2026.",
+            officialUrl: "https://ssbrectt.gov.in/",
+            pdfUrl: "https://www.joinindiannavy.gov.in/"
+        },
+
+        // ======================== LATEST JOBS ========================
+        {
+            id: "up-police-constable",
+            category: "latest-job",
+            title: "UP Police Constable 32,679 Posts Online Form 2026",
+            tag: "[Apply Online]",
+            date: "29 Oct 2026",
+            time: "09:30 AM",
+            shortInfo: "Uttar Pradesh Police Recruitment & Promotion Board (UPPRPB) has invited online applications for 32,679 Civil Police & PAC Constable Posts.",
+            officialUrl: "https://uppbpb.gov.in/",
+            pdfUrl: "https://uppbpb.gov.in/"
+        },
+        {
+            id: "anganwadi-2026",
+            category: "latest-job",
+            title: "UP Anganwadi Supervisor, Teacher & Worker Recruitment Online Form 2026",
+            tag: "[New]",
+            date: "29 Oct 2026",
+            time: "08:45 AM",
+            shortInfo: "Bal Vikas Seva Evam Pushtahar Vibhag UP Anganwadi Supervisor (Graduate), Anganwadi Teacher (12th Pass) & Worker (10th Pass) Online Registration 2026.",
+            officialUrl: "https://upanganwadibharti.in/",
+            pdfUrl: "https://upanganwadibharti.in/"
+        },
+        {
+            id: "ssc-gd-2026",
+            category: "latest-job",
+            title: "SSC GD Constable Online Form 2026-27",
+            tag: "[Last Date Extended]",
+            date: "28 Oct 2026",
+            time: "10:00 AM",
+            shortInfo: "Staff Selection Commission (SSC) GD Constable in BSF, CISF, CRPF, SSB, ITBP, AR & SSF Online Application Form 2026-27.",
+            officialUrl: "https://ssc.gov.in/",
+            pdfUrl: "https://ssc.gov.in/"
+        },
+        {
+            id: "rrb-group-d",
+            category: "latest-job",
+            title: "Railway RRB Group D 50,000+ Posts Online Form 2026",
+            tag: "[New]",
+            date: "27 Oct 2026",
+            time: "02:45 PM",
+            shortInfo: "Railway Recruitment Cell (RRC) Level-1 Group D Track Maintainer, Pointsman & Helper 50,000+ Vacancies Online Form 2026.",
+            officialUrl: "https://indianrailways.gov.in/",
+            pdfUrl: "https://indianrailways.gov.in/"
+        },
+        {
+            id: "up-police-si",
+            category: "latest-job",
+            title: "UP Police SI Daroga 4,543 Posts Online Form 2026",
+            tag: "[Apply]",
+            date: "26 Oct 2026",
+            time: "01:15 PM",
+            shortInfo: "UP Police Sub Inspector (SI Civil Police), Platoon Commander & Fire Service Second Officer Recruitment 2026.",
+            officialUrl: "https://uppbpb.gov.in/",
+            pdfUrl: "https://uppbpb.gov.in/"
+        },
+        {
+            id: "upsssc-vdo-2026",
+            category: "latest-job",
+            title: "UPSSSC Gram Panchayat Adhikari (VDO) Online Form 2026",
+            tag: "[UPSSSC]",
+            date: "25 Oct 2026",
+            time: "04:20 PM",
+            shortInfo: "Uttar Pradesh Subordinate Services Selection Commission (UPSSSC) Gram Panchayat Adhikari & Gram Vikas Adhikari Mains Form 2026.",
+            officialUrl: "https://upsssc.gov.in/",
+            pdfUrl: "https://upsssc.gov.in/"
+        },
+        {
+            id: "army-agniveer-rally",
+            category: "latest-job",
+            title: "Indian Army Agniveer Rally Recruitment 2026 Online Form",
+            tag: "[Rally 2026]",
+            date: "24 Oct 2026",
+            time: "11:30 AM",
+            shortInfo: "Indian Army Agniveer General Duty (GD), Technical, Clerk, Store Keeper & Tradesman All Zone Rally Notification 2026.",
+            officialUrl: "https://joinindianarmy.nic.in/",
+            pdfUrl: "https://joinindianarmy.nic.in/"
+        },
+        {
+            id: "up-home-guard",
+            category: "latest-job",
+            title: "UP Home Guard 42,000 Posts Bharti Online Form 2026",
+            tag: "[UP Bharti]",
+            date: "23 Oct 2026",
+            time: "03:10 PM",
+            shortInfo: "Uttar Pradesh Home Guards Department 42,000 Volunteer Home Guard Recruitment 2026 (10th & 12th Pass).",
+            officialUrl: "https://homeguards.up.nic.in/",
+            pdfUrl: "https://homeguards.up.nic.in/"
+        },
+
+        // ======================== 10th / ITI JOBS ========================
+        {
+            id: "rrb-ntpc-ug",
+            category: "iti-job",
+            title: "RRB NTPC 10+2 UG Online Form 2026 (1688 Posts)",
+            tag: "[Apply Online]",
+            date: "29 Oct 2026",
+            time: "11:00 AM",
+            shortInfo: "Railway Recruitment Board (RRB) Non-Technical Popular Categories (Undergraduate Level 10+2) 1,688 Posts Online Form 2026.",
+            officialUrl: "https://indianrailways.gov.in/",
+            pdfUrl: "https://indianrailways.gov.in/"
+        },
+        {
+            id: "raj-safai-karmchari",
+            category: "iti-job",
+            title: "Rajasthan Safai Karmchari Online Form 2026 (24,752 Posts)",
+            tag: "[Last Date Today]",
+            date: "29 Oct 2026",
+            time: "09:15 AM",
+            shortInfo: "Local Self Government Department Rajasthan Safai Karmchari 24,752 Posts Online Form 2026.",
+            officialUrl: "https://lsg.urban.rajasthan.gov.in/",
+            pdfUrl: "https://lsg.urban.rajasthan.gov.in/"
+        },
+        {
+            id: "upsssc-inter-level",
+            category: "iti-job",
+            title: "UPSSSC Inter (12th) Level & Junior Engineer JE Online Form 2026",
+            tag: "[New]",
+            date: "28 Oct 2026",
+            time: "02:00 PM",
+            shortInfo: "UPSSSC 10+2 Intermediate Level Clerical Cadre and Junior Engineer (Civil/Mechanical) Recruitment 2026.",
+            officialUrl: "https://upsssc.gov.in/",
+            pdfUrl: "https://upsssc.gov.in/"
+        },
+        {
+            id: "mpesb-sub-eng",
+            category: "iti-job",
+            title: "MPESB Group 3 Sub Engineer & MP Police Constable Driver Online Form 2026",
+            tag: "[Active]",
+            date: "27 Oct 2026",
+            time: "04:30 PM",
+            shortInfo: "Madhya Pradesh Employees Selection Board (MPESB) Group-3 Sub Engineer & Police Constable Driver Online Form 2026.",
+            officialUrl: "https://esb.mp.gov.in/",
+            pdfUrl: "https://esb.mp.gov.in/"
+        },
+        {
+            id: "itbp-hc-mm",
+            category: "iti-job",
+            title: "ITBP HC (Motor Mechanic) & UKSSSC Group C Scaler Online Form 2026",
+            tag: "[10th/ITI]",
+            date: "26 Oct 2026",
+            time: "01:45 PM",
+            shortInfo: "ITBP Head Constable Motor Mechanic Recruitment & UKSSSC Group C Scaler Online Application 2026.",
+            officialUrl: "https://recruitment.itbpolice.nic.in/",
+            pdfUrl: "https://sssc.uk.gov.in/"
+        },
+        {
+            id: "railway-nwr-lic-apprentice",
+            category: "iti-job",
+            title: "Railway RRC NWR Apprentice & LIC HFL Apprentice Online Form 2026",
+            tag: "[Apprentice]",
+            date: "25 Oct 2026",
+            time: "12:20 PM",
+            shortInfo: "North Western Railway (RRC NWR) ITI Apprentice & LIC Housing Finance Ltd Apprentice Online Form 2026.",
+            officialUrl: "https://rrcjaipur.in/",
+            pdfUrl: "https://www.lichousing.com/"
+        },
+
+        // ======================== OUTSOURCING JOBS ========================
+        {
+            id: "ecce-educator",
+            category: "outsourcing",
+            title: "UP Hamirpur & Budaun ECCE Educator Online Form 2026",
+            tag: "[Sevayojan]",
+            date: "29 Oct 2026",
+            time: "10:00 AM",
+            shortInfo: "Uttar Pradesh Samagra Shiksha Abhiyan Early Childhood Care and Education (ECCE) Educator Recruitment 2026 via UP Sevayojan Portal.",
+            officialUrl: "https://sewayojan.up.nic.in/",
+            pdfUrl: "https://sewayojan.up.nic.in/"
+        },
+        {
+            id: "ecce-shahjahanpur-fatehpur",
+            category: "outsourcing",
+            title: "UP Shahjahanpur & Fatehpur ECCE Educator Online Form 2026",
+            tag: "[Apply Now]",
+            date: "28 Oct 2026",
+            time: "03:20 PM",
+            shortInfo: "Apply online for UP Shahjahanpur and Fatehpur District ECCE Educator Bharti 2026 on Sevayojan.",
+            officialUrl: "https://sewayojan.up.nic.in/",
+            pdfUrl: "https://sewayojan.up.nic.in/"
+        },
+        {
+            id: "ecce-kanpur-rampur",
+            category: "outsourcing",
+            title: "UP Kanpur, Etawah & Rampur ECCE Educator Online Form 2026",
+            tag: "[Active]",
+            date: "27 Oct 2026",
+            time: "01:10 PM",
+            shortInfo: "UP Kanpur Nagar, Kanpur Dehat, Etawah, and Rampur ECCE Educator Contract Basis Recruitment 2026.",
+            officialUrl: "https://sewayojan.up.nic.in/",
+            pdfUrl: "https://sewayojan.up.nic.in/"
+        },
+        {
+            id: "ecce-mathura-hapur-jhansi",
+            category: "outsourcing",
+            title: "UP Mathura, Hapur & Jhansi ECCE Educator Online Form 2026",
+            tag: "[New]",
+            date: "26 Oct 2026",
+            time: "05:00 PM",
+            shortInfo: "District Basic Education Department Mathura, Hapur & Jhansi ECCE Educator Online Form 2026.",
+            officialUrl: "https://sewayojan.up.nic.in/",
+            pdfUrl: "https://sewayojan.up.nic.in/"
+        },
+
+        // ======================== SYLLABUS ========================
+        {
+            id: "upessc-prt-syllabus",
+            category: "syllabus",
+            title: "UPESSC PRT Assistant Teacher 2026 (12,405 Posts) — Syllabus & Date Extend",
+            tag: "[PDF]",
+            date: "29 Oct 2026",
+            time: "09:50 AM",
+            shortInfo: "Uttar Pradesh Education Service Selection Commission (UPESSC) Primary Assistant Teacher (PRT) 12,405 Posts Official Syllabus PDF.",
+            officialUrl: "https://updeled.gov.in/",
+            pdfUrl: "https://updeled.gov.in/"
+        },
+        {
+            id: "rrb-ntpc-je-syllabus",
+            category: "syllabus",
+            title: "RRB NTPC Graduate / 10+2 UG (5236 Posts) & RRB JE Revised Exam Syllabus 2026",
+            tag: "[Download]",
+            date: "28 Oct 2026",
+            time: "02:15 PM",
+            shortInfo: "Download Official Exam Pattern and CBT-1/CBT-2 Syllabus PDF for RRB NTPC Graduate (3548 Posts), UG (1688 Posts) & RRB JE.",
+            officialUrl: "https://indianrailways.gov.in/",
+            pdfUrl: "https://indianrailways.gov.in/"
+        },
+        {
+            id: "bpsc-tre4-syllabus",
+            category: "syllabus",
+            title: "BPSC School Teacher TRE 4.0 (33,320 Posts) & Bihar STET Syllabus 2026",
+            tag: "[New]",
+            date: "27 Oct 2026",
+            time: "11:45 AM",
+            shortInfo: "Bihar Public Service Commission (BPSC) School Teacher TRE 4.0 PRT, TGT, PGT (33,320 Posts) & Bihar STET Official Syllabus.",
+            officialUrl: "https://www.bpsc.bih.nic.in/",
+            pdfUrl: "https://www.bpsc.bih.nic.in/"
+        },
+        {
+            id: "ssc-chsl-aai-syllabus",
+            category: "syllabus",
+            title: "SSC CHSL 10+2 Exam Syllabus & AAI Junior Executive Syllabus 2026",
+            tag: "[Official PDF]",
+            date: "25 Oct 2026",
+            time: "04:05 PM",
+            shortInfo: "Staff Selection Commission CHSL 10+2 Tier-1 & Tier-2 Syllabus and Airport Authority of India (AAI) Junior Executive Syllabus.",
+            officialUrl: "https://ssc.gov.in/",
+            pdfUrl: "https://www.aai.aero/"
+        },
+
+        // ======================== ANSWER KEY ========================
+        {
+            id: "up-police-answer-key",
+            category: "answer-key",
+            title: "UP Police Constable & SI Written Exam All Shift Answer Key 2026",
+            tag: "[Out]",
+            date: "28 Oct 2026",
+            time: "05:30 PM",
+            shortInfo: "Download UPPRPB Police Constable and Sub Inspector Official Master Question Paper and Shift-Wise Answer Key PDF.",
+            officialUrl: "https://uppbpb.gov.in/",
+            pdfUrl: "https://uppbpb.gov.in/"
+        },
+        {
+            id: "ssc-cgl-mts-answer-key",
+            category: "answer-key",
+            title: "SSC CGL Tier-1 & SSC MTS Havildar Response Sheet / Answer Key 2026",
+            tag: "[Link Active]",
+            date: "26 Oct 2026",
+            time: "06:10 PM",
+            shortInfo: "Staff Selection Commission CGL & MTS Candidate Response Sheet and Tentative Answer Key Challenge Link.",
+            officialUrl: "https://ssc.gov.in/",
+            pdfUrl: "https://ssc.gov.in/"
+        },
+
+        // ======================== ADMISSION & SCHOLARSHIP ========================
+        {
+            id: "up-scholarship-2026",
+            category: "admission",
+            title: "UP Scholarship Online Form 2026-27 (Pre & Post Matric Class 9-12, UG/PG)",
+            tag: "[Apply Online]",
+            date: "29 Oct 2026",
+            time: "10:30 AM",
+            shortInfo: "Social Welfare Department Uttar Pradesh Pre-Matric (Class 9-10) & Post-Matric (Class 11-12, B.A, B.Sc, B.Tech, ITI, Diploma) Scholarship Form & Status 2026-27.",
+            officialUrl: "https://scholarship.up.gov.in/",
+            pdfUrl: "https://scholarship.up.gov.in/"
+        },
+        {
+            id: "nta-neet-ug",
+            category: "admission",
+            title: "NTA NEET UG 2026-27 Online Form, Syllabus & Information Bulletin",
+            tag: "[Medical]",
+            date: "27 Oct 2026",
+            time: "01:00 PM",
+            shortInfo: "National Testing Agency (NTA) National Eligibility Cum Entrance Test (NEET UG) for MBBS/BDS Admission in AIIMS & Govt Medical Colleges.",
+            officialUrl: "https://neet.nta.nic.in/",
+            pdfUrl: "https://nta.ac.in/"
+        },
+        {
+            id: "up-board-timetable-2027",
+            category: "admission",
+            title: "UP Board Class 10th & 12th Exam Time Table 2027 & Model Papers",
+            tag: "[UPMSP]",
+            date: "25 Oct 2026",
+            time: "03:45 PM",
+            shortInfo: "Uttar Pradesh Madhyamik Shiksha Parishad (UPMSP), Prayagraj High School & Intermediate Exam Date Sheet 2027 PDF Download.",
+            officialUrl: "https://upmsp.edu.in/",
+            pdfUrl: "https://upmsp.edu.in/"
         }
-    };
-}
+    ]);
 
-function isMyListing(item) {
-    if (!item) return false;
-    const myPostedIds = getMyPostedIds();
-    if (myPostedIds.includes(item.id)) return true;
-    if (currentUser && currentUser.phone && item.phone === currentUser.phone) return true;
-    return false;
-}
-
-// 🗑️ Cancel / Delete Post Function
-function confirmCancelPost(listingId) {
-    const item = allListings.find(x => x.id === listingId);
-    if (!item) return;
-
-    const existing = document.getElementById('yatrisetuPhonePeModal');
-    if (existing) existing.remove();
-
-    const modal = document.createElement('div');
-    modal.id = 'yatrisetuPhonePeModal';
-    modal.className = 'fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4';
-    modal.innerHTML = `
-        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl border border-slate-100">
-            <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                <i class="fa-solid fa-trash-can"></i>
-            </div>
-            <h3 class="font-extrabold text-slate-900 text-base mb-1">क्या आप यह पोस्ट डिलीट करना चाहते हैं?</h3>
-            <p class="text-xs text-slate-600 mb-5">
-                <strong>${sanitizeHTML(item.from)} ➔ ${sanitizeHTML(item.to)}</strong> वाली पोस्ट सभी यूजर्स की स्क्रीन से तुरंत हट जाएगी।
-            </p>
-            <div class="grid grid-cols-2 gap-2.5">
-                <button type="button" onclick="document.getElementById('yatrisetuPhonePeModal').remove()" class="py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold rounded-2xl text-xs cursor-pointer">
-                    नहीं (Back)
-                </button>
-                <button type="button" onclick="executeCancelPost('${item.id}')" class="py-3 bg-red-600 hover:bg-red-700 text-white font-extrabold rounded-2xl text-xs shadow-lg cursor-pointer">
-                    हाँ, डिलीट करें
-                </button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-}
-
-async function executeCancelPost(listingId) {
-    const modal = document.getElementById('yatrisetuPhonePeModal');
-    if (modal) modal.remove();
-
-    const item = allListings.find(x => x.id === listingId);
-    if (!item) return;
-
-    const dbUrl = getCleanFirebaseUrl();
-    try {
-        if (dbUrl && item.cloudKey) {
-            await fetch(`${dbUrl}/listings/${item.cloudKey}.json`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ isCancelled: true, seats: 0 })
-            });
-        }
-    } catch (err) {}
-
-    allListings = allListings.filter(x => x.id !== listingId);
-    localStorage.setItem(STORAGE_KEY_CACHE, JSON.stringify(allListings));
-    renderListings(allListings);
-    updateBookingsBadge();
-    showPhonePePopup("पोस्ट डिलीट कर दी गई!", `आपकी ${item.from} ➔ ${item.to} पोस्ट लाइव सर्वर से हटा दी गई है।`, "danger");
-}
-
-// 🔔 Live Driver Booking Notification & SMS Alert
-function checkIncomingDriverBookings(listings) {
-    const notifiedPnrs = getNotifiedPnrs();
-
-    listings.forEach(item => {
-        if (!isMyListing(item) || !item.bookingsList || !Array.isArray(item.bookingsList)) return;
-
-        item.bookingsList.forEach(b => {
-            if (b && b.pnr && !notifiedPnrs.includes(b.pnr)) {
-                markPnrNotified(b.pnr);
-                const msgBody = `नमस्ते ${b.passengerName}, आपकी YatriSetu बुकिंग (${b.pnr}) कन्फर्म हो गई है! रूट: ${item.from} से ${item.to} (${item.date}).`;
-                const waReply = encodeURIComponent(msgBody);
-                const smsReply = encodeURIComponent(msgBody);
-
-                const extraActions = `
-                    <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 text-left text-xs space-y-1 mb-4">
-                        <div class="text-[10px] font-black text-emerald-700 uppercase">
-                            <i class="fa-solid fa-comment-sms mr-1"></i> NEW BOOKING SMS ALERT
-                        </div>
-                        <div class="flex justify-between"><span>यात्री (Passenger):</span><strong class="text-slate-900">${sanitizeHTML(b.passengerName)}</strong></div>
-                        <div class="flex justify-between"><span>मोबाइल नंबर:</span><strong class="text-blue-600">+91 ${sanitizeHTML(b.passengerPhone)}</strong></div>
-                        <div class="flex justify-between"><span>सीट / कुल राशि:</span><strong class="text-emerald-700">${b.qty} Unit (₹${b.totalAmount})</strong></div>
-                        <div class="grid grid-cols-3 gap-1.5 pt-2">
-                            <a href="tel:+91${sanitizeHTML(b.passengerPhone)}" class="py-2 bg-blue-600 text-white font-bold rounded-xl text-center text-[11px]">Call</a>
-                            <a href="sms:+91${sanitizeHTML(b.passengerPhone)}?body=${smsReply}" class="py-2 bg-slate-800 text-white font-bold rounded-xl text-center text-[11px]">SMS</a>
-                            <a href="https://wa.me/91${sanitizeHTML(b.passengerPhone)}?text=${waReply}" target="_blank" class="py-2 bg-emerald-600 text-white font-bold rounded-xl text-center text-[11px]">WhatsApp</a>
+    // E. Authentic Non-AI Graphic Tools Array (Matches Original Sarkari Tools Look without Emojis)
+    const PORTAL_TOOLS = Object.freeze([
+        {
+            name: "Image Resizer",
+            desc: "Resize any photo or signature to exact 20KB, 50KB or custom pixel dimensions.",
+            graphicHTML: `
+                <div class="gfx-resizer-outer">
+                    <div class="gfx-resizer-inner">20KB - 50KB</div>
+                </div>
+            `
+        },
+        {
+            name: "Shadi / Marriage Bio Data Maker",
+            desc: "Create attractive Hindi & English Marriage Bio-Data PDF in 2 minutes.",
+            graphicHTML: `
+                <div class="gfx-biodata-box">
+                    <span class="ylw">MARITAL</span>
+                    <span class="wht">BIO-DATA</span>
+                    <span class="ylw">MAKER</span>
+                    <span class="hin">शादी का बायोडाटा</span>
+                </div>
+            `
+        },
+        {
+            name: "Resume/CV Maker",
+            desc: "Build a clean, print-ready Resume/CV for fresher and experienced jobs.",
+            graphicHTML: `
+                <div class="gfx-cv-circle">
+                    <div class="gfx-cv-doc">
+                        <span>CV</span>
+                        <div class="gfx-cv-line"></div>
+                        <div class="gfx-cv-line"></div>
+                        <div class="gfx-cv-line" style="width:70%;"></div>
+                    </div>
+                </div>
+            `
+        },
+        {
+            name: "JPG to PDF Converter",
+            desc: "Convert multiple marksheet or certificate JPG photos into a single PDF file.",
+            graphicHTML: `
+                <div class="gfx-jpg-pdf-wrap">
+                    <div class="gfx-file-box">JPG</div>
+                    <div class="gfx-red-arrow">&rarr;</div>
+                    <div class="gfx-file-box pdf-style">PDF</div>
+                </div>
+            `
+        },
+        {
+            name: "Typing Test",
+            desc: "Check your WPM speed and accuracy for UPSSSC, SSC & High Court typing exams.",
+            graphicHTML: `
+                <div class="gfx-typing-box">
+                    <div class="gfx-wpm-meter">35+ WPM TEST</div>
+                    <div class="gfx-key-row">
+                        <span class="gfx-key">HINDI</span>
+                        <span class="gfx-key">ENGLISH</span>
+                    </div>
+                </div>
+            `
+        },
+        {
+            name: "Age Calculator",
+            desc: "Calculate your exact age in Years, Months & Days as on notification cutoff date.",
+            graphicHTML: `
+                <div class="gfx-age-box">
+                    <div class="gfx-age-top">Age Calculator</div>
+                    <div class="gfx-age-grid">
+                        <div class="gfx-age-cell">YY</div>
+                        <div class="gfx-age-cell">MM</div>
+                        <div class="gfx-age-cell">DD</div>
+                    </div>
+                </div>
+            `
+        },
+        {
+            name: "Name & Date on Photo Maker",
+            desc: "Automatically add your Name and Date of Photo at the bottom of your passport photo.",
+            graphicHTML: `
+                <div class="gfx-photo-pair">
+                    <div class="gfx-passport-frame">
+                        <div class="gfx-avatar-head"></div>
+                        <div class="gfx-avatar-body"></div>
+                    </div>
+                    <div class="gfx-passport-frame">
+                        <div class="gfx-avatar-head"></div>
+                        <div class="gfx-avatar-body"></div>
+                        <div class="gfx-photo-stamp">Photo Name<br>29-10-2026</div>
+                    </div>
+                </div>
+            `
+        },
+        {
+            name: "Photo Signature Joiner",
+            desc: "Combine your passport photo and signature into one single image for form upload.",
+            graphicHTML: `
+                <div class="gfx-merge-banner">
+                    <div class="gfx-merge-top">Photo & Signature</div>
+                    <div class="gfx-merge-mid">
+                        <div class="gfx-sign-box">Sign</div>
+                        <div class="gfx-merge-txt">Merge &rarr;</div>
+                    </div>
+                </div>
+            `
+        },
+        {
+            name: "MPPEB Template",
+            desc: "Generate official MPPEB/MPESB photo, signature & declaration template.",
+            graphicHTML: `
+                <div class="gfx-mppeb-sheet">
+                    <div class="gfx-mppeb-top">
+                        <div class="gfx-mini-photo"></div>
+                        <div class="gfx-mini-lines">
+                            <div></div><div></div><div></div>
                         </div>
                     </div>
-                `;
-                showPhonePePopup(
-                    "🎉 आपकी राइड बुक हो गई!",
-                    `इन्होंने आपकी राइड बुक की है: ${b.passengerName} (+91 ${b.passengerPhone}) ने ${item.from} ➔ ${item.to} पर ${b.qty} सीट बुक की है!`,
-                    "success",
-                    extraActions
-                );
-            }
-        });
-    });
-}
+                    <div class="gfx-mppeb-Label">MPPEB Form</div>
+                </div>
+            `
+        }
+    ]);
 
-// 1. क्लाउड से सभी की पोस्ट लाना
-async function fetchListingsFromCloud() {
-    const dbUrl = getCleanFirebaseUrl();
-    if (!dbUrl) return;
+    // ---------------- 3. RENDER FUNCTIONS ----------------
 
-    try {
-        const res = await fetch(`${dbUrl}/listings.json`, { cache: "no-store" });
-        if (!res.ok) return;
-        const data = await res.json();
+    function renderLiveTicker() {
+        const ticker = document.getElementById("liveTickerContainer");
+        if (!ticker) return;
+        ticker.innerHTML = `<span class="live-tag">LIVE</span> ` + LIVE_TICKER_ITEMS.map(item =>
+            `<a href="#" data-post-id="${escapeHTML(item.id)}">${escapeHTML(item.text)}</a>`
+        ).join(" || ");
+    }
 
-        // अगर डेटाबेस बिल्कुल खाली है, तो शुरुआती 3 डेमो पोस्ट डालें
-        if (!data) {
-            const seeds = getDefaultSeedListings();
-            for (const key in seeds) {
-                await fetch(`${dbUrl}/listings/${key}.json`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(seeds[key])
+    function renderTopHighlights() {
+        const grid = document.getElementById("topHighlightGrid");
+        if (!grid) return;
+        grid.innerHTML = TOP_HIGHLIGHTS.map(item => `
+            <div class="highlight-card ${escapeHTML(item.colorClass)}" data-post-id="${escapeHTML(item.id)}">
+                ${escapeHTML(item.title)}
+            </div>
+        `).join("");
+    }
+
+    function renderFeaturedSchemes() {
+        const container = document.getElementById("featuredSchemesContainer");
+        if (!container) return;
+        container.innerHTML = FEATURED_SCHEMES.map(scheme => `
+            <div class="anganwadi-banner" data-post-id="${escapeHTML(scheme.postId)}">
+                <div class="anganwadi-left">
+                    <h2>${escapeHTML(scheme.hindiTitle)}</h2>
+                    <table class="anganwadi-table">
+                        <thead>
+                            <tr>
+                                ${scheme.headers.map(h => `<th>${escapeHTML(h)}</th>`).join("")}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${scheme.rows.map(row => `
+                                <tr>
+                                    ${row.map(cell => `<td>${escapeHTML(cell)}</td>`).join("")}
+                                </tr>
+                            `).join("")}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="anganwadi-right">
+                    <h3>${escapeHTML(scheme.englishTitle)}</h3>
+                    <p>${escapeHTML(scheme.description)}</p>
+                    <span class="anganwadi-btn">${escapeHTML(scheme.buttonText)}</span>
+                </div>
+            </div>
+        `).join("");
+    }
+
+    function createPostListItemHTML(post) {
+        return `
+            <li>
+                <span class="post-link" data-post-id="${escapeHTML(post.id)}">${escapeHTML(post.title)}</span>
+                <span class="post-tag">${escapeHTML(post.tag)}</span>
+                <span class="post-datetime">Date: ${escapeHTML(post.date)} | Time: ${escapeHTML(post.time)}</span>
+            </li>
+        `;
+    }
+
+    function renderAllColumns(filterQuery = "") {
+        const q = filterQuery.trim().toLowerCase();
+
+        const filterFn = (cat) => PORTAL_POSTS.filter(p =>
+            p.category === cat &&
+            (q === "" || p.title.toLowerCase().includes(q) || p.shortInfo.toLowerCase().includes(q) || p.tag.toLowerCase().includes(q))
+        );
+
+        const populate = (elementId, items) => {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            el.innerHTML = items.length
+                ? items.map(createPostListItemHTML).join("")
+                : `<li><span class="post-datetime">No matching updates found.</span></li>`;
+        };
+
+        populate("resultList", filterFn("result"));
+        populate("admitCardList", filterFn("admit-card"));
+        populate("latestJobsList", filterFn("latest-job"));
+        populate("itiJobsList", filterFn("iti-job"));
+        populate("outsourcingList", filterFn("outsourcing"));
+        populate("syllabusList", filterFn("syllabus"));
+        populate("answerKeyList", filterFn("answer-key"));
+        populate("admissionList", filterFn("admission"));
+    }
+
+    function renderToolsSection() {
+        const dropdown = document.getElementById("toolsDropdownMenu");
+        if (dropdown) {
+            dropdown.innerHTML = PORTAL_TOOLS.map(t =>
+                `<a href="#tools-section" data-tool-name="${escapeHTML(t.name)}">${escapeHTML(t.name)}</a>`
+            ).join("");
+        }
+
+        const container = document.getElementById("toolsGridContainer");
+        if (!container) return;
+        container.innerHTML = PORTAL_TOOLS.map(t => `
+            <div class="tool-card" data-tool-name="${escapeHTML(t.name)}">
+                <div class="tool-graphic-stage">
+                    ${t.graphicHTML}
+                </div>
+                <div class="tool-card-title">${escapeHTML(t.name)}</div>
+            </div>
+        `).join("");
+    }
+
+    // ---------------- 4. MODAL & NAVIGATION CONTROLLERS ----------------
+
+    function openPostById(postId) {
+        const post = PORTAL_POSTS.find(p => p.id === postId) || PORTAL_POSTS[0];
+        if (!post) return;
+
+        document.getElementById("modalPostDate").innerHTML = `${escapeHTML(post.date)} | <strong>${escapeHTML(post.time)}</strong>`;
+        document.getElementById("modalShortInfo").textContent = post.shortInfo;
+        document.getElementById("modalMainHeading").textContent = post.title;
+        document.getElementById("modalDateOnly").textContent = post.date;
+        document.getElementById("modalTimeOnly").textContent = post.time;
+
+        const actionLabel = post.category === "result"
+            ? "Download Result / Score Card"
+            : post.category === "admit-card"
+            ? "Download Admit Card / Exam City"
+            : "Apply Online / Official Registration";
+
+        document.getElementById("modalActionLabel").textContent = actionLabel;
+        document.getElementById("modalPrimaryBtn").href = sanitizeUrl(post.officialUrl);
+        document.getElementById("modalPdfBtn").href = sanitizeUrl(post.pdfUrl || post.officialUrl);
+        document.getElementById("modalOfficialSiteBtn").href = sanitizeUrl(post.officialUrl);
+
+        document.getElementById("postModal").style.display = "flex";
+    }
+
+    function closePostModal() {
+        document.getElementById("postModal").style.display = "none";
+    }
+
+    function openToolModal(toolName) {
+        const tool = PORTAL_TOOLS.find(t => t.name === toolName) || PORTAL_TOOLS[0];
+        document.getElementById("toolModalTitle").textContent = `SarkariResultUpAll.com — ${tool.name}`;
+
+        const body = document.getElementById("toolModalBody");
+        if (tool.name === "Age Calculator") {
+            body.innerHTML = `
+                <h3 style="color:#1e3a8a; margin-bottom:10px;">Exam Age Calculator (SarkariResultUpAll.com)</h3>
+                <p style="margin-bottom:12px; font-size:0.9rem;">Enter your Date of Birth to calculate your exact age as of 29 October 2026:</p>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:15px;">
+                    <input type="date" id="dobInput" value="2006-05-15" style="padding:8px; border:1px solid #64748b; border-radius:3px;">
+                    <button type="button" id="calcAgeBtn" class="server-btn">Calculate Age</button>
+                </div>
+                <div id="ageResultOutput" style="font-weight:bold; color:#15803d; font-size:1.05rem;"></div>
+            `;
+            const calcBtn = document.getElementById("calcAgeBtn");
+            if (calcBtn) {
+                calcBtn.addEventListener("click", function () {
+                    const dobVal = document.getElementById("dobInput").value;
+                    if (!dobVal) return;
+                    const dob = new Date(dobVal);
+                    const target = new Date("2026-10-29");
+                    let years = target.getFullYear() - dob.getFullYear();
+                    let months = target.getMonth() - dob.getMonth();
+                    let days = target.getDate() - dob.getDate();
+                    if (days < 0) { months--; days += 30; }
+                    if (months < 0) { years--; months += 12; }
+                    document.getElementById("ageResultOutput").textContent =
+                        `Your Exact Age: ${years} Years, ${months} Months, ${days} Days`;
                 });
             }
-            return fetchListingsFromCloud();
+        } else {
+            body.innerHTML = `
+                <h3 style="color:#1e3a8a; margin-bottom:8px;">${escapeHTML(tool.name)}</h3>
+                <p style="margin-bottom:14px; font-size:0.93rem;">${escapeHTML(tool.desc)}</p>
+                <div style="padding:18px; background:#f8fafc; border:1px solid #94a3b8; text-align:center; border-radius:4px;">
+                    <p style="font-weight:bold; margin-bottom:10px;">Select Document / Photo File for ${escapeHTML(tool.name)}</p>
+                    <input type="file" style="margin-bottom:12px;">
+                    <br>
+                    <button type="button" id="processToolBtn" class="server-btn">Process & Download File</button>
+                </div>
+            `;
+            const procBtn = document.getElementById("processToolBtn");
+            if (procBtn) {
+                procBtn.addEventListener("click", function () {
+                    alert(tool.name + " processed successfully on SarkariResultUpAll.com!");
+                });
+            }
         }
 
-        const list = Object.keys(data).map(key => ({
-            cloudKey: key,
-            ...data[key]
-        }));
-
-        const now = Date.now();
-        allListings = list.filter(item =>
-            item &&
-            item.id &&
-            item.isCancelled !== true &&
-            (now - (item.createdAt || now)) < TWO_WEEKS_MS
-        );
-        allListings.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-
-        localStorage.setItem(STORAGE_KEY_CACHE, JSON.stringify(allListings));
-        checkIncomingDriverBookings(allListings);
-        updateBookingsBadge();
-        renderListings(allListings);
-    } catch (err) {
-        console.warn("Cloud sync error, loading cached view.");
-    }
-}
-
-// 2. नया राइड/रूम सीधे क्लाउड में जोड़ना (ताकि हर इंसान को दिखे)
-async function publishNewItemToCloud(newItem) {
-    const dbUrl = getCleanFirebaseUrl();
-    if (!dbUrl) {
-        showPhonePePopup("लिंक एरर", "Firebase URL सेट नहीं है! कृपया लाइन 13 चेक करें।", "info");
-        return false;
+        document.getElementById("toolModal").style.display = "flex";
     }
 
-    try {
-        const res = await fetch(`${dbUrl}/listings.json`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newItem)
+    function closeToolModal() {
+        document.getElementById("toolModal").style.display = "none";
+    }
+
+    function switchCategory(cat, targetEl) {
+        document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
+        if (targetEl && targetEl.classList.contains("nav-item")) {
+            targetEl.classList.add("active");
+        }
+
+        const heading = document.getElementById("categoryHeading");
+        const descEn = document.getElementById("categoryDescEn");
+        const descHi = document.getElementById("categoryDescHi");
+
+        if (cat === "admit-card") {
+            heading.textContent = "Admit Card — SarkariResultUpAll.com";
+            descEn.innerHTML = "Welcome to <strong>SarkariResultUpAll.com</strong>. Stay informed about the Admit Card of various competitive exams conducted by government bodies across India, whether you are waiting for the Admit Card of any recruitment exam, entrance exam or any other government exam then we update the Admit Card from time to time to keep you informed.";
+            descHi.innerHTML = "<strong>SarkariResultUpAll.com</strong> में आपका स्वागत है। भारत भर में सरकारी निकायों द्वारा आयोजित विभिन्न प्रतियोगी परीक्षाओं के एडमिट कार्ड के बारे में सूचित रहें, चाहे आप किसी भी भर्ती परीक्षा, प्रवेश परीक्षा या किसी अन्य सरकारी परीक्षा के एडमिट कार्ड का इंतजार कर रहे हों तो हम आपको सूचित रखने के लिए समय-समय पर एडमिट कार्ड अपडेट करते हैं।";
+        } else if (cat === "latest-job") {
+            heading.textContent = "Latest Job — SarkariResultUpAll.com";
+            descEn.innerHTML = "Welcome to official <strong>SarkariResultUpAll.com</strong>. Stay informed about the Latest Jobs of various competitive exams conducted by government bodies across Uttar Pradesh and India, whether you are waiting for the Job Notification of any recruitment exam, entrance exam or any other government exam.";
+            descHi.innerHTML = "<strong>SarkariResultUpAll.com</strong> में आपका स्वागत है। भारत और उत्तर प्रदेश भर में सरकारी निकायों द्वारा आयोजित विभिन्न प्रतियोगी परीक्षाओं की नवीनतम नौकरियों के बारे में सूचित रहें। आप किसी भी भर्ती परीक्षा, प्रवेश परीक्षा या किसी अन्य सरकारी परीक्षा की नौकरी अधिसूचना की प्रतीक्षा कर रहे हों, तो हम समय पर नवीनतम नौकरी अपडेट करते हैं।";
+        } else if (cat === "result") {
+            heading.textContent = "Exam Results 2026 — SarkariResultUpAll.com";
+            descEn.innerHTML = "Welcome to <strong>SarkariResultUpAll.com</strong> Result Portal. Check UP Board Class 10th & 12th Result, UP Police, SSC GD, UPSSSC PET, and Railway Exam Results with direct server links.";
+            descHi.innerHTML = "<strong>SarkariResultUpAll.com</strong> रिजल्ट पोर्टल में आपका स्वागत है। यूपी बोर्ड 10वीं-12वीं, यूपी पुलिस, एसएससी और रेलवे सहित सभी परीक्षाओं के परिणाम सबसे तेज़ सर्वर लिंक के साथ यहाँ देखें।";
+        } else {
+            heading.textContent = "Welcome to SarkariResultUpAll.com";
+        }
+    }
+
+    // ---------------- 5. EVENT DELEGATION & INITIALIZATION ----------------
+
+    document.addEventListener("DOMContentLoaded", function () {
+        renderLiveTicker();
+        renderTopHighlights();
+        renderFeaturedSchemes();
+        renderAllColumns();
+        renderToolsSection();
+
+        // Global Click Listener (Secure Event Delegation)
+        document.body.addEventListener("click", function (e) {
+            const postTrigger = e.target.closest("[data-post-id]");
+            if (postTrigger) {
+                e.preventDefault();
+                openPostById(postTrigger.getAttribute("data-post-id"));
+                return;
+            }
+
+            const toolTrigger = e.target.closest("[data-tool-name]");
+            if (toolTrigger) {
+                e.preventDefault();
+                openToolModal(toolTrigger.getAttribute("data-tool-name"));
+                return;
+            }
+
+            const catTrigger = e.target.closest("[data-cat]");
+            if (catTrigger) {
+                switchCategory(catTrigger.getAttribute("data-cat"), catTrigger);
+                return;
+            }
+
+            const expandTrigger = e.target.closest("[data-expand]");
+            if (expandTrigger) {
+                switchCategory(expandTrigger.getAttribute("data-expand"), null);
+                return;
+            }
+
+            if (e.target.id === "postModal" || e.target.id === "closePostModalBtn") {
+                closePostModal();
+            }
+            if (e.target.id === "toolModal" || e.target.id === "closeToolModalBtn") {
+                closeToolModal();
+            }
         });
 
-        if (!res.ok) {
-            showPhonePePopup("सर्वर एरर", `पोस्ट सेव नहीं हो सकी (Error ${res.status})। कृपया Firebase के Rules चेक करें!`, "info");
-            return false;
-        }
+        // Search Input & Button
+        const searchInput = document.getElementById("globalSearch");
+        const searchBtn = document.getElementById("searchBtn");
 
-        saveMyPostedId(newItem.id);
-        await fetchListingsFromCloud();
-        return true;
-    } catch (err) {
-        showPhonePePopup("इंटरनेट एरर", "सर्वर से संपर्क नहीं हो पाया।", "info");
-        return false;
-    }
-}
-
-// 3. बुकिंग होने पर सीट घटाना और ड्राइवर + प्राइवेट बुकिंग लॉग सेव करना
-async function updateSeatsAndLogBooking(item, remainingSeats, bookingData) {
-    const dbUrl = getCleanFirebaseUrl();
-    if (!dbUrl) return;
-
-    const updatedBookingsList = Array.isArray(item.bookingsList) ? [...item.bookingsList] : [];
-    updatedBookingsList.unshift(bookingData);
-    item.bookingsList = updatedBookingsList;
-
-    try {
-        if (item.cloudKey) {
-            await fetch(`${dbUrl}/listings/${item.cloudKey}.json`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    seats: remainingSeats,
-                    bookingsList: updatedBookingsList
-                })
+        if (searchInput) {
+            searchInput.addEventListener("input", function (e) {
+                renderAllColumns(escapeHTML(e.target.value));
             });
         }
-        await fetch(`${dbUrl}/bookings.json`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(bookingData)
-        });
-    } catch (err) {}
-}
-
-// ============================================================================
-// UI CARDS & FORMS
-// ============================================================================
-function getCategoryIcon(category) {
-    const map = { 'Car': 'fa-car-side', 'Bike': 'fa-motorcycle', 'Bus': 'fa-bus', 'Truck': 'fa-truck-front', 'Stay': 'fa-house-chimney' };
-    return map[category] || 'fa-car';
-}
-
-function getDefaultImageForCategory(category) {
-    const map = {
-        'Car': 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=85',
-        'Bike': 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=85',
-        'Bus': 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=85',
-        'Truck': 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=800&q=85',
-        'Stay': 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=85'
-    };
-    return map[category] || map['Car'];
-}
-
-function renderListings(items) {
-    const grid = document.getElementById('listingsGrid');
-    if (!grid) return;
-    grid.innerHTML = '';
-
-    if (!items || items.length === 0) {
-        grid.innerHTML = `
-            <div class="col-span-full bg-slate-50 border border-slate-200 rounded-3xl p-10 text-center">
-                <i class="fa-solid fa-route text-3xl text-slate-300 mb-3"></i>
-                <h4 class="font-extrabold text-slate-800 text-base">No matching rides or stays found</h4>
-                <p class="text-xs text-slate-500 mt-1 mb-4">Click below to view all listings or publish a new ride.</p>
-                <button onclick="resetFilters()" class="px-4 py-2 bg-blue-600 text-white rounded-xl font-bold text-xs cursor-pointer">Show All</button>
-            </div>
-        `;
-        return;
-    }
-
-    const bookLabel = i18n[currentLanguage].bookBtnLabel;
-    const deleteLabel = i18n[currentLanguage].deleteBtnLabel;
-
-    items.forEach(item => {
-        const coverImg = (item.photos && item.photos.length > 0) ? item.photos[0] : getDefaultImageForCategory(item.category);
-        const photoCount = item.photos ? item.photos.length : 1;
-        const isSoldOut = item.seats <= 0;
-        const unitLabel = item.kind === 'stay' ? 'rooms left' : 'seats left';
-        const mine = isMyListing(item);
-        const receivedCount = (item.bookingsList && Array.isArray(item.bookingsList)) ? item.bookingsList.length : 0;
-        const timeAgoText = formatTimeAgo(item.createdAt);
-
-        const card = document.createElement('div');
-        card.className = "bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 flex flex-col justify-between";
-        card.innerHTML = `
-            <div>
-                <div onclick="openGallery('${item.id}')" class="h-48 overflow-hidden relative cursor-pointer group bg-slate-100">
-                    <img src="${coverImg}" alt="${sanitizeHTML(item.providerName)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                    <span class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md text-white px-3 py-1 rounded-full text-[11px] font-extrabold flex items-center gap-1.5">
-                        <i class="fa-solid ${getCategoryIcon(item.category)} text-blue-400"></i> ${sanitizeHTML(item.category)}
-                    </span>
-                    <span class="absolute top-3 right-3 bg-blue-600 text-white px-3.5 py-1 rounded-full text-xs font-extrabold shadow">
-                        ₹${Number(item.price)}
-                    </span>
-                    ${mine ? `
-                        <span class="absolute bottom-3 left-3 bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-[10px] font-extrabold shadow">
-                            Your Post (${receivedCount} Booked)
-                        </span>
-                    ` : `
-                        <span class="absolute bottom-3 left-3 bg-slate-900/75 text-amber-300 px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1">
-                            <i class="fa-regular fa-clock"></i> ${timeAgoText}
-                        </span>
-                    `}
-                    ${photoCount > 1 ? `
-                        <span class="absolute bottom-3 right-3 bg-black/75 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1">
-                            <i class="fa-regular fa-images"></i> +${photoCount} Photos
-                        </span>
-                    ` : ''}
-                </div>
-
-                <div class="p-5">
-                    <div class="flex items-center justify-between gap-2 mb-1">
-                        <h4 class="font-extrabold text-slate-900 text-base truncate flex items-center gap-1.5">
-                            ${sanitizeHTML(item.providerName)}
-                            <i class="fa-solid fa-circle-check text-blue-600 text-xs" title="Verified Provider"></i>
-                        </h4>
-                        <span class="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full whitespace-nowrap">
-                            <i class="fa-regular fa-clock mr-1"></i>${timeAgoText}
-                        </span>
-                    </div>
-                    <div class="flex items-center justify-between gap-2 mb-3">
-                        <p class="text-xs text-blue-600 font-bold truncate">
-                            ${sanitizeHTML(item.vehicleOrAddress)}
-                        </p>
-                        <span class="text-[11px] font-bold text-slate-400 whitespace-nowrap"><i class="fa-regular fa-calendar mr-1"></i>${sanitizeHTML(item.date)}</span>
-                    </div>
-
-                    <div class="text-xs text-slate-600 space-y-1.5 border-y border-slate-100 py-3 my-2">
-                        <div class="flex justify-between items-center">
-                            <span class="text-slate-400 font-semibold">Route / City:</span>
-                            <strong class="text-slate-900 font-extrabold">${sanitizeHTML(item.from)} <i class="fa-solid fa-arrow-right text-[10px] mx-1 text-blue-600"></i> ${sanitizeHTML(item.to)}</strong>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-slate-400 font-semibold">Availability:</span>
-                            <strong class="${isSoldOut ? 'text-red-600' : 'text-emerald-600'} font-extrabold">
-                                ${isSoldOut ? 'Sold Out / Full' : `${item.seats} ${unitLabel}`}
-                            </strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="px-5 pb-5 space-y-2">
-                <button ${isSoldOut ? 'disabled' : `onclick="initiateBooking('${item.id}')"`} class="w-full py-3 ${isSoldOut ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer shadow-md shadow-blue-600/15'} font-extrabold rounded-2xl text-xs transition">
-                    ${isSoldOut ? 'Fully Booked' : bookLabel}
-                </button>
-                ${mine ? `
-                    <button type="button" onclick="confirmCancelPost('${item.id}')" class="w-full py-2.5 bg-red-50 hover:bg-red-600 text-red-600 hover:text-white border border-red-200 font-extrabold rounded-2xl text-xs transition cursor-pointer flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-trash-can"></i> ${deleteLabel}
-                    </button>
-                ` : ''}
-            </div>
-        `;
-        grid.appendChild(card);
-    });
-}
-
-function readFilesAsBase64(fileInput) {
-    return new Promise((resolve) => {
-        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-            resolve([]);
-            return;
-        }
-        const files = fileInput.files;
-        const maxFiles = Math.min(files.length, 3);
-        const results = [];
-        let processed = 0;
-
-        for (let i = 0; i < maxFiles; i++) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const img = new Image();
-                img.onload = function () {
-                    const canvas = document.createElement('canvas');
-                    const maxW = 550;
-                    const scale = img.width > maxW ? maxW / img.width : 1;
-                    canvas.width = img.width * scale;
-                    canvas.height = img.height * scale;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    results.push(canvas.toDataURL('image/jpeg', 0.65));
-                    processed++;
-                    if (processed === maxFiles) resolve(results);
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(files[i]);
-        }
-    });
-}
-
-async function submitRideForm(e) {
-    e.preventDefault();
-    if (isRateLimited()) return;
-
-    const category = document.getElementById('rVehicleCategory').value;
-    const uploadedPhotos = await readFilesAsBase64(document.getElementById('rPhotos'));
-    const driverName = sanitizeHTML(document.getElementById('rDriverName').value.trim());
-    const driverPhone = sanitizeHTML(document.getElementById('rDriverPhone').value.trim());
-
-    if (!currentUser) {
-        currentUser = {
-            name: driverName,
-            phone: driverPhone,
-            emergencyPhone: driverPhone,
-            idType: 'Aadhaar Card',
-            idDigits: '0000',
-            photo: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80',
-            registeredAt: Date.now()
-        };
-        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(currentUser));
-        updateNavbarUserUI();
-    }
-
-    const newListing = {
-        id: 'YS-' + Math.floor(100000 + Math.random() * 900000),
-        kind: 'ride',
-        category: category,
-        providerName: driverName,
-        phone: driverPhone,
-        vehicleOrAddress: sanitizeHTML(document.getElementById('rVehicleNumber').value.trim().toUpperCase()),
-        from: sanitizeHTML(document.getElementById('rFromCity').value.trim()),
-        to: sanitizeHTML(document.getElementById('rToCity').value.trim()),
-        date: document.getElementById('rTravelDate').value,
-        seats: parseInt(document.getElementById('rSeats').value, 10) || 1,
-        price: parseInt(document.getElementById('rPrice').value, 10) || 100,
-        photos: uploadedPhotos.length > 0 ? uploadedPhotos : [getDefaultImageForCategory(category)],
-        bookingsList: [],
-        isCancelled: false,
-        createdAt: Date.now()
-    };
-
-    const ok = await publishNewItemToCloud(newListing);
-    if (ok) {
-        closeModal('publishModal');
-        e.target.reset();
-        configureDateConstraints();
-        showPhonePePopup(
-            "राइड लाइव पब्लिश हो गई!",
-            "आपकी राइड लाइव पब्लिश हो गई है! अब यह हर यूजर को दिखेगी और बुकिंग होते ही आपको SMS व पॉप-अप अलर्ट मिलेगा।"
-        );
-    }
-}
-
-async function submitStayForm(e) {
-    e.preventDefault();
-    if (isRateLimited()) return;
-
-    const uploadedPhotos = await readFilesAsBase64(document.getElementById('sPhotos'));
-    const city = sanitizeHTML(document.getElementById('sCity').value.trim());
-    const hostName = sanitizeHTML(document.getElementById('sHostName').value.trim());
-    const hostPhone = sanitizeHTML(document.getElementById('sHostPhone').value.trim());
-
-    if (!currentUser) {
-        currentUser = {
-            name: hostName,
-            phone: hostPhone,
-            emergencyPhone: hostPhone,
-            idType: 'Aadhaar Card',
-            idDigits: '0000',
-            photo: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80',
-            registeredAt: Date.now()
-        };
-        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(currentUser));
-        updateNavbarUserUI();
-    }
-
-    const newStay = {
-        id: 'YS-' + Math.floor(100000 + Math.random() * 900000),
-        kind: 'stay',
-        category: 'Stay',
-        providerName: hostName,
-        phone: hostPhone,
-        vehicleOrAddress: sanitizeHTML(document.getElementById('sAddress').value.trim()),
-        from: city,
-        to: city,
-        date: document.getElementById('sAvailableDate').value,
-        seats: parseInt(document.getElementById('sRooms').value, 10) || 1,
-        price: parseInt(document.getElementById('sPrice').value, 10) || 500,
-        photos: uploadedPhotos.length > 0 ? uploadedPhotos : [getDefaultImageForCategory('Stay')],
-        bookingsList: [],
-        isCancelled: false,
-        createdAt: Date.now()
-    };
-
-    const ok = await publishNewItemToCloud(newStay);
-    if (ok) {
-        closeModal('publishModal');
-        e.target.reset();
-        configureDateConstraints();
-        showPhonePePopup(
-            "होमस्टे लाइव पब्लिश हो गया!",
-            "आपका होमस्टे लाइव पब्लिश हो गया है! अब यह हर यूजर को दिखेगा और बुकिंग होते ही आपको अलर्ट मिलेगा।"
-        );
-    }
-}
-
-// ============================================================================
-// PASSENGER BOOKING & MY BOOKINGS WALLET
-// ============================================================================
-function loadBookingsFromStorage() {
-    try {
-        const raw = localStorage.getItem(STORAGE_KEY_BOOKINGS);
-        let list = raw ? JSON.parse(raw) : [];
-        const now = Date.now();
-        list = list.filter(b => (now - (b.bookedAt || now)) < TWO_WEEKS_MS);
-        localStorage.setItem(STORAGE_KEY_BOOKINGS, JSON.stringify(list));
-        return list;
-    } catch (e) { return []; }
-}
-
-let myBookings = loadBookingsFromStorage();
-
-function initiateBooking(listingId) {
-    const item = allListings.find(x => x.id === listingId);
-    if (!item || item.seats <= 0) return;
-
-    document.getElementById('bookListingId').value = item.id;
-    const qtyInput = document.getElementById('passengerQty');
-    qtyInput.max = item.seats;
-    qtyInput.value = 1;
-
-    if (currentUser) {
-        document.getElementById('passengerName').value = currentUser.name || '';
-        document.getElementById('passengerPhone').value = currentUser.phone || '';
-        document.getElementById('passengerIdType').value = currentUser.idType || 'Aadhaar Card';
-        document.getElementById('passengerIdDigits').value = currentUser.idDigits || '';
-        document.getElementById('passengerEmergency').value = currentUser.emergencyPhone || '';
-    }
-
-    document.getElementById('selectedItemPreview').innerHTML = `
-        <div class="flex justify-between items-center">
-            <span class="font-extrabold text-slate-900">${sanitizeHTML(item.providerName)} (${sanitizeHTML(item.category)})</span>
-            <span class="font-extrabold text-blue-600">₹${item.price} / unit</span>
-        </div>
-        <div class="text-slate-600">${sanitizeHTML(item.vehicleOrAddress)}</div>
-        <div class="text-slate-500 font-semibold">${sanitizeHTML(item.from)} ➔ ${sanitizeHTML(item.to)} • ${sanitizeHTML(item.date)}</div>
-    `;
-
-    document.getElementById('bookingStepForm').classList.remove('hidden');
-    document.getElementById('bookingStepSuccess').classList.add('hidden');
-    openModal('bookingModal');
-}
-
-async function processBookingConfirmation(e) {
-    e.preventDefault();
-    if (isRateLimited()) return;
-
-    const listingId = document.getElementById('bookListingId').value;
-    const item = allListings.find(x => x.id === listingId);
-    if (!item) return;
-
-    const qty = parseInt(document.getElementById('passengerQty').value, 10) || 1;
-    if (qty > item.seats) {
-        showPhonePePopup("सीट उपलब्ध नहीं", `केवल ${item.seats} सीट/रूम उपलब्ध हैं!`, "info");
-        return;
-    }
-
-    const passengerName = sanitizeHTML(document.getElementById('passengerName').value.trim());
-    const passengerPhone = sanitizeHTML(document.getElementById('passengerPhone').value.trim());
-    const passengerIdType = sanitizeHTML(document.getElementById('passengerIdType').value);
-    const passengerIdDigits = sanitizeHTML(document.getElementById('passengerIdDigits').value.trim().toUpperCase());
-    const passengerEmergency = sanitizeHTML(document.getElementById('passengerEmergency').value.trim());
-
-    const uploadedPassPhoto = await readFilesAsBase64(document.getElementById('passengerPhotoInput'));
-    const passengerPhoto = uploadedPassPhoto.length > 0
-        ? uploadedPassPhoto[0]
-        : (currentUser && currentUser.photo ? currentUser.photo : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80');
-
-    currentUser = {
-        name: passengerName,
-        phone: passengerPhone,
-        emergencyPhone: passengerEmergency,
-        idType: passengerIdType,
-        idDigits: passengerIdDigits,
-        photo: passengerPhoto,
-        registeredAt: Date.now()
-    };
-    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(currentUser));
-    updateNavbarUserUI();
-
-    const totalAmount = item.price * qty;
-    const pnrToken = 'PNR-' + Math.floor(100000 + Math.random() * 900000);
-    const newSeats = item.seats - qty;
-    item.seats = newSeats;
-
-    markPnrNotified(pnrToken);
-
-    const newBooking = {
-        pnr: pnrToken,
-        listingId: item.id,
-        category: item.category,
-        providerName: item.providerName,
-        providerPhone: item.phone,
-        vehicleOrAddress: item.vehicleOrAddress,
-        route: `${item.from} ➔ ${item.to}`,
-        date: item.date,
-        passengerName: passengerName,
-        passengerPhone: passengerPhone,
-        passengerEmergency: passengerEmergency,
-        passengerIdProof: `${passengerIdType} (XXXX-${passengerIdDigits})`,
-        passengerPhoto: passengerPhoto,
-        qty: qty,
-        totalAmount: totalAmount,
-        bookedAt: Date.now()
-    };
-
-    myBookings.unshift(newBooking);
-    localStorage.setItem(STORAGE_KEY_BOOKINGS, JSON.stringify(myBookings));
-    await updateSeatsAndLogBooking(item, newSeats, newBooking);
-    updateBookingsBadge();
-    renderListings(allListings);
-
-    const smsText = encodeURIComponent(
-        `YatriSetu Booking Alert (${pnrToken}): इन्होंने आपकी राइड बुक की है! यात्री: ${passengerName} (+91 ${passengerPhone}), रूट: ${item.from} से ${item.to} (${item.date}), सीट: ${qty} (₹${totalAmount})`
-    );
-    const smsHref = `sms:+91${item.phone}?body=${smsText}`;
-
-    document.getElementById('confirmedTicketBox').innerHTML = `
-        <div class="flex items-center justify-between border-b border-slate-200 pb-2.5">
-            <div class="flex items-center gap-2.5">
-                <img src="${passengerPhoto}" alt="Passenger" class="w-10 h-10 rounded-full object-cover border-2 border-emerald-500">
-                <div>
-                    <span class="block font-extrabold text-slate-900 text-xs">${passengerName} <i class="fa-solid fa-circle-check text-emerald-600"></i></span>
-                    <span class="block text-[10px] font-bold text-slate-500">${passengerIdType}: XXXX-${passengerIdDigits}</span>
-                </div>
-            </div>
-            <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-black rounded-lg text-xs">${pnrToken}</span>
-        </div>
-        <div class="flex justify-between pt-1"><span>Passenger Mobile:</span><strong class="text-slate-900">+91 ${passengerPhone}</strong></div>
-        <div class="flex justify-between"><span>Provider / Host:</span><strong class="text-slate-900">${sanitizeHTML(item.providerName)} (+91 ${sanitizeHTML(item.phone)})</strong></div>
-        <div class="flex justify-between"><span>Route & Date:</span><strong class="text-slate-900">${sanitizeHTML(item.from)} ➔ ${sanitizeHTML(item.to)} (${sanitizeHTML(item.date)})</strong></div>
-        <div class="flex justify-between border-t border-slate-200 pt-2 text-sm">
-            <span class="font-bold">Total Amount (${qty} unit):</span>
-            <strong class="text-emerald-600 font-extrabold">₹${totalAmount}</strong>
-        </div>
-        <div class="pt-2">
-            <a href="${smsHref}" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold rounded-xl text-xs flex items-center justify-center gap-2 shadow">
-                <i class="fa-solid fa-comment-sms text-amber-400"></i> ड्राइवर को तुरंत टेक्स्ट SMS भेजें (Send SMS Alert)
-            </a>
-        </div>
-    `;
-
-    document.getElementById('directCallBtn').href = `tel:+91${item.phone}`;
-    const waText = encodeURIComponent(
-        `✅ *YatriSetu Booking Confirmed (${pnrToken})*\n` +
-        `👤 *Passenger:* ${passengerName}\n` +
-        `🪪 *Verified ID:* ${passengerIdType} (XXXX-${passengerIdDigits})\n` +
-        `📞 *Passenger Mobile:* +91 ${passengerPhone}\n` +
-        `📍 *Route:* ${item.from} to ${item.to} (${item.date})\n` +
-        `💺 *Units:* ${qty} (Total: ₹${totalAmount})`
-    );
-    document.getElementById('directWaBtn').href = `https://wa.me/91${item.phone}?text=${waText}`;
-
-    document.getElementById('bookingStepForm').classList.add('hidden');
-    document.getElementById('bookingStepSuccess').classList.remove('hidden');
-    showPhonePePopup(
-        "बुकिंग कन्फर्म हो गई!",
-        `आपकी बुकिंग (${pnrToken}) कन्फर्म हो गई है और राइड ऑफर करने वाले के अकाउंट में लाइव अलर्ट भेज दिया गया है!`
-    );
-}
-
-function getBookingsReceivedByMe() {
-    const received = [];
-    allListings.forEach(item => {
-        if (isMyListing(item) && Array.isArray(item.bookingsList)) {
-            item.bookingsList.forEach(b => {
-                received.push({ ...b, listingRoute: `${item.from} ➔ ${item.to}`, listingDate: item.date });
+        if (searchBtn && searchInput) {
+            searchBtn.addEventListener("click", function () {
+                renderAllColumns(escapeHTML(searchInput.value));
             });
         }
     });
-    return received;
-}
-
-function updateBookingsBadge() {
-    const receivedBookings = getBookingsReceivedByMe();
-    const totalCount = myBookings.length + receivedBookings.length;
-
-    const badge = document.getElementById('bookingCountBadge');
-    if (badge) badge.innerText = totalCount;
-
-    const container = document.getElementById('myBookingsList');
-    if (!container) return;
-
-    let html = '';
-
-    // 1. Driver / Host Received Bookings Section
-    html += `
-        <div class="mb-5">
-            <h4 class="font-extrabold text-slate-900 text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                <i class="fa-solid fa-bell text-emerald-600"></i> मेरी राइड/रूम पर आई बुकिंग्स (${receivedBookings.length})
-            </h4>
-            ${receivedBookings.length === 0 ? `
-                <div class="p-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-200 text-xs text-slate-600">
-                    अभी आपकी पोस्ट की गई राइड या रूम पर कोई बुकिंग नहीं आई है। जैसे ही कोई बुक करेगा, यहाँ यात्री का नाम और नंबर दिखेगा।
-                </div>
-            ` : receivedBookings.map(b => {
-                const replyMsg = encodeURIComponent(`नमस्ते ${b.passengerName}, आपकी YatriSetu बुकिंग ${b.pnr} (${b.route}) कन्फर्म है।`);
-                return `
-                <div class="p-4 mb-2.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-                    <div class="flex items-start gap-3">
-                        <img src="${b.passengerPhoto || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'}" alt="Passenger" class="w-11 h-11 rounded-full object-cover border-2 border-emerald-600 mt-0.5">
-                        <div class="space-y-1">
-                            <div class="flex flex-wrap items-center gap-2">
-                                <span class="px-2 py-0.5 bg-emerald-600 text-white font-extrabold rounded-full text-[10px]">इन्होंने आपकी राइड बुक की है • ${sanitizeHTML(b.pnr)}</span>
-                                <span class="font-extrabold text-slate-900 text-sm">${sanitizeHTML(b.route)}</span>
-                            </div>
-                            <p class="text-slate-800 font-extrabold">यात्री: ${sanitizeHTML(b.passengerName)} (+91 ${sanitizeHTML(b.passengerPhone)})</p>
-                            <p class="text-slate-600">सीट/रूम: <strong>${b.qty} Unit (₹${b.totalAmount})</strong></p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-1.5 self-end sm:self-center">
-                        <a href="sms:+91${sanitizeHTML(b.passengerPhone)}?body=${replyMsg}" class="px-2.5 py-2 bg-slate-800 text-white font-bold rounded-xl transition flex items-center gap-1">
-                            <i class="fa-solid fa-comment-sms"></i> SMS
-                        </a>
-                        <a href="https://wa.me/91${sanitizeHTML(b.passengerPhone)}?text=${replyMsg}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition flex items-center gap-1">
-                            <i class="fa-brands fa-whatsapp"></i> Chat
-                        </a>
-                        <a href="tel:+91${sanitizeHTML(b.passengerPhone)}" class="px-2.5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition flex items-center gap-1">
-                            <i class="fa-solid fa-phone"></i> Call
-                        </a>
-                    </div>
-                </div>`;
-            }).join('')}
-        </div>
-    `;
-
-    // 2. Passenger Bookings Section
-    html += `
-        <div>
-            <h4 class="font-extrabold text-slate-900 text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                <i class="fa-solid fa-ticket text-blue-600"></i> मेरे द्वारा बुक किए गए टिकट (${myBookings.length})
-            </h4>
-            ${myBookings.length === 0 ? `
-                <div class="text-center py-6 bg-slate-50 rounded-2xl border border-slate-200">
-                    <p class="text-xs font-bold text-slate-600">You have no confirmed bookings yet.</p>
-                </div>
-            ` : myBookings.map(b => {
-                const waMsg = encodeURIComponent(`Hello ${b.providerName}, regarding my YatriSetu booking ${b.pnr} (${b.route} on ${b.date}). Passenger: ${b.passengerName}`);
-                return `
-                <div class="p-4 mb-2.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-                    <div class="flex items-start gap-3">
-                        <img src="${b.passengerPhoto || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'}" alt="Passenger" class="w-11 h-11 rounded-full object-cover border-2 border-emerald-500 mt-0.5">
-                        <div class="space-y-1">
-                            <div class="flex flex-wrap items-center gap-2">
-                                <span class="px-2.5 py-0.5 bg-emerald-600 text-white font-extrabold rounded-full text-[10px]">${sanitizeHTML(b.pnr)}</span>
-                                <span class="font-extrabold text-slate-900 text-sm">${sanitizeHTML(b.route)}</span>
-                                <span class="text-slate-400 font-bold">• ${sanitizeHTML(b.date)}</span>
-                            </div>
-                            <p class="text-slate-700 font-bold">Provider: ${sanitizeHTML(b.providerName)} (${sanitizeHTML(b.vehicleOrAddress)})</p>
-                            <p class="text-slate-500">Passenger: <strong>${sanitizeHTML(b.passengerName)}</strong> — <strong class="text-emerald-600">₹${b.totalAmount}</strong></p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2 self-end sm:self-center">
-                        <a href="https://wa.me/91${sanitizeHTML(b.providerPhone)}?text=${waMsg}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition flex items-center gap-1">
-                            <i class="fa-brands fa-whatsapp"></i> Chat
-                        </a>
-                        <a href="tel:+91${sanitizeHTML(b.providerPhone)}" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition flex items-center gap-1">
-                            <i class="fa-solid fa-phone"></i> Call
-                        </a>
-                    </div>
-                </div>`;
-            }).join('')}
-        </div>
-    `;
-
-    container.innerHTML = html;
-}
-
-// ============================================================================
-// GALLERY, FILTERS & MODALS
-// ============================================================================
-function openGallery(listingId) {
-    const item = allListings.find(x => x.id === listingId);
-    if (!item) return;
-
-    document.getElementById('galleryTitle').innerText = `${item.providerName} — ${item.vehicleOrAddress}`;
-    const container = document.getElementById('galleryImagesContainer');
-    const photos = (item.photos && item.photos.length > 0) ? item.photos : [getDefaultImageForCategory(item.category)];
-
-    container.innerHTML = photos.map(src => `
-        <img src="${src}" alt="Listing Photo" class="w-full h-56 object-cover rounded-2xl border border-slate-200 shadow-sm">
-    `).join('');
-
-    openModal('galleryModal');
-}
-
-function filterListings() {
-    const fromVal = document.getElementById('searchFrom').value.trim().toLowerCase();
-    const toVal = document.getElementById('searchTo').value.trim().toLowerCase();
-    const catVal = document.getElementById('searchCategory').value;
-    const includeStays = document.getElementById('showStaysToggle').checked;
-
-    const filtered = allListings.filter(item => {
-        if (!includeStays && item.kind === 'stay') return false;
-        const matchFrom = !fromVal || item.from.toLowerCase().includes(fromVal) || item.to.toLowerCase().includes(fromVal);
-        const matchTo = !toVal || item.to.toLowerCase().includes(toVal) || item.from.toLowerCase().includes(toVal);
-        const matchCat = (catVal === 'all') || (item.category === catVal);
-        return matchFrom && matchTo && matchCat;
-    });
-
-    renderListings(filtered);
-    document.getElementById('listingsSection').scrollIntoView({ behavior: 'smooth' });
-}
-
-function quickRoute(fromCity, toCity) {
-    document.getElementById('searchFrom').value = fromCity;
-    document.getElementById('searchTo').value = toCity;
-    document.getElementById('searchCategory').value = 'all';
-    filterListings();
-}
-
-function filterByCategory(category) {
-    document.getElementById('searchFrom').value = '';
-    document.getElementById('searchTo').value = '';
-    document.getElementById('searchCategory').value = category;
-    filterListings();
-}
-
-function resetFilters() {
-    document.getElementById('searchFrom').value = '';
-    document.getElementById('searchTo').value = '';
-    document.getElementById('searchCategory').value = 'all';
-    document.getElementById('showStaysToggle').checked = true;
-    renderListings(allListings);
-}
-
-function openInfoPopup(topic) {
-    const messages = {
-        moreRoutes: "Popular Intercity Corridors: Delhi ➔ Agra, Lucknow ➔ Kanpur, Etawah ➔ Noida, Jaipur ➔ Gurgaon, Chandigarh ➔ Delhi, and Pune ➔ Mumbai.",
-        faqPublish: "Click 'Offer a ride' in the top navigation bar. You can list a Car, Bike, Bus, Truck, or Homestay Room and attach photos from your device.",
-        faqExpiry: "All listings and bookings are automatically managed with a 14-day (2-week) lifecycle so travellers only see active schedules."
-    };
-    document.getElementById('galleryTitle').innerText = "YatriSetu Information";
-    document.getElementById('galleryImagesContainer').innerHTML = `
-        <div class="col-span-full p-4 bg-slate-50 rounded-2xl border border-slate-200 text-sm text-slate-700 leading-relaxed">
-            ${messages[topic] || ''}
-        </div>
-    `;
-    openModal('galleryModal');
-}
-
-function openModal(id) {
-    const m = document.getElementById(id);
-    if (m) {
-        m.classList.remove('hidden');
-        m.classList.add('flex');
-        if (id === 'myBookingsModal') updateBookingsBadge();
-        if (id === 'registerModal') renderSignOutButtonInModal();
-        if (id === 'publishModal' && currentUser) {
-            document.getElementById('rDriverName').value = currentUser.name || '';
-            document.getElementById('rDriverPhone').value = currentUser.phone || '';
-            document.getElementById('sHostName').value = currentUser.name || '';
-            document.getElementById('sHostPhone').value = currentUser.phone || '';
-        }
-    }
-}
-
-function closeModal(id) {
-    const m = document.getElementById(id);
-    if (m) {
-        m.classList.add('hidden');
-        m.classList.remove('flex');
-    }
-}
-
-function switchPublishTab(tab) {
-    const fRide = document.getElementById('formPublishRide');
-    const fStay = document.getElementById('formPublishStay');
-    const bRide = document.getElementById('tabBtnRide');
-    const bStay = document.getElementById('tabBtnStay');
-
-    if (tab === 'ride') {
-        fRide.classList.remove('hidden');
-        fStay.classList.add('hidden');
-        bRide.className = "py-2.5 rounded-xl font-extrabold text-xs bg-blue-600 text-white shadow-sm transition cursor-pointer";
-        bStay.className = "py-2.5 rounded-xl font-extrabold text-xs text-slate-600 hover:text-slate-900 transition cursor-pointer";
-    } else {
-        fRide.classList.add('hidden');
-        fStay.classList.remove('hidden');
-        bStay.className = "py-2.5 rounded-xl font-extrabold text-xs bg-blue-600 text-white shadow-sm transition cursor-pointer";
-        bRide.className = "py-2.5 rounded-xl font-extrabold text-xs text-slate-600 hover:text-slate-900 transition cursor-pointer";
-    }
-}
-
-// Initialize & Start 4-Second Live Cloud Sync
-document.addEventListener('DOMContentLoaded', () => {
-    configureDateConstraints();
-    updateNavbarUserUI();
-    updateBookingsBadge();
-    try {
-        const cached = localStorage.getItem(STORAGE_KEY_CACHE);
-        if (cached) {
-            allListings = JSON.parse(cached);
-        }
-    } catch (e) {}
-    if (!allListings || allListings.length === 0) {
-        const seeds = getDefaultSeedListings();
-        allListings = Object.keys(seeds).map(k => ({ cloudKey: k, ...seeds[k] }));
-    }
-    renderListings(allListings);
-    fetchListingsFromCloud();
-    setInterval(fetchListingsFromCloud, 4000);
-});
+})();
