@@ -101,6 +101,7 @@ const DATA = {
       "id": "railway-rrb-station-master-online-form-2026",
       "title": "Railway RRB Station Master Online Form 2026",
       "org": "rrb",
+      "posts": 1265,
       "short": "Railway RRB Station Master Examination 2026 — Candidates are advised to confirm from the Railway RRB Station Master official website.",
       "deadline": "2026-11-25",
       "line": "Last Date: 25 November 2026",
@@ -1600,8 +1601,924 @@ const DATA = {
         "Maximum. Age : 32 Years"
       ]
     },
+
     {
-      "id": "ssc-gd-constable-revised-result-2026-out",
+    "id": "ssc-gd-constable-revised-result-2026-out",
       "title": "SSC GD Constable Revised Result 2026 – Out",
       "org": "ssc",
-      "short": "SSC GD C
+      "short": "SSC GD Constable Examination 2026 — Candidates are advised to confirm from the SSC official website.",
+      "tag": "Out",
+      "date": "2026-10-20",
+      "line": "Revised Result: Available Now",
+      "dates": [
+        ["Online Apply Start Date", "01 December 2025"],
+        ["Online Apply Last Date", "31 December 2025"],
+        ["Last Date For Fee Payment", "01 January 2026"],
+        ["Correction Form", "10 – 13 January 2026"],
+        ["Exam Date", "27 April – 30 May 2026"],
+        ["Slot Selection", "11 – 15 April 2026"],
+        ["Exam City Details", "19 April 2026"],
+        ["Admit Card", "24 April 2026"],
+        ["Answer Key", "15 June 2026"],
+        ["Result Date", "Available Now"]
+      ],
+      "fee": [
+        "For General, EWS, OBC: Rs. 100/-",
+        "For SC, ST & All Female Candidates : Rs. 0/-",
+        "Correction Charge : Rs. 200/- (First Time) | Rs. 500/- (Second Time)"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 January 2026",
+        "Minimum Age : 18 Year",
+        "Maximum Age : 23 Year"
+      ]
+    },
+    {
+      "id": "hpsc-hcs-final-result-2026",
+      "title": "HPSC HCS Final Result 2026",
+      "org": "hpsc",
+      "short": "Haryana HPSC HCS Examination 2026 — Candidates are advised to confirm from the HPSC official website.",
+      "tag": "Out",
+      "date": "2026-10-17",
+      "line": "Final Result: 17 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "06 February 2026"],
+        ["Online Apply Last Date", "26 February 2026"],
+        ["Pre Exam Date", "26 April 2026"],
+        ["Pre Result Date", "03 May 2026"],
+        ["Mains Exam Date", "27 – 29 June 2026"],
+        ["Mains Result Date", "17 September 2026"],
+        ["Interview Date", "03 – 08 October 2026"],
+        ["Final Result", "17 October 2026"]
+      ],
+      "fee": [
+        "For General / Other State : ₹ 1000/-",
+        "For Reserved Categories / Women (Haryana) : ₹ 250/-",
+        "For PH : ₹ 00/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 January 2026",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 27 Years (DSP) | 42 Years (Others)"
+      ]
+    },
+    {
+      "id": "rbi-officer-grade-b-final-result-2026",
+      "title": "RBI Officer Grade-B Final Result 2026",
+      "org": "rbi",
+      "short": "RBI Officer Grade-B Examination 2026 — Candidates are advised to confirm from the RBI official website.",
+      "tag": "Updated",
+      "date": "2026-08-25",
+      "line": "Result Date: 25 August 2026",
+      "dates": [
+        ["Online Apply Start Date", "29 April 2026"],
+        ["Online Apply Last Date", "20 May 2026"],
+        ["Phase-I Exam Date", "13 – 14 June 2026"],
+        ["Phase-II Exam Date", "25 – 26 July 2026"],
+        ["Result Date", "25 August 2026 Updated"]
+      ],
+      "fee": [
+        "For General, OBC, EWS : ₹ 850/-",
+        "For SC / ST, PH : ₹ 100/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 April 2026",
+        "Minimum Age : 21 Years",
+        "Maximum Age : 30 Years"
+      ]
+    },
+    {
+      "id": "railway-rrb-technician-answer-key-2026-out",
+      "title": "Railway RRB Technician Answer Key 2026 – Out",
+      "org": "rrb",
+      "short": "Railway RRB Technician Examination 2026 — Candidates are advised to confirm from the Railway RRB official website.",
+      "tag": "Out",
+      "date": "2026-10-15",
+      "line": "Answer Key: 15 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "30 June 2026"],
+        ["Online Apply Last Date", "29 July 2026"],
+        ["Exam Date", "06 – 09 October 2026"],
+        ["Admit Card", "02 October 2026"],
+        ["Answer Key", "15 October 2026"]
+      ],
+      "fee": [
+        "For General, EWS, OBC : ₹ 500/-",
+        "For SC, ST, PH & All Category Female : ₹ 250/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 30 Years (Gr-III) | 33 Years (Gr-I Signal)"
+      ]
+    },
+    {
+      "id": "sbi-po-mains-result-2026",
+      "title": "SBI PO Mains Result 2026",
+      "org": "sbi",
+      "short": "SBI Bank PO Examination 2026 — Candidates are advised to confirm from the SBI official website.",
+      "tag": "Out",
+      "date": "2026-10-15",
+      "line": "Mains Result: 15 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "18 June 2026"],
+        ["Online Apply Last Date", "08 July 2026"],
+        ["Pre Exam Date", "02 August 2026"],
+        ["Pre Result", "28 August 2026"],
+        ["Mains Exam Date", "12 September 2026"],
+        ["Mains Result", "15 October 2026"]
+      ],
+      "fee": [
+        "For General, OBC, EWS : ₹ 750/-",
+        "For SC / ST, PH : ₹ 00/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 April 2026",
+        "Minimum Age : 21 Years",
+        "Maximum Age : 30 Years"
+      ]
+    },
+    {
+      "id": "up-police-constable-final-result-2026",
+      "title": "UP Police Constable Final Result 2026",
+      "org": "uppolice",
+      "short": "UP Police Constable Examination 2026 — Candidates are advised to confirm from the UP Police official website.",
+      "tag": "Out",
+      "date": "2026-10-14",
+      "line": "Final Result: 14 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "31 December 2025"],
+        ["Online Apply Last Date", "30 January 2026"],
+        ["Exam Date", "08, 09, 10 June 2026"],
+        ["Result Declared Date", "31 July 2026"],
+        ["DV / PST Date", "17 August 2026"],
+        ["PET Date", "08 October 2026"],
+        ["Final Result", "14 October 2026"]
+      ],
+      "fee": [
+        "For General/ EWS/ OBC : ₹ 500/-",
+        "For SC / ST : ₹ 400/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2025",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 25 Years (UR Male) | 28 Years (UR Female) | 30-33 Years (OBC/SC/ST)"
+      ]
+    },
+    {
+      "id": "upsc-nda-ii-result-name-wise-2026-out",
+      "title": "UPSC NDA II Result (Name Wise) 2026 – Out",
+      "org": "upsc",
+      "short": "UPSC National Defence Academy & Naval Academy II Examination 2026",
+      "tag": "Out",
+      "date": "2026-10-09",
+      "line": "Result Date: 09 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "20 May 2026"],
+        ["Online Apply Last Date", "11 June 2026"],
+        ["Exam Date", "13 September 2026"],
+        ["Admit Card", "03 September 2026"],
+        ["Result Date", "09 October 2026"]
+      ],
+      "fee": [
+        "General, OBC : ₹ 100/-",
+        "SC / ST / All Female : ₹ 0/-"
+      ],
+      "eligibility": [
+        "Candidate date of birth must be between 01 January 2008 and 01 January 2011."
+      ]
+    },
+    {
+      "id": "dsssb-assistant-teacher-primary-result-2026",
+      "title": "DSSSB Assistant Teacher (Primary) Result 2026",
+      "org": "dsssb",
+      "short": "DSSSB Primary Teacher PRT Examination 2025 — Candidates are advised to confirm from the DSSSB official website.",
+      "tag": "Out",
+      "date": "2026-10-13",
+      "line": "Result Date: 13 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "17 September 2025"],
+        ["Online Apply Last Date", "16 October 2025"],
+        ["Exam Date", "Feb – April 2026"],
+        ["Result Date", "13 October 2026"]
+      ],
+      "fee": [
+        "For General, OBC, EWS : ₹ 100/-",
+        "For SC / ST, PH, Women : ₹ 00/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 16 September 2025",
+        "Maximum Age : 30 Years"
+      ]
+    },
+    {
+      "id": "upessc-principal-result-2026",
+      "title": "UPESSC Principal Result 2026",
+      "org": "upessc",
+      "short": "UPESSC Principal Examination 2026 — Candidates are advised to confirm from the UPESSC official website.",
+      "tag": "Out",
+      "date": "2026-10-12",
+      "line": "Result Date: 12 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "21 July 2026"],
+        ["Online Apply Last Date", "20 August 2026"],
+        ["Exam Date", "24 September 2026"],
+        ["Answer Key", "26 September 2026"],
+        ["Result Date", "12 October 2026"]
+      ],
+      "fee": [
+        "For All Categories : ₹ 3000/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "Maximum Age : 62 Years"
+      ]
+    },
+    {
+      "id": "upsssc-cane-supervisor-eligibility-result-2026",
+      "title": "UPSSSC Cane Supervisor Eligibility Result 2026",
+      "org": "upsssc",
+      "short": "UPSSSC Cane Supervisor Examination 2026 — Candidates are advised to confirm from the UPSSSC official website.",
+      "tag": "Out",
+      "date": "2026-10-12",
+      "line": "Eligibility Result: 12 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "07 July 2026"],
+        ["Online Apply Last Date", "28 July 2026"],
+        ["Eligibility Result", "12 October 2026"]
+      ],
+      "fee": [
+        "For All Candidates : ₹ 25/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "Minimum Age : 21 Years",
+        "Maximum Age : 40 Years"
+      ]
+    },
+    {
+      "id": "upsssc-moharir-2022-eligibility-result",
+      "title": "UPSSSC Moharir 2022 Eligibility Result",
+      "org": "upsssc",
+      "short": "UPSSSC Moharir Examination 2022 — Candidates are advised to confirm from the UPSSSC official website.",
+      "tag": "Out",
+      "date": "2026-10-12",
+      "line": "Eligibility Result: 12 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "29 October 2022"],
+        ["Online Apply Last Date", "18 November 2022"],
+        ["Eligibility Result", "12 October 2026"]
+      ],
+      "fee": [
+        "For All Candidates : ₹ 25/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 40 Years"
+      ]
+    },
+    {
+      "id": "aiims-norcet-11th-stage-ii-result-2026-out",
+      "title": "AIIMS NORCET 11th Stage-II Result 2026 – Out",
+      "org": "aiims",
+      "short": "AIIMS NORCET 11th Nursing Officer Examination 2026",
+      "tag": "Out",
+      "date": "2026-10-10",
+      "line": "Stage-II Result: 10 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "24 July 2026"],
+        ["Online Apply Last Date", "13 August 2026"],
+        ["CBT-I Exam Date", "12 September 2026"],
+        ["CBT-II Exam Date", "30 September 2026"],
+        ["Stage-II Result", "10 October 2026"]
+      ],
+      "fee": [
+        "For General, OBC : ₹ 3000/-",
+        "For SC / ST, EWS : ₹ 2400/-",
+        "For PwD : ₹ 00/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 13 August 2026",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 30 Years"
+      ]
+    },
+    {
+      "id": "bihar-police-csbc-constable-gd-final-result-2026-out",
+      "title": "Bihar Police CSBC Constable GD Final Result 2026 – Out",
+      "org": "csbc",
+      "short": "Bihar Police CSBC Constable Examination 2026",
+      "tag": "Out",
+      "date": "2026-10-09",
+      "line": "Final Result: 09 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "06 February 2026"],
+        ["Online Apply Last Date", "05 March 2026"],
+        ["Exam Date", "24 June 2026"],
+        ["PST/ DV Exam Date", "12 September 2026"],
+        ["Final Result", "09 October 2026"]
+      ],
+      "fee": [
+        "For All Category Candidates : ₹ 100/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 August 2026",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 25 – 30 Years (Category Wise)"
+      ]
+    },
+    {
+      "id": "ongc-geologists-and-engineers-e1-result-2026",
+      "title": "ONGC Geologists and Engineers E1 Result 2026",
+      "org": "ongc",
+      "short": "ONGC Geologists and Engineers E1 Examination 2026",
+      "tag": "Out",
+      "date": "2026-10-08",
+      "line": "Result Date: 08 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "17 July 2026"],
+        ["Online Apply Last Date", "31 July 2026"],
+        ["Exam Date", "06 September 2026"],
+        ["Result Date", "08 October 2026"]
+      ],
+      "fee": [
+        "For General, OBC, EWS : ₹ 1000/-",
+        "For SC, ST, PWD : ₹ 00/-"
+      ],
+      "eligibility": [
+        "Maximum Age : 26 – 32 Years (Stream & Category Wise)"
+      ]
+    },{
+      "id": "ssc-stenographer-c-d-2025-final-result-with-marks-out",
+      "title": "SSC Stenographer C, D 2025 Final Result With Marks – Out",
+      "org": "ssc",
+      "short": "SSC Stenographer C, D Examination 2025",
+      "tag": "Out",
+      "date": "2026-08-25",
+      "line": "Final Result: 25 August 2026",
+      "dates": [
+        ["Online Apply Start Date", "05 June 2025"],
+        ["Online Apply Last Date", "26 June 2025"],
+        ["Exam Date", "06-08 August 2025"],
+        ["Skill Test Date", "28, 29 January 2026"],
+        ["Final Result", "25 August 2026"]
+      ],
+      "fee": [
+        "For General/ OBC/ EWS : ₹ 100/-",
+        "For SC/ ST/ Female / PH : ₹ 0/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 August 2025",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 27 Years (Grade-D) | 30 Years (Grade-C)"
+      ]
+    },
+    {
+      "id": "ssc-10-2-chsl-2025-final-result-out",
+      "title": "SSC 10+2 CHSL 2025 Final Result – Out",
+      "org": "ssc",
+      "short": "SSC 10+2 CHSL Examination 2025",
+      "tag": "Out",
+      "date": "2026-06-25",
+      "line": "Final Result: Available Now",
+      "dates": [
+        ["Online Apply Start Date", "23 June 2025"],
+        ["Online Apply Last Date", "18 July 2025"],
+        ["Tier-I Exam Start", "12 November 2025"],
+        ["Tier-II Exam Date", "10 & 22 April 2026"],
+        ["Option Form", "19 – 25 June 2026"]
+      ],
+      "fee": [
+        "For General/ OBC/ EWS : ₹ 100/-",
+        "For SC/ ST/ Female / PH : ₹ 0/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 August 2025",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 27 Years"
+      ]
+    },
+    {
+      "id": "ssc-mts-havaldar-final-result-2026-out",
+      "title": "SSC MTS / Havaldar Final Result 2026 – Out",
+      "org": "ssc",
+      "short": "SSC Multi Tasking Staff MTS Examination 2025",
+      "tag": "Out",
+      "date": "2026-10-07",
+      "line": "Final Result: 07 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "26 June 2025"],
+        ["Online Apply Last Date", "24 July 2025"],
+        ["Exam Start Date", "04 February 2026"],
+        ["PET / PST Exam Date", "24 – 31 August 2026"],
+        ["Final Result", "07 October 2026"]
+      ],
+      "fee": [
+        "For General/ OBC/ EWS : ₹ 100/-",
+        "For SC/ ST/ Female / PH : ₹ 0/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 August 2025",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 25-27 Years"
+      ]
+    },
+    {
+      "id": "rssb-clerk-jr-ii-junior-assistant-score-card-2026",
+      "title": "RSSB Clerk Jr-II / Junior Assistant Score Card 2026",
+      "org": "rssb",
+      "short": "RSSB Clerk Jr-II / Junior Assistant Examination 2026",
+      "tag": "Out",
+      "date": "2026-09-28",
+      "line": "Result Date: 28 September 2026",
+      "dates": [
+        ["Online Apply Start Date", "15 January 2026"],
+        ["Online Apply Last Date", "13 February 2026"],
+        ["Exam Date", "05 July 2026"],
+        ["Result Date", "28 September 2026"]
+      ],
+      "fee": [
+        "For General, EWS, OBC (CL) : ₹ 600/-",
+        "For OBC (NCL), SC, ST, PH : ₹ 400/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 January 2027",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 40 Years"
+      ]
+    },
+    {
+      "id": "rajasthan-state-eligibility-test-set-answer-key-2026",
+      "title": "Rajasthan State Eligibility Test SET Answer Key 2026",
+      "org": "rpsc",
+      "short": "Rajasthan State Eligibility Test SET Examination 2026",
+      "tag": "Out",
+      "date": "2026-10-05",
+      "line": "Answer Key: 05 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "14 June 2026"],
+        ["Online Apply Last Date", "10 August 2026"],
+        ["Exam Date", "13 September 2026"],
+        ["Answer Key", "05 October 2026"]
+      ],
+      "fee": [
+        "For General, OBC (CL) : ₹ 1500/-",
+        "For EWS, OBC (NCL) : ₹ 1200/-",
+        "For SC, ST, PH : ₹ 750/-"
+      ],
+      "eligibility": [
+        "No Age Limit as per Rajasthan SET Rules."
+      ]
+    },
+    {
+      "id": "ib-mts-final-result-2026-out",
+      "title": "IB MTS Final Result 2026 – Out",
+      "org": "ib",
+      "short": "Intelligence Bureau (IB) MTS Examination 2025",
+      "tag": "Out",
+      "date": "2026-10-05",
+      "line": "Final Result: 05 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "22 November 2025"],
+        ["Online Apply Last Date", "14 December 2025"],
+        ["Tier-I Exam Date", "27 January 2026"],
+        ["Tier-II Exam Date", "12 July 2026"],
+        ["Final Result", "05 October 2026"]
+      ],
+      "fee": [
+        "For General, OBC, EWS : Rs 650/-",
+        "For SC, ST : Rs 550/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 14 December 2025",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 25 Years"
+      ]
+    },
+    {
+      "id": "rpsc-apo-marks-2026",
+      "title": "RPSC APO Marks 2026",
+      "org": "rpsc",
+      "short": "RPSC APO Examination 2026",
+      "tag": "Out",
+      "date": "2026-10-01",
+      "line": "Result Date: 01 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "08 June 2026"],
+        ["Online Apply Last Date", "07 July 2026"],
+        ["Pre Exam Date", "02 September 2026"],
+        ["Result Date", "01 October 2026"]
+      ],
+      "fee": [
+        "For General & Other State : ₹ 600/-",
+        "For SC / ST, OBC (NCL), PH : ₹ 400/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 January 2027",
+        "Minimum Age : 21 Years",
+        "Maximum Age : 40 Years"
+      ]
+    },
+    {
+      "id": "rpsc-veterinary-officer-2025-merit-list-marks",
+      "title": "RPSC Veterinary Officer 2025 Merit List, Marks",
+      "org": "rpsc",
+      "short": "RPSC Veterinary Officer Examination 2025",
+      "tag": "Out",
+      "date": "2026-10-05",
+      "line": "Marks: 05 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "05 August 2025"],
+        ["Online Apply Last Date", "03 September 2025"],
+        ["Exam Date", "19 April 2026"],
+        ["Result Date", "16 June 2026"],
+        ["Marks", "05 October 2026"]
+      ],
+      "fee": [
+        "For General, Other State : ₹ 600/-",
+        "For SC / ST, OBC : ₹ 400/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 January 2026",
+        "Minimum Age : 20 Years",
+        "Maximum Age : 40 Years"
+      ]
+    },
+    {
+      "id": "uttarakhand-tet-answer-key-2026-out",
+      "title": "Uttarakhand TET Answer Key 2026 – Out",
+      "org": "utet",
+      "short": "UTET Examination 2026",
+      "tag": "Out",
+      "date": "2026-10-05",
+      "line": "Answer Key: 05 October 2026",
+      "dates": [
+        ["Apply Online Start Date", "14 July 2026"],
+        ["Apply Online Last Date", "03 August 2026"],
+        ["Exam Date", "29 September 2026"],
+        ["Answer Key", "05 October 2026"]
+      ],
+      "fee": [
+        "Single Paper : ₹ 600/- (UR/OBC) | ₹ 300/- (SC/ST)",
+        "Both Paper : ₹ 1000/- (UR/OBC) | ₹ 500/- (SC/ST)"
+      ],
+      "eligibility": [
+        "Age Limit As On Uttarakhand TET Rules."
+      ]
+    },
+    {
+      "id": "upsssc-platoon-commander-block-organizer-eligibility-result-2026",
+      "title": "UPSSSC Platoon Commander / Block Organizer Eligibility Result 2026",
+      "org": "upsssc",
+      "short": "UPSSSC Platoon Commander / Block Organizer Examination 2026",
+      "tag": "Out",
+      "date": "2026-10-01",
+      "line": "Eligibility Result: Available Now",
+      "dates": [
+        ["Online Apply Start Date", "16 June 2026"],
+        ["Online Apply Last Date", "06 July 2026"],
+        ["Correction Last Date", "13 July 2026"]
+      ],
+      "fee": [
+        "For All Candidates : ₹ 25/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "Minimum Age : 21 Years",
+        "Maximum Age : 40 Years"
+      ]
+    },
+    {
+      "id": "upsssc-havildar-instructor-eligibility-result-2026",
+      "title": "UPSSSC Havildar Instructor Eligibility Result 2026",
+      "org": "upsssc",
+      "short": "UPSSSC Havildar Instructor Examination 2026",
+      "tag": "Out",
+      "date": "2026-10-01",
+      "line": "Eligibility Result: Available Now",
+      "dates": [
+        ["Online Apply Start Date", "19 June 2026"],
+        ["Online Apply Last Date", "09 July 2026"],
+        ["Correction Last Date", "16 July 2026"]
+      ],
+      "fee": [
+        "For All Candidates : ₹ 25/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 40 Years"
+      ]
+    },
+    {
+      "id": "upsssc-enforcement-constable-2023-final-result",
+      "title": "UPSSSC Enforcement Constable 2023 Final Result",
+      "org": "upsssc",
+      "short": "UPSSSC Enforcement Constable Examination 2023",
+      "tag": "Out",
+      "date": "2026-09-30",
+      "line": "Final Result: 30 September 2026",
+      "dates": [
+        ["Online Apply Start Date", "07 July 2023"],
+        ["Online Apply Last Date", "28 July 2023"],
+        ["Exam Date", "11 May 2025"],
+        ["PET Exam Date", "22 February 2026"],
+        ["Final Result", "30 September 2026"]
+      ],
+      "fee": [
+        "For All Candidates : ₹ 25/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2023",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 40 Years"
+      ]
+    },
+    {
+      "id": "dsssb-delhi-high-court-attendant-result-2026",
+      "title": "DSSSB Delhi High Court Attendant Result 2026",
+      "org": "dsssb",
+      "short": "DSSSB Delhi High Court Attendant Examination 2025",
+      "tag": "Out",
+      "date": "2026-09-30",
+      "line": "Result Date: 30 September 2026",
+      "dates": [
+        ["Online Apply Start Date", "26 August 2025"],
+        ["Online Apply Last Date", "24 September 2025"],
+        ["Exam Date", "01 – 30 June 2026"],
+        ["Admit Card", "29 May 2026"],
+        ["Result Date", "30 September 2026"]
+      ],
+      "fee": [
+        "For General, OBC, EWS : ₹ 100/-",
+        "For SC / ST, PH, Women : ₹ 00/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 January 2025",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 27 Years"
+      ]
+    }
+  ],
+  admit: [],
+  jobs10: [],
+  outsource: [],
+  syllabus: [],
+  answerkey: [],
+  admission: []
+};
+/* @@DATA-END */
+
+/* =====================================================================
+   UNIVERSAL CSP-SAFE RENDERING ENGINE (View All Expandable & LIVE Fixed)
+   ===================================================================== */
+(function () {
+  function safeUrl(u) {
+    if (typeof u !== 'string') return '#';
+    const s = u.trim();
+    return /^https?:\/\//i.test(s) ? s : '#';
+  }
+
+  function findPost(id) {
+    const keys = Object.keys(DATA);
+    for (let i = 0; i < keys.length; i++) {
+      const arr = DATA[keys[i]];
+      if (Array.isArray(arr)) {
+        for (let j = 0; j < arr.length; j++) {
+          if (arr[j] && arr[j].id === id) {
+            return { post: arr[j], section: keys[i] };
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  function resolveLinks(post) {
+    const p = (post.org && PORTALS[post.org]) ? PORTALS[post.org] : null;
+    const official = post.official || (p ? p.official : 'https://www.india.gov.in/');
+    const apply = post.apply || (p ? p.apply : official);
+    return { official: safeUrl(official), apply: safeUrl(apply), orgName: p ? p.name : '' };
+  }
+
+  const SECTION_SELECTORS = {
+    latest: ['[data-list="latest"]', '#latestJobsList', '#list-latest', '#latest'],
+    result: ['[data-list="result"]', '#resultList', '#list-result', '#result'],
+    admit: ['[data-list="admit"]', '#admitCardList', '#list-admit', '#admit'],
+    jobs10: ['[data-list="jobs10"]', '#itiJobsList', '#list-jobs10', '#jobs10'],
+    outsource: ['[data-list="outsource"]', '#outsourcingList', '#list-outsource', '#outsource'],
+    syllabus: ['[data-list="syllabus"]', '#syllabusList', '#list-syllabus', '#syllabus'],
+    answerkey: ['[data-list="answerkey"]', '#answerKeyList', '#list-answerkey', '#answerkey'],
+    admission: ['[data-list="admission"]', '#admissionList', '#list-admission', '#admission']
+  };
+
+  // ट्रैक करने के लिए कि किस सेक्शन का "View All" क्लिक हुआ है
+  const expandedSections = {};
+
+  function getListElement(key) {
+    const sels = SECTION_SELECTORS[key] || [];
+    for (let i = 0; i < sels.length; i++) {
+      const el = document.querySelector(sels[i]);
+      if (el) return el.tagName === 'UL' ? el : (el.querySelector('ul') || el);
+    }
+    return null;
+  }
+
+  function renderLists(query) {
+    const q = (query || '').trim().toLowerCase();
+    Object.keys(SECTION_SELECTORS).forEach(function (key) {
+      const ul = getListElement(key);
+      if (!ul) return;
+      while (ul.firstChild) ul.removeChild(ul.firstChild);
+
+      const items = (DATA[key] || []).filter(function (item) {
+        if (!q) return true;
+        const hay = ((item.title || '') + ' ' + (item.short || '') + ' ' + (item.line || '')).toLowerCase();
+        return hay.indexOf(q) !== -1;
+      });
+
+      const emptyMsg = document.querySelector(`[data-empty="${key}"]`);
+
+      if (items.length === 0) {
+        if (emptyMsg) emptyMsg.hidden = false;
+        const viewAllBtn = document.querySelector(`[data-more="${key}"]`);
+        if (viewAllBtn) viewAllBtn.hidden = true;
+        return;
+      }
+
+      if (emptyMsg) emptyMsg.hidden = true;
+
+      // अगर "View All" पर क्लिक किया है तो सारे दिखाएँ, वरना सिर्फ़ पहले 6
+      const limit = expandedSections[key] ? items.length : 6;
+      const displayItems = items.slice(0, limit);
+
+      displayItems.forEach(function (post) {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = '#' + post.id;
+        a.className = 'post-link';
+        a.setAttribute('data-post-id', post.id);
+        a.textContent = '• ' + post.title;
+        li.appendChild(a);
+
+        if (post.tag || post.extended) {
+          const tagSpan = document.createElement('span');
+          tagSpan.className = 'tag tag-new';
+          tagSpan.textContent = ' [' + (post.tag || 'Extended') + ']';
+          li.appendChild(tagSpan);
+        }
+
+        if (post.line) {
+          const meta = document.createElement('span');
+          meta.className = 'post-date';
+          meta.textContent = post.line;
+          li.appendChild(meta);
+        }
+
+        ul.appendChild(li);
+      });
+
+      // View All बटन की स्थिति और टेक्स्ट मैनेज करना
+      const viewAllBtn = document.querySelector(`[data-more="${key}"]`);
+      if (viewAllBtn) {
+        if (items.length <= 6) {
+          viewAllBtn.hidden = true;
+        } else {
+          viewAllBtn.hidden = false;
+          viewAllBtn.textContent = expandedSections[key] ? '« Show Less' : `View All ${key.charAt(0).toUpperCase() + key.slice(1)} »`;
+        }
+      }
+    });
+  }
+
+  function renderTickerAndHighlights() {
+    const topItems = (DATA.latest || []).slice(0, 4).concat((DATA.result || []).slice(0, 4));
+
+    const tickerContainer = document.querySelector('#ticker');
+    const ticker = document.querySelector('#ticker-track');
+    if (tickerContainer && topItems.length) {
+      tickerContainer.hidden = false;
+    }
+    if (ticker && topItems.length) {
+      while (ticker.firstChild) ticker.removeChild(ticker.firstChild);
+      topItems.slice(0, 6).forEach(function (item, idx) {
+        if (idx > 0) ticker.appendChild(document.createTextNode(' || '));
+        const a = document.createElement('button');
+        a.className = 'ticker-item';
+        a.setAttribute('data-post-id', item.id);
+        a.textContent = item.title;
+        ticker.appendChild(a);
+      });
+    }
+
+    const grid = document.querySelector('#hot-grid');
+    if (grid && topItems.length) {
+      grid.hidden = false;
+      while (grid.firstChild) grid.removeChild(grid.firstChild);
+      topItems.slice(0, 8).forEach(function (item, idx) {
+        const card = document.createElement('button');
+        card.className = 'hot-tile c' + ((idx % 8) + 1);
+        card.setAttribute('data-post-id', item.id);
+        card.textContent = item.title;
+        grid.appendChild(card);
+      });
+    }
+  }
+
+  function renderTools() {}
+
+  function fillListDirect(ulElement, arr) {
+    if (!ulElement) return;
+    while (ulElement.firstChild) ulElement.removeChild(ulElement.firstChild);
+    (arr || []).forEach(function (row) {
+      const li = document.createElement('li');
+      li.textContent = Array.isArray(row) ? (row[0] + ' : ' + row[1]) : String(row);
+      ulElement.appendChild(li);
+    });
+  }
+
+  function openPostModal(postId) {
+    const found = findPost(postId);
+    if (!found) return;
+    const post = found.post;
+    const links = resolveLinks(post);
+
+    const modal = document.getElementById('post-modal');
+    if (modal) {
+      const dateEl = document.getElementById('m-date');
+      if (dateEl) dateEl.textContent = post.line || post.date || 'Latest Update';
+
+      const shortEl = document.getElementById('m-short');
+      if (shortEl) shortEl.textContent = post.short || post.title;
+
+      const headEl = document.getElementById('m-title');
+      if (headEl) headEl.textContent = post.title;
+
+      const vacEl = document.getElementById('m-vacancy');
+      if (vacEl) vacEl.textContent = post.posts ? (post.posts + ' Posts') : (found.section === 'result' ? 'Result Available' : 'Check Notification');
+
+      fillListDirect(document.getElementById('m-dates'), post.dates);
+      fillListDirect(document.getElementById('m-fee'), post.fee);
+      fillListDirect(document.getElementById('m-eligibility'), post.eligibility);
+
+      const btnApply = document.getElementById('m-apply');
+      if (btnApply) btnApply.href = links.apply;
+
+      const btnOfficial = document.getElementById('m-official');
+      if (btnOfficial) btnOfficial.href = links.official;
+
+      modal.hidden = false;
+      document.body.classList.add('modal-open');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    renderTickerAndHighlights();
+    renderLists('');
+    renderTools();
+
+    // नेविगेशन टैब एक्टिव क्लास स्विच करना
+    const navTabs = document.querySelectorAll('.nav-tabs a');
+    navTabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        navTabs.forEach(function(t) { t.classList.remove('active'); });
+        this.classList.add('active');
+      });
+    });
+
+    // ग्लोबल क्लिक हैंडलर (View All बटन और पोस्ट मोडल के लिए)
+    document.body.addEventListener('click', function (e) {
+      const moreBtn = e.target.closest('[data-more]');
+      if (moreBtn) {
+        e.preventDefault();
+        const sectionKey = moreBtn.getAttribute('data-more');
+        expandedSections[sectionKey] = !expandedSections[sectionKey];
+        renderLists(document.querySelector('#search-input') ? document.querySelector('#search-input').value : '');
+        return;
+      }
+
+      const trigger = e.target.closest('[data-post-id]');
+      if (trigger) {
+        e.preventDefault();
+        openPostModal(trigger.getAttribute('data-post-id'));
+        return;
+      }
+
+      if (e.target.id === 'm-close' || e.target.getAttribute('data-close') === '1') {
+        const m = document.getElementById('post-modal');
+        if (m) {
+          m.hidden = true;
+          document.body.classList.remove('modal-open');
+        }
+      }
+    });
+
+    const searchInput = document.querySelector('#search-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', function (e) {
+        renderLists(e.target.value);
+      });
+    }
+  });
+})();
