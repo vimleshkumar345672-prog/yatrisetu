@@ -1137,3 +1137,32 @@ main > section,
   .navbar, .ticker, .hot-grid, .tools, .site-footer, .modal { display: none !important; }
   body { background: #fff; }
 }
+/* --- आपके नए अपडेट्स के लिए एक्स्ट्रा CSS (फाइल के सबसे नीचे जोड़ें) --- */
+
+/* 1. जब टिकर पर माउस जाए तो वह रुक जाए */
+.ticker-view:hover .ticker-track,
+.ticker-view:focus-within .ticker-track { 
+  animation-play-state: paused !important; 
+}
+
+/* 2. नेविगेशन बार में एक्टिव टैब का रंग बेहतर करने के लिए */
+.nav-tabs a.active { 
+  background: var(--gold) !important; 
+  color: var(--navy-d) !important; 
+}
+
+/* 3. रंगीन क्विक टाइल्स (.c1 से .c8) के सटीक आकर्षक रंग */
+.hot-tile.c1 { --tile: #ee1010; } /* लाल */
+.hot-tile.c2 { --tile: #075e21; } /* हरा */
+.hot-tile.c3 { --tile: #8a2be2; } /* पर्पल */
+.hot-tile.c4 { --tile: #040263; } /* आसमानी */
+.hot-tile.c5 { --tile: #974a06; } /* ऑरेंज */
+.hot-tile.c6 { --tile: #b60590; } /* डार्क रेड */
+.hot-tile.c7 { --tile: #e4530f; } /* नीला */
+.hot-tile.c8 { --tile: #460553; } /* टील ग्रीन */
+/* LIVE टैग को चमकीला लाल करने के लिए */
+.ticker-live {
+  background-color: #dc2626 !important;
+  color: #fafafa !important;
+  font-weight: 800 !important;
+}
