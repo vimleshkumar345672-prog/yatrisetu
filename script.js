@@ -1,1102 +1,1607 @@
-// ============================================================================
-// SARKARIRESULTUPALL.COM - MASTER SCRIPT (WIDE 2-COLUMN TABLE + DIRECT REGISTRATION LINK)
-// ============================================================================
+/* =====================================================================
+   SARKARI RESULT UP ALL — script.js
+   CSP-सेफ: कोई eval / innerHTML / inline handler नहीं। सारा टेक्स्ट textContent से जाता है।
 
-(function () {
-    "use strict";
+   नया पोस्ट कैसे जोड़ें (सिर्फ़ नीचे वाले DATA हिस्से में):
+   ---------------------------------------------------------------------
+   DATA की किसी भी लिस्ट में ऊपर (सबसे नया पहले) यह डालो:
 
-    // ---------------- 1. SECURITY MODULE ----------------
-    if (window.top !== window.self) {
-        window.top.location = window.self.location;
+   {
+     "id": "rrb-ntpc-2026",            // अनोखा, सिर्फ़ a-z 0-9 और -
+     "title": "RRB NTPC Online Form 2026 (1688 Posts)",
+     "org": "rrb",                     // PORTALS की key (लिंक अपने-आप लगेंगे) — खाली छोड़ सकते हो
+     "posts": 1688,                    // कुल पद (संख्या या टेक्स्ट) — खाली तो "जल्द अपडेट"
+     "short": "छोटी जानकारी",
+     "line": "Last Date: 13 November 2026",   // लिस्ट में नाम के नीचे की लाइन
+     "deadline": "2026-11-13",         // सिर्फ़ Latest Jobs में: आख़िरी तारीख (YYYY-MM-DD)
+     "extended": false,                // तारीख बढ़ी हो तो true
+     "tag": "Out",                     // छोटा लाल टैग (वैकल्पिक)
+     "date": "2026-10-13",             // पोस्ट/अपडेट की तारीख (वैकल्पिक)
+     "dates":  [["Apply Start", "15 October 2026"], ["Last Date", "13 November 2026"]],
+     "fee":    ["General / OBC : ₹ 500/-", "SC / ST : ₹ 250/-"],
+     "qualification": ["12th पास"],    // पढ़ाई की योग्यता (वैकल्पिक)
+     "eligibility": ["Age Limit As On : 01 January 2027", "Minimum Age : 18 Years"],
+     "apply":    "https://...",        // इस पोस्ट का अपना Apply/Login लिंक (वैकल्पिक, PORTALS को ओवरराइड)
+     "official": "https://..."         // इस पोस्ट की अपनी ऑफिशियल साइट (वैकल्पिक)
+   }
+
+   लिस्ट के नाम:  latest | result | admit | jobs10 | outsource | syllabus | answerkey | admission
+   खाली लिस्ट [] हो तो बॉक्स में "जल्द अपडेट होगा" दिखता है — कुछ टूटता नहीं।
+   ===================================================================== */
+'use strict';
+
+/* ---------- 0. क्लिकजैकिंग से बचाव ---------- */
+if (window.top !== window.self) {
+  try { window.top.location.href = window.self.location.href; } catch (err) { /* cross-origin */ }
+  document.documentElement.hidden = true;
+}
+
+/* @@DATA-START */
+/* ===== यहीं से डेटा शुरू — नया डेटा सिर्फ़ यहाँ चढ़ाओ ===== */
+
+/* सोशल लिंक: खाली '' हो तो फुटर में वह बटन छिपा रहता है। अपनी https लिंक भर दो। */
+const SOCIAL = {
+  "telegram": "",
+  "whatsapp": "",
+  "instagram": "",
+  "youtube": "",
+  "facebook": "",
+  "x": ""
+};
+
+/* पोर्टल: org की key से लिंक अपने-आप लगते हैं।
+   official = सिर्फ़ ऑफिशियल वेबसाइट देखने के लिए | apply = सीधे Apply / Login पोर्टल।
+   ज़रूरत हो तो किसी पोस्ट में अपना "apply" / "official" डालकर ओवरराइड कर सकते हो।
+   ध्यान: ये लिंक प्रकाशित करने से पहले एक बार खोलकर जाँच लेना। */
+const PORTALS = {
+  "rrb": { "name": "Railway RRB", "official": "https://www.rrbcdg.gov.in/", "apply": "https://www.rrbapply.gov.in/" },
+  "rrcnwr": { "name": "Railway RRC NWR", "official": "https://www.rrcjaipur.in/", "apply": "https://www.rrcjaipur.in/" },
+  "upessc": { "name": "UPESSC", "official": "https://upessc.up.gov.in/", "apply": "https://upessc.up.gov.in/" },
+  "upsssc": { "name": "UPSSSC", "official": "https://upsssc.gov.in/", "apply": "https://upsssc.gov.in/" },
+  "uppsc": { "name": "UPPSC", "official": "https://uppsc.up.nic.in/", "apply": "https://uppsconline.up.nic.in/" },
+  "bpsc": { "name": "BPSC Bihar", "official": "https://bpsc.bihar.gov.in/", "apply": "https://onlinebpsc.bihar.gov.in/" },
+  "bssc": { "name": "BSSC Bihar", "official": "https://bssc.bihar.gov.in/", "apply": "https://www.onlinebssc.com/" },
+  "ssc": { "name": "SSC", "official": "https://ssc.gov.in/", "apply": "https://ssc.gov.in/login" },
+  "upsc": { "name": "UPSC", "official": "https://upsc.gov.in/", "apply": "https://upsconline.nic.in/" },
+  "ibps": { "name": "IBPS", "official": "https://www.ibps.in/", "apply": "https://www.ibps.in/" },
+  "sbi": { "name": "SBI", "official": "https://bank.sbi/web/careers", "apply": "https://bank.sbi/web/careers" },
+  "rbi": { "name": "RBI", "official": "https://www.rbi.org.in/", "apply": "https://opportunities.rbi.org.in/" },
+  "nta": { "name": "NTA JEE Main", "official": "https://jeemain.nta.nic.in/", "apply": "https://jeemain.nta.nic.in/" },
+  "sci": { "name": "Supreme Court of India", "official": "https://www.sci.gov.in/", "apply": "https://www.sci.gov.in/recruitments/" },
+  "isro": { "name": "ISRO", "official": "https://www.isro.gov.in/", "apply": "https://www.isro.gov.in/" },
+  "lichfl": { "name": "LIC HFL", "official": "https://www.lichousing.com/", "apply": "https://www.lichousing.com/careers" },
+  "bhel": { "name": "BHEL", "official": "https://www.bhel.com/", "apply": "https://careers.bhel.in/" },
+  "dsssb": { "name": "DSSSB Delhi", "official": "https://dsssb.delhi.gov.in/", "apply": "https://dsssbonline.nic.in/" },
+  "iocl": { "name": "IOCL", "official": "https://iocl.com/", "apply": "https://iocl.com/" },
+  "army": { "name": "Indian Army", "official": "https://joinindianarmy.nic.in/", "apply": "https://joinindianarmy.nic.in/" },
+  "cwc": { "name": "CWC", "official": "https://cewacor.nic.in/", "apply": "https://cewacor.nic.in/" },
+  "rssb": { "name": "RSSB Rajasthan", "official": "https://rssb.rajasthan.gov.in/", "apply": "https://sso.rajasthan.gov.in/" },
+  "rpsc": { "name": "RPSC Rajasthan", "official": "https://rpsc.rajasthan.gov.in/", "apply": "https://sso.rajasthan.gov.in/" },
+  "csjmu": { "name": "CSJMU Kanpur", "official": "https://www.csjmu.ac.in/", "apply": "https://www.csjmu.ac.in/" },
+  "hpsc": { "name": "HPSC Haryana", "official": "https://hpsc.gov.in/", "apply": "https://hpsc.gov.in/" },
+  "aiims": { "name": "AIIMS", "official": "https://www.aiimsexams.ac.in/", "apply": "https://www.aiimsexams.ac.in/" },
+  "ongc": { "name": "ONGC", "official": "https://ongcindia.com/", "apply": "https://ongcindia.com/" },
+  "cci": { "name": "Cotton Corporation of India", "official": "https://cotcorp.org.in/", "apply": "https://cotcorp.org.in/" },
+  "ib": { "name": "Intelligence Bureau", "official": "https://www.mha.gov.in/", "apply": "https://www.mha.gov.in/" },
+  "csbc": { "name": "Bihar Police CSBC", "official": "https://csbc.bihar.gov.in/", "apply": "https://csbc.bihar.gov.in/" },
+  "bseb": { "name": "Bihar BSEB", "official": "https://www.biharboardonline.com/", "apply": "https://secondary.biharboardonline.com/" },
+  "jeecup": { "name": "JEECUP", "official": "https://jeecup.admissions.nic.in/", "apply": "https://jeecup.admissions.nic.in/" },
+  "utet": { "name": "Uttarakhand TET", "official": "https://ubse.uk.gov.in/", "apply": "https://ubse.uk.gov.in/" },
+  "uppolice": { "name": "UP Police", "official": "https://uppbpb.gov.in/", "apply": "https://uppbpb.gov.in/" }
+};
+
+/* ऊपर वाला बड़ा बैनर (वैकल्पिक): null = छिपा रहेगा।
+   उदाहरण: { "title": "…", "text": "…", "id": "किसी-पोस्ट-की-id", "button": "Details »" } */
+const FEATURED = null;
+
+const DATA = {
+  /* ---- Latest Jobs (सबसे नया ऊपर) ---- */
+  latest: [
+    {
+      "id": "railway-rrb-station-master-online-form-2026",
+      "title": "Railway RRB Station Master Online Form 2026",
+      "org": "rrb",
+      "short": "Railway RRB Station Master Examination 2026 — Candidates are advised to confirm from the Railway RRB Station Master official website.",
+      "deadline": "2026-11-25",
+      "line": "Last Date: 25 November 2026",
+      "dates": [
+        ["Apply Online Start Date", "27 October 2026"],
+        ["Apply Online Last Date", "25 November 2026"],
+        ["Last Date For Fee Payment", "27 November 2026"],
+        ["Correction Date", "28 November – 07 December 2026"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card", "Before Exam"],
+        ["Result Declared Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General / OBC / EWS : ₹ 500/-",
+        "For SC / ST / EBC : ₹ 250/-",
+        "For All Category female : ₹ 250/-",
+        "Fee Refund : General / OBC : Rs. 400/- will be refunded and Other candidates : Rs. 250/- will be refunded to the bank account after appearing in Stage I Exam."
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 January 2027",
+        "Minimum Age : 20 Years",
+        "Maximum Age : 33 Years"
+      ]
+    },
+    {
+      "id": "bpsc-school-teacher-tre-4-0-online-form-2026-33-320-posts",
+      "title": "BPSC School Teacher TRE 4.0 Online Form 2026 (33,320 Posts)",
+      "org": "bpsc",
+      "posts": 33320,
+      "short": "BPSC School Teacher TRE 4.0 Examination 2025 — Candidates are advised to confirm from the Bihar BPSC official website.",
+      "deadline": "2026-11-03",
+      "extended": true,
+      "line": "Last Date: 03 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "25 September 2026"],
+        ["Online Apply Last Date", "03 November 2026 Extended"],
+        ["Last Date For Fee Payment", "02 November 2026"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card", "Before Exam"],
+        ["Result Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For All Category Candidates : ₹ 100/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 August 2026",
+        "Minimum Age : 18 Years (Class 1, to 05 & 6 to 8)",
+        "Minimum Age : 21 Years (Class 9 to 10 & 11 to 12)",
+        "Maximum Age : 37 Years (UR-Male)",
+        "Maximum Age : 40 Years (UR-Female)",
+        "Maximum Age : 40 Years (BC/ EBC-Male & Female)",
+        "Maximum Age : 42 Years (SC/ ST-Male & Female)"
+      ]
+    },
+    {
+      "id": "upessc-prt-assistant-teacher-online-form-2026-12405-posts-da",
+      "title": "UPESSC PRT Assistant Teacher Online Form 2026 (12405 Posts) – Date Extend",
+      "org": "upessc",
+      "posts": 12405,
+      "short": "UPESSC PRT Assistant Teacher Examination 2026 — Candidates are advised to confirm from the UPESSC official website.",
+      "deadline": "2026-11-04",
+      "extended": true,
+      "line": "Last Date: 04 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "16 September 2026"],
+        ["Online Apply Last Date", "04 November 2026 Extended"],
+        ["Last Date For Fee Payment", "04 November 2026"],
+        ["Correction Last Date", "07 November 2026"],
+        ["Exam Date", "03 – 04 December 2026"],
+        ["Admit Card", "Before Exam"],
+        ["Result Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General, EWS, OBC : ₹ 1000/-",
+        "For SC, ST : ₹ 500/-",
+        "For PH : ₹ 300/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "Minimum Age : 21 Years",
+        "Maximum Age : 40 Years For Assistant Teacher (Primary – Urban)",
+        "Maximum Age : 62 Years For Assistant Teacher (Attached Primary)"
+      ]
+    },
+    {
+      "id": "upessc-up-tgt-online-form-2026-17-735-posts",
+      "title": "UPESSC UP TGT Online Form 2026 (17,735 Posts)",
+      "org": "upessc",
+      "posts": 17735,
+      "short": "UPESSC UP TGT Assistant Teacher Examination 2026 — Candidates are advised to confirm from the UPESSC official website.",
+      "deadline": "2026-11-23",
+      "line": "Last Date: 23 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "24 October 2026"],
+        ["Online Apply Last Date", "23 November 2026"],
+        ["Last Date For Fee Payment", "23 November 2026"],
+        ["Correction Last Date", "26 November 2026"],
+        ["Exam Date", "23 – 24 December 2026"],
+        ["Admit Card", "Before Exam"],
+        ["Result Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General, EWS, OBC : ₹ 1000/-",
+        "For SC, ST : ₹ 500/-",
+        "For PH : ₹ 300/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "Minimum Age : 21 Years",
+        "Maximum Age : 62 Years For Assistant Teacher (Attached Primary)"
+      ]
+    },
+    {
+      "id": "uppsc-ro-aro-online-form-2026",
+      "title": "UPPSC RO / ARO Online Form 2026",
+      "org": "uppsc",
+      "short": "UPPSC RO / ARO Examination 2026 — Candidates are advised to confirm from the UPPSC official website.",
+      "deadline": "2026-11-26",
+      "line": "Last Date: 26 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "26 October 2026"],
+        ["Online Apply Last Date", "26 November 2026"],
+        ["Last Date For Fee Payment", "26 November 2026"],
+        ["Correction Last Date", "03 December 2026"],
+        ["Pre Exam Date", "Notify Later"],
+        ["Admit Card", "Before Exam"],
+        ["Result Date", "Will be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General / OBC / EWS : ₹ 125/-",
+        "For SC / ST :₹ 65/-",
+        "For PH : ₹ 25/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "Minimum Age : 21 Years",
+        "Maximum Age : 40 Years"
+      ]
+    },
+    {
+      "id": "rrb-ntpc-graduate-level-online-form-2026-3548-posts",
+      "title": "RRB NTPC Graduate Level Online Form 2026 (3548 Posts)",
+      "org": "rrb",
+      "posts": 3548,
+      "short": "RRB NTPC Graduate Level Examination 2026 — Candidates are advised to confirm from the RRB official website.",
+      "deadline": "2026-11-06",
+      "line": "Last Date: 06 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "08 October 2026"],
+        ["Online Apply Last Date", "06 November 2026"],
+        ["Last Date For Fee Payment", "08 November 2026"],
+        ["Correction Date", "09 – 18 November 2026"],
+        ["Exam Date", "4th Week Of December"],
+        ["Exam City Details", "10 Days Before Exam"],
+        ["Admit Card", "04 Days Before Exam"]
+      ],
+      "fee": [
+        "For General / OBC / EWS : ₹ 500/-",
+        "For SC / ST / EBC : ₹ 250/-",
+        "For All Category female : ₹ 250/-",
+        "Fess Refund : General / OBC : Rs. 400/- will be refunded and Other candidates : Rs. 250/- will be refunded to the bank account after appearing in Stage I Exam."
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 January 2027",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 33 Years"
+      ]
+    },
+    {
+      "id": "upsssc-inter-12th-level-online-form-2026",
+      "title": "UPSSSC Inter (12th) Level Online Form 2026",
+      "org": "upsssc",
+      "short": "UPSSSC Inter (12th) Level Examination 2026",
+      "deadline": "2026-12-01",
+      "line": "Last Date: 01 December 2026",
+      "dates": [
+        ["Online Apply Start Date", "10 November 2026"],
+        ["Online Apply Last Date", "01 December 2026"],
+        ["Fee Payment Last Date", "01 December 2026"],
+        ["Correction Last Date", "08 December 2026"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card Available", "Before Exam"],
+        ["Result Declared", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "General, OBC, EWS : ₹ 25/-",
+        "SC, ST : ₹ 25/-",
+        "PH Candidates : ₹ 25/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "For Minimum Age : 18 – 21 Years (Post Wise)",
+        "For Maximum Age : 30 –40 Years"
+      ]
+    },
+    {
+      "id": "upessc-up-principal-inter-level-online-form-2026",
+      "title": "UPESSC UP Principal Inter Level Online Form 2026",
+      "org": "upessc",
+      "short": "UPESSC UP Principal Inter Level Examination 2026 — Candidates are advised to confirm from the UPESSC official website.",
+      "deadline": "2026-11-22",
+      "line": "Last Date: 22 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "23 October 2026"],
+        ["Online Apply Last Date", "22 November 2026"],
+        ["Last Date For Fee Payment", "22 November 2026"],
+        ["Correction Last Date", "25 November 2026"],
+        ["Exam Date", "07 January 2027"],
+        ["Admit Card", "Before Exam"],
+        ["Result Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General, EWS, OBC : ₹ 2000/-",
+        "For SC, ST : ₹ 2000/-",
+        "For PH : ₹ 2000/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "Minimum Age : 30 Years",
+        "Maximum Age : 62 Years"
+      ]
+    },
+    {
+      "id": "upessc-up-headmaster-online-form-2026",
+      "title": "UPESSC UP Headmaster Online Form 2026",
+      "org": "upessc",
+      "short": "UPESSC UP Headmaster Examination 2026 — Candidates are advised to confirm from the UPESSC official website.",
+      "deadline": "2026-11-22",
+      "line": "Last Date: 22 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "23 October 2026"],
+        ["Online Apply Last Date", "22 November 2026"],
+        ["Last Date For Fee Payment", "22 November 2026"],
+        ["Correction Last Date", "25 November 2026"],
+        ["Exam Date", "07 January 2027"],
+        ["Admit Card", "Before Exam"],
+        ["Result Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General, EWS, OBC : ₹ 1500/-",
+        "For SC, ST : ₹ 1500/-",
+        "For PH : ₹ 1500/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "Minimum Age : 30 Years",
+        "Maximum Age : 62 Years"
+      ]
+    },
+    {
+      "id": "up-anganwadi-bharti-online-form-2026-updated",
+      "title": "UP Anganwadi Bharti Online Form 2026 (Updated)",
+      "short": "UP Anganwadi Bharti Examination 2025",
+      "line": "Last Date: District Wise",
+      "dates": [
+        ["Notification Date", "November 2025"],
+        ["Application Start", "November 2025"],
+        ["Last Date for Apply", "District Wise"],
+        ["Form Complete Last Date", "District Wise"]
+      ],
+      "fee": [
+        "There is no application fee for any candidate."
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2025",
+        "For Minimum Age:18 years",
+        "For Maximum Age:35 years"
+      ]
+    },
+    {
+      "id": "bssc-field-assistant-2025-mains-online-form",
+      "title": "BSSC Field Assistant 2025 Mains Online Form",
+      "org": "bssc",
+      "short": "Bihar BSSC Field Assistant Examination 2025 — Candidates are advised to confirm from the Bihar BSSC official website.",
+      "deadline": "2026-10-31",
+      "line": "Last Date: 22 – 31 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "25 April 2025"],
+        ["Online Apply Last Date", "21 May 2025"],
+        ["Last Date For Fee Payment", "23 May 2025"],
+        ["Exam Date", "11 July 2025"],
+        ["Revised Exam Date", "10 August 2025"],
+        ["Admit Card", "30 July 2025"],
+        ["Result Date", "22 January 2026"],
+        ["Mains Form Date", "22 – 31 October 2026"]
+      ],
+      "fee": [
+        "For General/ BC/ EBCCandidates : ₹ 540/-",
+        "For Other State All Category : ₹ 540/-",
+        "For SC/ ST PH Candidates : ₹ 135/-",
+        "For Female Bihar Candidates : ₹ 135/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 August 2024.",
+        "For Male (General/ EWS): 18-37 Year",
+        "For Female (General) : 18-40 Year",
+        "For Male /Female (OBC/ EBC): 18-40 Year",
+        "For Male /Female (SC/ ST): 18-42 Year"
+      ]
+    },
+    {
+      "id": "csjmu-kanpur-teaching-post-online-form-2026",
+      "title": "CSJMU Kanpur Teaching Post Online Form 2026",
+      "org": "csjmu",
+      "short": "CSJMU Kanpur Teaching Post Examination 2026 — Candidates are advised to confirm from the CSJMU official website.",
+      "deadline": "2026-10-31",
+      "line": "Last Date: 31 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "26 September 2026"],
+        ["Online Apply Last Date", "31 October 2026"],
+        ["Last Date For Fee Payment", "31 October 2026"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card", "Before Exam"],
+        ["Result Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General, OBC, EWS : ₹ 2500/-",
+        "For SC, ST, PH : ₹ 2000/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : CSJMU Rules",
+        "Minimum Age : N/A",
+        "Maximum Age : N/A"
+      ]
+    },
+    {
+      "id": "rajasthan-safai-karmchari-correction-edit-form-2026",
+      "title": "Rajasthan Safai Karmchari Correction / Edit Form 2026",
+      "short": "Rajasthan Safai Karmchari Examination 2026 — Candidates are advised to confirm from the Rajasthan Safai Karmchari official website.",
+      "deadline": "2026-11-04",
+      "line": "Last Date: 29 October – 04 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "15 August 2026"],
+        ["Online Apply Last Date", "28 October 2026 Extended"],
+        ["Last Date For Fee Payment", "28 October 2026"],
+        ["Correction Date", "29 October – 04 November 2026"],
+        ["Exam Date", "Notify Soon"],
+        ["Admit Card", "Before Exam"],
+        ["Result Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "General, Other State: ₹ 600/- OBC, BC, SC, ST : ₹ 400/-",
+        "Correction Charge : ₹ 100/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 January 2027",
+        "Minimum Age : 21 Years.",
+        "Maximum Age : 40 Years."
+      ]
+    },
+    {
+      "id": "bpsc-auditor-mains-online-form-2026",
+      "title": "BPSC Auditor Mains Online Form 2026",
+      "org": "bpsc",
+      "short": "Bihar BPSC Auditor Examination 2026 — Candidates are advised to confirm from the Bihar BPSC official website.",
+      "deadline": "2026-11-16",
+      "line": "Last Date: 29 October – 16 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "05 February 2026"],
+        ["Online Apply Last Date", "26 February 2026"],
+        ["Last Date For Fee Payment", "26 February 2026"],
+        ["Exam Date", "05 July 2026"],
+        ["Exam City Details", "28 June 2026"],
+        ["Admit Card", "02 July 2026"],
+        ["Answer Key", "13 July 2026"],
+        ["Final Answer Key", "31 July 2026"],
+        ["Result Date", "22 August 2026"],
+        ["Mains Form Date", "29 October – 16 November 2026"]
+      ],
+      "fee": [
+        "For All Candidates : ₹ 100/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 August 2025",
+        "Minimum Age : 21 Years",
+        "Maximum Age : 37 Years (Male UR)",
+        "Maximum Age : 40 Years (Female UR, BC/ EBC-Male & Female)",
+        "Maximum Age : 42 Years (SC/ ST-Male & Female)"
+      ]
+    },
+    {
+      "id": "nta-jee-mains-session-i-online-form-2027",
+      "title": "NTA JEE Mains Session I Online Form 2027",
+      "org": "nta",
+      "short": "NTA JEE Mains Examination (January 2027)",
+      "deadline": "2026-11-22",
+      "line": "Last Date: 22 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "24 October 2026"],
+        ["Online Apply Last Date", "22 November 2026"],
+        ["Fee Payment Last Date", "22 November 2026"],
+        ["Exam Date", "20, 21, 22, 23, 24 & 28 January 2027"],
+        ["Admit Card Available", "Notify Soon"],
+        ["Result Declared", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General, OBC, EWS : ₹ 1000/- To 2000/-",
+        "For SC / ST, PwD : ₹ 500/- To 1000/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : NTA Rules."
+      ]
+    },
+    {
+      "id": "isro-ursc-various-post-online-form-2026",
+      "title": "ISRO URSC Various Post Online Form 2026",
+      "org": "isro",
+      "short": "ISRO URSC Various Post Examination 2026 — Candidates are advised to confirm from the ISRO official website.",
+      "deadline": "2026-11-13",
+      "line": "Last Date: 13 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "24 October 2026"],
+        ["Online Apply Last Date", "13 November 2026"],
+        ["Last Date For Fee Payment", "13 November 2026"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card", "Before Exam"],
+        ["Result", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "All Category Candidate : Rs. 500/-",
+        "Fees Refund After Appear CBT Exam",
+        "General, OBC, EWS : Rs. 400/-",
+        "SC, ST, PH, Women : Full Refund"
+      ],
+      "eligibility": [
+        "Age Limit As On : 13 November 2026",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 35 Years"
+      ]
+    },
+    {
+      "id": "supreme-court-sci-court-master-online-form-2026",
+      "title": "Supreme Court SCI Court Master Online Form 2026",
+      "org": "sci",
+      "short": "Supreme Court SCI Court Master Examination 2026 — Candidates are advised to confirm from the Supreme Court Of India official website.",
+      "deadline": "2026-11-15",
+      "line": "Last Date: 15 November 2026",
+      "dates": [
+        ["Apply Online Start Date", "25 October 2026"],
+        ["Apply Online Last Date", "15 November 2026"],
+        ["Last Date For Fee Payment", "15 November 2026"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card", "Before Exam"],
+        ["Result Declared Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General/Unreserved : ₹ 1500/-",
+        "For SC, ST, OBC – NCL, PwBD Candidates : ₹ 750/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 October 2026",
+        "Minimum Age : 30 Years.",
+        "Maximum Age : 45 Years"
+      ]
+    },
+    {
+      "id": "lic-hfl-apprentice-online-form-2026",
+      "title": "LIC HFL Apprentice Online Form 2026",
+      "org": "lichfl",
+      "short": "LIC HFL Apprentice Examination 2026 — Candidates are advised to confirm from the LIC HFL official website.",
+      "deadline": "2026-11-01",
+      "line": "Last Date: 01 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "20 October 2026"],
+        ["Online Apply Last Date", "01 November 2026"],
+        ["Last Date For Fee Payment", "01 November 2026"],
+        ["Exam Date", "07 November 2026"],
+        ["Admit Card", "Before Exam"],
+        ["Result Declared Date", "15 November 2026"]
+      ],
+      "fee": [
+        "For General/ OBC/ EWS: ₹ 800/- (For Male)",
+        "For General/ OBC/ EWS: ₹ 800/- (For Female)",
+        "For SC/ ST/ PH : ₹ 200/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 October 2026",
+        "Minimum Age : 20 Year",
+        "Maximum Age : 25 Year"
+      ]
+    },
+    {
+      "id": "railway-rrc-nwr-apprentice-online-form-2026",
+      "title": "Railway RRC NWR Apprentice Online Form 2026",
+      "org": "rrcnwr",
+      "short": "Railway RRC NWR Apprentice Examination 2026 — Candidates are advised to confirm from the RRC NWR official website.",
+      "deadline": "2026-11-22",
+      "line": "Last Date: 22 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "23 October 2026"],
+        ["Online Apply Last Date", "22 November 2026"],
+        ["Last Date For Fee Payment", "22 November 2026"],
+        ["Merit List", "Notify Later"]
+      ],
+      "fee": [
+        "For General/ OBC/ EWS: ₹ 100/-",
+        "For SC/ ST/ PH : ₹ 00/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 06 November 2026",
+        "Minimum Age : 15 Year",
+        "Maximum Age : 24 Year"
+      ]
+    },
+    {
+      "id": "bhel-artisan-various-trade-post-online-form-2026",
+      "title": "BHEL Artisan Various Trade Post Online Form 2026",
+      "org": "bhel",
+      "short": "BHEL Artisan Various Trade Post Examination 2026 — Candidates are advised to confirm from the BHEL official website.",
+      "deadline": "2026-11-18",
+      "line": "Last Date: 18 November 2026",
+      "dates": [
+        ["Apply Online Start Date", "21 October 2026"],
+        ["Apply Online Last Date", "18 November 2026"],
+        ["Last Date For Fee Payment", "18 November 2026"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card", "Before Exam"],
+        ["Result Declared Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General / OBC / EWS : ₹ 1072/-",
+        "For SC / ST / PH : ₹ 472/-",
+        "Processing Fee : ₹ 400/- +GST"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 October 2026",
+        "Minimum Age : N/A",
+        "Maximum Age : 27 Years"
+      ]
+    },
+    {
+      "id": "dsssb-sweeper-chowkidar-online-form-2026",
+      "title": "DSSSB Sweeper & Chowkidar Online Form 2026",
+      "org": "dsssb",
+      "short": "DSSSB Sweeper & Chowkidar Examination 2026 — Candidates are advised to confirm from the DSSSB official website.",
+      "deadline": "2026-11-11",
+      "line": "Last Date: 11 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "13 October 2026"],
+        ["Online Apply Last Date", "11 November 2026"],
+        ["Last Date For Fee Payment", "11 November 2026"],
+        ["Exam Date", "Notify Soon"],
+        ["Admit Card", "Before Exam"],
+        ["Result Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General, OBC, EWS : ₹ 100/-",
+        "For SC / ST, PH, Women : ₹ 00/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 June 2026",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 27 Years"
+      ]
+    },
+    {
+      "id": "railway-rrb-isolated-categories-online-form-2026",
+      "title": "Railway RRB Isolated Categories Online Form 2026",
+      "org": "rrb",
+      "short": "Railway RRB Isolated Categories Examination 2026 — Candidates are advised to confirm from the Railway RRB official website.",
+      "deadline": "2026-12-04",
+      "line": "Last Date: 04 December 2026",
+      "dates": [
+        ["Apply Online Start Date", "05 November 2026"],
+        ["Apply Online Last Date", "04 December 2026"],
+        ["Last Date For Fee Payment", "04 December 2026"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card", "Before Exam"],
+        ["Result Declared Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General / OBC / EWS : ₹ 500/-",
+        "For SC / ST / EBC : ₹ 250/-",
+        "For All Category female : ₹ 250/-",
+        "Fee Refund : General / OBC : Rs. 400/- will be refunded and Other candidates : Rs. 250/- will be refunded to the bank account after appearing in Stage I Exam."
+      ],
+      "eligibility": [
+        "Age Limit As On : RRB Rules.",
+        "Minimum Age : Available Soon",
+        "Maximum Age : Available Soon"
+      ]
+    },
+    {
+      "id": "isro-sdsc-shar-various-post-online-form-2026",
+      "title": "ISRO SDSC SHAR Various Post Online Form 2026",
+      "org": "isro",
+      "short": "ISRO SDSC SHAR Various Post Examination 2026 — Candidates are advised to confirm from the ISRO official website.",
+      "deadline": "2026-11-09",
+      "line": "Last Date: 09 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "19 October 2026"],
+        ["Online Apply Last Date", "09 November 2026"],
+        ["Last Date For Fee Payment", "09 November 2026"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card", "Before Exam"],
+        ["Result", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For Post Code (07 to 15)",
+        "All Category Candidate : Rs. 750/-",
+        "Fees Refund After Appear CBT Exam",
+        "General, OBC, EWS : Rs. 500/-",
+        "SC, ST, PH, Women : Full Refund",
+        "For Post Code (16 to 30)",
+        "All Category Candidate : Rs.500/-",
+        "Fees Refund After Appear CBT Exam",
+        "General, OBC, EWS : Rs. 400/-",
+        "SC, ST, PH, Women : Full Refund"
+      ],
+      "eligibility": [
+        "Age Limit As On : 09 November 2026",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 25 Years (Post Code : 26 to 29)",
+        "Maximum Age : 35 Years (Post Code : 07 to 25, 27, 28 & 30)"
+      ]
+    },
+    {
+      "id": "supreme-court-spa-online-form-2026",
+      "title": "Supreme Court SPA Online Form 2026",
+      "org": "sci",
+      "short": "Supreme Court of India Senior Personal Assistant Examination 2026 — Candidates are advised to confirm from the Supreme Court Of India official website.",
+      "deadline": "2026-11-10",
+      "line": "Last Date: 10 November 2026",
+      "dates": [
+        ["Apply Online Start Date", "20 October 2026"],
+        ["Apply Online Last Date", "10 November 2026"],
+        ["Last Date For Fee Payment", "10 November 2026"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card", "Before Exam"],
+        ["Result Declared Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General/Unreserved : ₹ 1500/-",
+        "For SC, ST, OBC – NCL, PwBD Candidates : ₹ 750/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 October 2026",
+        "Minimum Age : 18 Years.",
+        "Maximum Age : 30 Years"
+      ]
+    },
+    {
+      "id": "cwc-assistant-manager-junior-executive-online-form-2026",
+      "title": "CWC Assistant Manager & Junior Executive Online Form 2026",
+      "org": "cwc",
+      "short": "CWC Assistant Manager & Junior Executive Examination 2026",
+      "deadline": "2026-11-15",
+      "line": "Last Date: 15 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "17 October 2026"],
+        ["Online Apply Last Date", "15 November 2026"],
+        ["Fee Payment Last Date", "15 November 2026"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card Available", "Before Exam"],
+        ["Result Declared", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General, OBC, EWS : ₹ 1350/-",
+        "For SC, ST, PH : ₹ 500/-",
+        "For All Female Candidates : ₹ 500/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 15 November 2026",
+        "For Minimum Age : 18 Years",
+        "For Maximum Age : 28 Years"
+      ]
+    },
+    {
+      "id": "upsssc-regional-youth-welfare-officer-online-form-2026",
+      "title": "UPSSSC Regional Youth Welfare Officer Online Form 2026",
+      "org": "upsssc",
+      "short": "UPSSSC Regional Youth Welfare Officer Examination 2026 — Candidates are advised to confirm from the UPSSSC official website.",
+      "deadline": "2026-11-06",
+      "line": "Last Date: 06 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "16 October 2026"],
+        ["Online Apply Last Date", "06 November 2026"],
+        ["Last Date For Fee Payment", "06 November 2026"],
+        ["Correction Last Date", "13 November 2026"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card", "Before Exam"],
+        ["Result Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General, OBC, EWS : ₹ 25/-",
+        "For SC / ST : ₹ 25/-",
+        "For PH Candidates : ₹ 25/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "Minimum Age : 21 Years",
+        "Maximum Age : 40 Years."
+      ]
+    },
+    {
+      "id": "supreme-court-junior-court-attendant-online-form-2026",
+      "title": "Supreme Court Junior Court Attendant Online Form 2026",
+      "org": "sci",
+      "short": "Supreme Court Junior Court Attendant Examination 2026 — Candidates are advised to confirm from the Supreme Court Of India official website.",
+      "deadline": "2026-11-25",
+      "line": "Last Date: 25 November 2026",
+      "dates": [
+        ["Apply Online Start Date", "04 November 2026"],
+        ["Apply Online Last Date", "25 November 2026"],
+        ["Last Date For Fee Payment", "25 November 2026"],
+        ["Exam Date", "26 December 2026"],
+        ["Admit Card", "Before Exam"],
+        ["Result Declared Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General/Unreserved : ₹ 1500/-",
+        "For SC, ST, OBC – NCL, PwBD Candidates : ₹ 750/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 October 2026",
+        "Minimum Age : 18 Years.",
+        "Maximum Age : 27 Years"
+      ]
+    },
+    {
+      "id": "indian-army-tes-57th-online-form-2026",
+      "title": "Indian Army TES 57th Online Form 2026",
+      "org": "army",
+      "short": "Indian Army 10+2 TES 57th Examination 2026 — Candidates are advised to confirm from the Indian Army 10+2 TES 57th official website.",
+      "deadline": "2026-11-12",
+      "line": "Last Date: 12 November 2026",
+      "dates": [
+        ["Apply Online Start Date", "14 October 2026"],
+        ["Apply Online Last Date", "12 November 2026"],
+        ["Last Date For Fee Payment", "12 November 2026"],
+        ["SSB Interview", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "No application fee is required for any candidate."
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2027",
+        "Minimum Age : 16.5 Years",
+        "Maximum Age : 19.5 Years"
+      ]
+    },
+    {
+      "id": "upsssc-sports-directorate-online-form-2026",
+      "title": "UPSSSC Sports Directorate Online Form 2026",
+      "org": "upsssc",
+      "short": "UPSSSC Sports Directorate Examination 2026 — Candidates are advised to confirm from the UPSSSC official website.",
+      "deadline": "2026-11-04",
+      "line": "Last Date: 04 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "14 October 2026"],
+        ["Online Apply Last Date", "04 November 2026"],
+        ["Last Date For Fee Payment", "04 November 2026"],
+        ["Correction Last Date", "11 November 2026"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card", "Before Exam"],
+        ["Result Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General, OBC, EWS : ₹ 25/-",
+        "For SC / ST : ₹ 25/-",
+        "For PH Candidates : ₹ 25/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "Minimum Age : 18 –21 Years",
+        "Maximum Age : 40 Years."
+      ]
+    },
+    {
+      "id": "upsssc-junior-engineer-je-electrical-online-form-2026",
+      "title": "UPSSSC Junior Engineer JE (Electrical) Online Form 2026",
+      "org": "upsssc",
+      "short": "UPSSSC Junior Engineer JE (Electrical) Examination 2026",
+      "deadline": "2026-11-27",
+      "line": "Last Date: 27 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "06 November 2026"],
+        ["Online Apply Last Date", "27 November 2026"],
+        ["Fee Payment Last Date", "27 November 2026"],
+        ["Correction Last Date", "04 December 2026"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card Available", "Before Exam"],
+        ["Result Declared", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "General, OBC, EWS : ₹ 25/-",
+        "SC, ST : ₹ 25/-",
+        "PH Candidates : ₹ 25/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "For Minimum Age : 18 – 21 Years (Post Wise)",
+        "For Maximum Age : 40 Years"
+      ]
+    },
+    {
+      "id": "supreme-court-sci-court-assistant-online-form-2026",
+      "title": "Supreme Court SCI Court Assistant Online Form 2026",
+      "org": "sci",
+      "short": "Supreme Court SCI Court Assistant Examination 2026 — Candidates are advised to confirm from the Supreme Court Of India official website.",
+      "deadline": "2026-11-24",
+      "line": "Last Date: 24 November 2026",
+      "dates": [
+        ["Apply Online Start Date", "03 November 2026"],
+        ["Apply Online Last Date", "24 November 2026"],
+        ["Last Date For Fee Payment", "24 November 2026"],
+        ["Exam Date", "22 December 2026"],
+        ["Admit Card", "Before Exam"],
+        ["Result Declared Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General/Unreserved : ₹ 1500/-",
+        "For SC, ST, OBC – NCL, PwBD Candidates : ₹ 750/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 October 2026",
+        "Minimum Age : 18 Years.",
+        "Maximum Age : 35 Years"
+      ]
+    },
+    {
+      "id": "upsssc-junior-engineer-je-mechanical-online-form-2026-1156-p",
+      "title": "UPSSSC Junior Engineer JE (Mechanical) Online Form 2026 (1156 Posts)",
+      "org": "upsssc",
+      "posts": 1156,
+      "short": "UPSSSC Junior Engineer JE (Mechanical) Examination 2026",
+      "deadline": "2026-11-25",
+      "line": "Last Date: 25 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "03 November 2026"],
+        ["Online Apply Last Date", "25 November 2026"],
+        ["Fee Payment Last Date", "25 November 2026"],
+        ["Correction Last Date", "02 December 2026"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card Available", "Before Exam"],
+        ["Result Declared", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "General, OBC, EWS : ₹ 25/-",
+        "SC, ST : ₹ 25/-",
+        "PH Candidates : ₹ 25/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "For Minimum Age : 18 – 21 Years (Post Wise)",
+        "For Maximum Age : 40 Years"
+      ]
+    },
+    {
+      "id": "ibps-rrb-15th-correction-edit-form-2026",
+      "title": "IBPS RRB 15th Correction / Edit Form 2026",
+      "org": "ibps",
+      "short": "IBPS RRB 15th Examination 2026",
+      "deadline": "2026-10-08",
+      "line": "Last Date: 07 – 08 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "01 September 2026"],
+        ["Online Apply Last Date", "27 September 2026 Extended"],
+        ["Pay Exam Fee Last Date", "27 September 2026"],
+        ["Correction Date", "07 – 08 October 2026"],
+        ["PET Exam Date", "November 2026"],
+        ["Admit Card", "Before Exam"],
+        ["Pre Exam Date", "Notify Later"],
+        ["Pre Admit Card", "Before Exam"],
+        ["Pre Result", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General, OBC, EWS : ₹ 850/-",
+        "For SC, ST, PH : ₹ 175/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 September 2026",
+        "Office Assistant : 18-28 Years",
+        "Officer Scale-I : 18-30 Years",
+        "Officer Scale-II : 21-32 Years",
+        "Officer Scale-III : 21-40 Years"
+      ]
+    },
+    {
+      "id": "dsssb-delhi-district-court-various-post-online-form-2026",
+      "title": "DSSSB Delhi District Court Various Post Online Form 2026",
+      "org": "dsssb",
+      "short": "DSSSB Delhi District Court Various Post Examination 2026 — Candidates are advised to confirm from the DSSSB official website.",
+      "deadline": "2026-11-04",
+      "line": "Last Date: 04 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "06 October 2026"],
+        ["Online Apply Last Date", "04 November 2026"],
+        ["Last Date For Fee Payment", "04 November 2026"],
+        ["Exam Date", "Notify Soon"],
+        ["Admit Card", "Before Exam"],
+        ["Result Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General, OBC, EWS : ₹ 100/-",
+        "For SC / ST, PH, Women : ₹ 00/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 June 2026",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 37 Years"
+      ]
+    },
+    {
+      "id": "iocl-wr-apprentice-online-form-2026",
+      "title": "IOCL WR Apprentice Online Form 2026",
+      "org": "iocl",
+      "short": "IOCL WR Apprentice Examination 2026 — Candidates are advised to confirm from the IOCL official website.",
+      "deadline": "2026-11-04",
+      "line": "Last Date: 04 November 2026",
+      "dates": [
+        ["Online Apply Start Date", "05 October 2026"],
+        ["Online Apply Last Date", "04 November 2026"],
+        ["Last Date For Fee Payment", "04 November 2026"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card", "Before Exam"],
+        ["Result Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "No Application Fee For All Candidates : ₹ 00/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 30 September 2026",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 24 Years"
+      ]
+    },
+    {
+      "id": "upsssc-otr-one-time-registration-online-form-2026",
+      "title": "UPSSSC OTR One Time Registration Online Form 2026",
+      "org": "upsssc",
+      "short": "UPSSSC OTR Notification 2026",
+      "line": "Last Date: Soon",
+      "dates": [
+        ["Application Start", "14 July 2026"],
+        ["Last Date for Apply Online", "Soon"]
+      ],
+      "fee": [
+        "For General, OBC : ₹ 00/-",
+        "For SC, ST :₹ 00/-",
+        "For PH : ₹ 00/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : UPSSSC Rules.",
+        "No Age Limit Check Official Website."
+      ]
+    },
+    {
+      "id": "rssb-support-engineer-online-form-2025-1050-posts",
+      "title": "RSSB Support Engineer Online Form 2025 (1050 Posts)",
+      "org": "rssb",
+      "posts": 1050,
+      "short": "RSSB Support Engineer Examination 2025 — Candidates are advised to confirm from the RSSB official website.",
+      "line": "Last Date: Available Soon",
+      "dates": [
+        ["Notification Date", "17 July 2025"],
+        ["Online Apply Start Date", "Available Soon"],
+        ["Online Apply Last Date", "Available Soon"],
+        ["Last Date For Fee Payment", "Available Soon"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card", "Before Exam"],
+        ["Result Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General, EWS, OBC (Creamy Layer) : ₹ 600/-",
+        "For EWS, OBC (Non Creamy Layer) : ₹ 400/-",
+        "For SC, ST, PH : ₹ 400/-",
+        "For Correction Charge : ₹ 300/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 January 2026",
+        "Minimum Age : 21 Years",
+        "Maximum Age : 40 Years"
+      ]
+    },
+    {
+      "id": "bihar-stet-2025-father-name-correction-link-active",
+      "title": "Bihar STET 2025 Father Name Correction – Link Active",
+      "org": "bseb",
+      "short": "Bihar STET Examination 2025 — Candidates are advised to confirm from the Bihar BSEB official website.",
+      "deadline": "2025-10-05",
+      "extended": true,
+      "line": "Last Date: 05 October 2025",
+      "dates": [
+        ["Online Apply Start Date", "19 September 2025"],
+        ["Online Apply Last Date", "05 October 2025 (Extended)"],
+        ["Last Date For Fee Payment", "05 October 2025"],
+        ["Exam Date", "14 October 2025"],
+        ["Admit Card", "11 October 2025"],
+        ["Answer Key", "24 November 2025"],
+        ["Result Date", "05 January 2026"],
+        ["Father Name Correction", "25 May – 05 June 2026"]
+      ],
+      "fee": [
+        "For Paper I or II",
+        "For General/ EWS/ BC/ EBC: ₹ 960/-",
+        "For Other State (All Category): ₹ 960/-",
+        "For SC/ ST/ PWD: ₹ 760/-",
+        "For Both Paper I & II",
+        "For General/ EWS/ BC/ EBC: ₹ 1440/-",
+        "For Other State (All Category): ₹ 1440/-",
+        "For SC/ ST/ PWD: ₹ 1140/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 August 2025",
+        "Minimum Age : 21 Years",
+        "Maximum Age : 37 Years (Male)",
+        "Maximum Age : 40 Years (Female UR, BC/ EBC-Male & Female)",
+        "Maximum Age : 42 Years (SC/ ST-Male & Female)"
+      ]
+    },
+    {
+      "id": "1",
+      "title": "यूपी पुलिस में होगी 1 लाख नई भर्तियां, छात्रों को मिलेगा मौका",
+      "org": "uppolice",
+      "posts": "1 लाख",
+      "line": "Last Date: Will Be Updated Here Soon",
+      "dates": [
+        ["Online Apply Start Date", "Will Be Updated Here Soon"],
+        ["Online Apply Last Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General/ EWS/ OBC : Will Be Updated Here Soon",
+        "For SC / ST: Will Be Updated Here Soon"
+      ],
+      "eligibility": [
+        "Age Limit",
+        "Minimum Age : Will Be Updated Here Soon",
+        "Maximum Age : Will Be Updated Here Soon"
+      ]
+    },
+    {
+      "id": "up-police-si-syllabus-exam-pattern-2025",
+      "title": "UP Police SI Syllabus / Exam Pattern 2025",
+      "org": "uppolice",
+      "short": "UP Police SI Syllabus / Exam Pattern 2025 — Candidates are advised to confirm from the UP Police SI official website.",
+      "deadline": "2025-09-11",
+      "line": "Last Date: 11 September 2025",
+      "dates": [
+        ["Short Notice Date", "28 March 2025"],
+        ["Online Apply Start Date", "12 August 2025"],
+        ["Online Apply Last Date", "11 September 2025"],
+        ["Last Date For Fee Payment", "11 September 2025"],
+        ["Exam Date", "Notify Soon"],
+        ["Admit Card", "Before Exam"],
+        ["Result Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General/ EWS/ OBC : ₹ 500/-",
+        "For SC / ST : ₹ 400/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 1 July 2025",
+        "Minimum Age : 21 Years",
+        "Maximum Age : 28 Years"
+      ]
+    },
+    {
+      "id": "up-polytechnic-jeecup-online-counseling-2025",
+      "title": "UP Polytechnic JEECUP Online Counseling 2025",
+      "org": "jeecup",
+      "short": "Uttar Pradesh Polytechnic Diploma Admission 2025",
+      "deadline": "2025-05-20",
+      "line": "Last Date: 20 May 2025",
+      "dates": [
+        ["Online Apply Start Date", "15 January 2025"],
+        ["Last Date for Apply Online", "20 May 2025"],
+        ["Last Date Online Payment", "00 May 2025"],
+        ["Correction Date", "08-20 May 2025"],
+        ["Exam Date", "05-13 June 2025"],
+        ["Admit Card Available", "28 May 2025"],
+        ["Answer Key", "17 June 2025"],
+        ["Result Declared", "23 June 2025"],
+        ["Counselling Start Date", "27 June 2025"],
+        ["Counselling Last Date", "As Per Scheduled"]
+      ],
+      "fee": [
+        "For Counselling Registration Fee : ₹ 250/-",
+        "Seat Acceptance Fee : ₹ 3000/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2025",
+        "Minimum Age : 14 Years",
+        "Maximum Age : NA"
+      ]
+    },
+    {
+      "id": "mp-anganwadi-online-form-2025",
+      "title": "MP Anganwadi Online Form 2025",
+      "short": "WCD MP Anganwadi Worker, Helper Examination 2025",
+      "deadline": "2025-07-04",
+      "line": "Last Date: 04 July 2025",
+      "dates": [
+        ["Online Apply Start Date", "20 June 2025"],
+        ["Apply Online Last Date", "04 July 2025"],
+        ["Fee Payment Last Date", "04 July 2025"],
+        ["Correction Last Date", "As Per Schedule"],
+        ["Exam Date", "Notify Later"],
+        ["Admit Card", "Before Exam"],
+        ["Result Declared Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General/ OBC/ EWS : ₹ 100/-",
+        "For SC/ ST : ₹ 100/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 January 2025",
+        "For Minimum Age: 18 years",
+        "For Maximum Age: 35 years"
+      ]
+    },
+    {
+      "id": "bihar-shs-ayush-medical-officer-online-form-2025",
+      "title": "Bihar SHS Ayush Medical Officer Online Form 2025",
+      "short": "Bihar SHS Ayush Medical Officer Examination 2025 — Candidates are advised to confirm from the Bihar SHSB official website.",
+      "deadline": "2025-06-15",
+      "line": "Last Date: 15 June 2025",
+      "dates": [
+        ["Application Start Date", "31 May 2025"],
+        ["Last Date", "15 June 2025"],
+        ["Last Date For Fee Payment", "15 June 2025"],
+        ["Exam Date", "Notify Soon"],
+        ["Admit Card", "Before Exam"],
+        ["Result Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General/ BC/ EBC/ EWS Candidates : ₹ NA"
+      ],
+      "eligibility": []
     }
-
-    function escapeHTML(str) {
-        if (typeof str !== "string") return "";
-        return str.replace(/[&<>"'`=\/]/g, function (s) {
-            return {
-                "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                '"': "&quot;",
-                "'": "&#39;",
-                "/": "&#x2F;",
-                "`": "&#x60;",
-                "=": "&#x3D;"
-            }[s];
-        });
-    }
-
-    function sanitizeUrl(url) {
-        if (typeof url !== "string") return "#";
-        const trimmed = url.trim();
-        if (/^https?:\/\//i.test(trimmed)) {
-            return trimmed;
-        }
-        return "#";
-    }
-
-    document.addEventListener("contextmenu", function (e) {
-        if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA") {
-            e.preventDefault();
-        }
-    });
-
-    document.addEventListener("keydown", function (e) {
-        if (
-            e.key === "F12" ||
-            (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
-            (e.ctrlKey && (e.key === "u" || e.key === "U"))
-        ) {
-            e.preventDefault();
-        }
-    });
-
-    // ---------------- 2. WEEKLY UPDATABLE DATA ARRAYS ----------------
-
-    const LIVE_TICKER_ITEMS = Object.freeze([
-        { id: "rrb-station-master", text: "Railway RRB Station Master 1,265 Posts Online Form 2026 [Apply Now]" },
-        { id: "up-board-10th", text: "UP Board Class 10th & 12th Result / Time Table 2026-27 [Declared]" },
-        { id: "up-police-constable", text: "UP Police Constable 32,679 Posts Online Form 2026 [Apply Online]" },
-        { id: "anganwadi-2026", text: "UP Anganwadi Supervisor, Teacher & Worker Online Form 2026 [Active]" },
-        { id: "ssc-gd-2026", text: "SSC GD Constable Final Merit List & Online Form 2026-27 [Out]" },
-        { id: "ecce-educator", text: "UP ECCE Educator Online Form 2026 (All Districts) [Apply Now]" }
-    ]);
-
-    const TOP_HIGHLIGHTS = Object.freeze([
-        { id: "rrb-station-master", title: "Railway RRB Station Master 1,265 Posts Online Form 2026", colorClass: "bg-c1" },
-        { id: "up-police-constable", title: "UP Police Constable 32,679 Posts Online Form 2026", colorClass: "bg-c2" },
-        { id: "ssc-gd-2026", title: "SSC GD Constable Online Form 2026-27", colorClass: "bg-c3" },
-        { id: "up-scholarship-2026", title: "UP Scholarship 2026-27 Online Form (Class 9 to 12, UG/PG)", colorClass: "bg-c4" },
-        { id: "nta-neet-ug", title: "NTA NEET UG 2026 Online Form & Information Bulletin", colorClass: "bg-c5" },
-        { id: "up-board-10th", title: "UP Board 10th & 12th Result / Time Table 2026-27", colorClass: "bg-c6" },
-        { id: "anganwadi-2026", title: "UP Anganwadi Supervisor & Worker Online Form 2026", colorClass: "bg-c7" },
-        { id: "rrb-ntpc-ug", title: "RRB NTPC 10+2 & Graduate Level Online Form 2026", colorClass: "bg-c8" }
-    ]);
-
-    const FEATURED_SCHEMES = Object.freeze([
-        {
-            postId: "anganwadi-2026",
-            hindiTitle: "आंगनबाड़ी भर्ती 2026",
-            englishTitle: "UP Anganwadi Supervisor & Worker 2026",
-            description: "Registration started for combined Anganwadi Recruitment & Training Program 2026 on SarkariResultUpAll.com. Click here to view official notification & apply online.",
-            buttonText: "Apply Online »",
-            headers: ["प्रशिक्षण / पद का नाम", "अवधि / चयन", "योग्यता"],
-            rows: [
-                ["आंगनबाड़ी सुपरवाइज़र", "सीधी भर्ती / 3 माह", "स्नातक पास (Graduate)"],
-                ["आंगनबाड़ी टीचर", "6 माह", "12वीं पास (10+2)"],
-                ["आंगनबाड़ी वर्कर / सहायिका", "3 माह", "10वीं पास (High School)"]
-            ]
-        }
-    ]);
-
-    // नोट: registrationUrl में सीधा फॉर्म/रजिस्ट्रेशन पेज का लिंक डालें, और officialUrl में मेन वेबसाइट का लिंक डालें।
-    const PORTAL_POSTS = Object.freeze([
-        // LATEST JOBS
-        {
-            id: "rrb-station-master",
-            category: "latest-job",
-            title: "Railway RRB Station Master 1,265 Posts Online Form 2026",
-            tag: "Apply Online",
-            date: "27 Oct 2026",
-            time: "10:00 AM",
-            shortInfo: "Railway Recruitment Board (RRB) has released a notification for 1,265 Railway Station Master Posts (Advt No. CEN 08/2026). Apply online from 27 Oct to 25 November 2026.",
-            registrationUrl: "https://www.rrbapply.gov.in/#/auth/home",
-            officialUrl: "https://indianrailways.gov.in/",
-            detailsTable: {
-                dates: [
-                    "Apply Online Start Date : 27 October 2026",
-                    "Apply Online Last Date : 25 November 2026",
-                    "Fee Payment Last Date : 27 November 2026",
-                    "Correction Date : 28 Nov – 07 Dec 2026",
-                    "Exam Date : Notify Later",
-                    "Admit Card : Before Exam"
-                ],
-                fees: [
-                    "General / OBC / EWS : ₹ 500/-",
-                    "SC / ST / EBC : ₹ 250/-",
-                    "All Category Female : ₹ 250/-",
-                    "Fee Refund (After Stage-I) : ₹ 400 (Gen) / ₹ 250 (Others)",
-                    "Payment Mode : Online (Debit/Credit Card, Net Banking, UPI)"
-                ],
-                ageLimit: [
-                    "Minimum Age : 20 Years (As on 01 Jan 2027)",
-                    "Maximum Age : 33 Years",
-                    "Age Relaxation Extra as per Railway RRBCEN 08/2026 Rules."
-                ],
-                totalPosts: "1,265 Posts"
-            }
-        },
-        {
-            id: "up-police-constable",
-            category: "latest-job",
-            title: "UP Police Constable 32,679 Posts Online Form 2026",
-            tag: "Apply Online",
-            date: "29 Oct 2026",
-            time: "09:30 AM",
-            shortInfo: "Uttar Pradesh Police Recruitment & Promotion Board (UPPRPB) has invited online applications for 32,679 Civil Police & PAC Constable Posts.",
-            registrationUrl: "https://uppbpb.gov.in/",
-            officialUrl: "https://uppbpb.gov.in/",
-            detailsTable: {
-                dates: [
-                    "Application Start : 29 October 2026",
-                    "Last Date for Apply : 28 November 2026",
-                    "Fee Payment Last Date : 30 November 2026",
-                    "Exam Date : As per Schedule"
-                ],
-                fees: [
-                    "General / OBC / EWS : ₹ 400/-",
-                    "SC / ST : ₹ 400/-",
-                    "Payment Mode : Online via Debit Card, Credit Card, Net Banking"
-                ],
-                ageLimit: [
-                    "Minimum Age : 18 Years",
-                    "Maximum Age : 25 Years (Male) / 28 Years (Female)",
-                    "Age Relaxation Extra as per UPPRPB Govt Rules."
-                ],
-                totalPosts: "32,679 Posts"
-            }
-        },
-        {
-            id: "anganwadi-2026",
-            category: "latest-job",
-            title: "UP Anganwadi Supervisor, Teacher & Worker Recruitment Online Form 2026",
-            tag: "New",
-            date: "29 Oct 2026",
-            time: "08:45 AM",
-            shortInfo: "Bal Vikas Seva Evam Pushtahar Vibhag UP Anganwadi Supervisor (Graduate), Anganwadi Teacher (12th Pass) & Worker (10th Pass) Online Registration 2026.",
-            registrationUrl: "https://upanganwadibharti.in/",
-            officialUrl: "https://upanganwadibharti.in/",
-            detailsTable: {
-                dates: [
-                    "Application Begin : October 2026",
-                    "Last Date for Registration : District Wise Active",
-                    "Merit List / Selection : Notify Soon"
-                ],
-                fees: [
-                    "General / OBC / EWS : ₹ 0/- (No Fee)",
-                    "SC / ST / PH : ₹ 0/-",
-                    "All Category Female : ₹ 0/- (Free Application)"
-                ],
-                ageLimit: [
-                    "Minimum Age : 18 Years",
-                    "Maximum Age : 35 Years",
-                    "Age Relaxation as per UP ICDS Anganwadi Bharti Rules."
-                ],
-                totalPosts: "53,000+ Posts (District Wise)"
-            }
-        },
-        {
-            id: "ssc-gd-2026",
-            category: "latest-job",
-            title: "SSC GD Constable Online Form 2026-27",
-            tag: "[Last Date Extended]",
-            date: "28 Oct 2026",
-            time: "10:00 AM",
-            shortInfo: "Staff Selection Commission (SSC) GD Constable in BSF, CISF, CRPF, SSB, ITBP, AR & SSF Online Application Form 2026-27.",
-            registrationUrl: "https://ssc.gov.in/login",
-            officialUrl: "https://ssc.gov.in/",
-            detailsTable: {
-                dates: [
-                    "Application Begin : 05 September 2026",
-                    "Last Date to Apply : 14 November 2026",
-                    "Online Fee Payment Last Date : 15 November 2026",
-                    "CBT Exam Date : Jan – Feb 2027"
-                ],
-                fees: [
-                    "General / OBC / EWS : ₹ 100/-",
-                    "SC / ST / Ex-Servicemen : ₹ 0/-",
-                    "All Category Female : ₹ 0/-",
-                    "Payment Mode : BHIM UPI, Net Banking, Debit/Credit Cards"
-                ],
-                ageLimit: [
-                    "Minimum Age : 18 Years",
-                    "Maximum Age : 23 Years",
-                    "Age Relaxation Extra as per SSC GD Recruitment Rules."
-                ],
-                totalPosts: "39,481 Posts"
-            }
-        },
-        {
-            id: "rrb-group-d",
-            category: "latest-job",
-            title: "Railway RRB Group D 50,000+ Posts Online Form 2026",
-            tag: "[New]",
-            date: "27 Oct 2026",
-            time: "02:45 PM",
-            shortInfo: "Railway Recruitment Cell (RRC) Level-1 Group D Track Maintainer, Pointsman & Helper 50,000+ Vacancies Online Form 2026.",
-            registrationUrl: "https://www.rrbapply.gov.in/",
-            officialUrl: "https://indianrailways.gov.in/"
-        },
-        {
-            id: "up-police-si",
-            category: "latest-job",
-            title: "UP Police SI Daroga 4,543 Posts Online Form 2026",
-            tag: "[Apply]",
-            date: "26 Oct 2026",
-            time: "01:15 PM",
-            shortInfo: "UP Police Sub Inspector (SI Civil Police), Platoon Commander & Fire Service Second Officer Recruitment 2026.",
-            registrationUrl: "https://uppbpb.gov.in/",
-            officialUrl: "https://uppbpb.gov.in/"
-        },
-        {
-            id: "upsssc-vdo-2026",
-            category: "latest-job",
-            title: "UPSSSC Gram Panchayat Adhikari (VDO) Online Form 2026",
-            tag: "[UPSSSC]",
-            date: "25 Oct 2026",
-            time: "04:20 PM",
-            shortInfo: "Uttar Pradesh Subordinate Services Selection Commission (UPSSSC) Gram Panchayat Adhikari & Gram Vikas Adhikari Mains Form 2026.",
-            registrationUrl: "https://upsssc.gov.in/",
-            officialUrl: "https://upsssc.gov.in/"
-        },
-        {
-            id: "army-agniveer-rally",
-            category: "latest-job",
-            title: "Indian Army Agniveer Rally Recruitment 2026 Online Form",
-            tag: "[Rally 2026]",
-            date: "24 Oct 2026",
-            time: "11:30 AM",
-            shortInfo: "Indian Army Agniveer General Duty (GD), Technical, Clerk, Store Keeper & Tradesman All Zone Rally Notification 2026.",
-            registrationUrl: "https://joinindianarmy.nic.in/",
-            officialUrl: "https://joinindianarmy.nic.in/"
-        },
-        {
-            id: "up-home-guard",
-            category: "latest-job",
-            title: "UP Home Guard 42,000 Posts Bharti Online Form 2026",
-            tag: "[UP Bharti]",
-            date: "23 Oct 2026",
-            time: "03:10 PM",
-            shortInfo: "Uttar Pradesh Home Guards Department 42,000 Volunteer Home Guard Recruitment 2026 (10th & 12th Pass).",
-            registrationUrl: "https://homeguards.up.nic.in/",
-            officialUrl: "https://homeguards.up.nic.in/"
-        },
-
-        // RESULTS
-        {
-            id: "up-board-10th",
-            category: "result",
-            title: "UP Board Class 10th High School Result 2026",
-            tag: "[Declared]",
-            date: "20 April 2026",
-            time: "02:00 PM",
-            shortInfo: "Uttar Pradesh Madhyamik Shiksha Parishad (UPMSP) High School Class 10th Exam Result 2026. Check Roll Number Wise Result on Official NIC Server.",
-            registrationUrl: "https://upresults.nic.in/",
-            officialUrl: "https://upmsp.edu.in/"
-        },
-        {
-            id: "up-board-12th",
-            category: "result",
-            title: "UP Board Class 12th Intermediate Result 2026",
-            tag: "[Server Active]",
-            date: "20 April 2026",
-            time: "02:00 PM",
-            shortInfo: "Uttar Pradesh Madhyamik Shiksha Parishad (UPMSP) Intermediate Class 12th Science, Arts & Commerce Result 2026.",
-            registrationUrl: "https://upresults.nic.in/",
-            officialUrl: "https://upmsp.edu.in/"
-        },
-        {
-            id: "up-police-result",
-            category: "result",
-            title: "UP Police Constable Written Exam Final Result 2026",
-            tag: "[New]",
-            date: "28 Oct 2026",
-            time: "06:30 PM",
-            shortInfo: "Uttar Pradesh Police Recruitment & Promotion Board (UPPRPB) Civil Police Constable Written Exam Result & Cutoff Marks 2026.",
-            registrationUrl: "https://uppbpb.gov.in/",
-            officialUrl: "https://uppbpb.gov.in/"
-        },
-        {
-            id: "ssc-gd-result",
-            category: "result",
-            title: "SSC GD Constable Final Merit List 2026",
-            tag: "[Out]",
-            date: "27 Oct 2026",
-            time: "08:15 PM",
-            shortInfo: "Staff Selection Commission (SSC) Constable GD in CAPFs, SSF, Rifleman (GD) in Assam Rifles Final Merit List Download.",
-            registrationUrl: "https://ssc.gov.in/",
-            officialUrl: "https://ssc.gov.in/"
-        },
-        {
-            id: "upsssc-pet-score",
-            category: "result",
-            title: "UPSSSC PET 2026 Score Card Download",
-            tag: "[Active]",
-            date: "25 Oct 2026",
-            time: "04:45 PM",
-            shortInfo: "Uttar Pradesh Subordinate Services Selection Commission (UPSSSC) Preliminary Eligibility Test (PET) 2026 Official Score Card.",
-            registrationUrl: "https://upsssc.gov.in/",
-            officialUrl: "https://upsssc.gov.in/"
-        },
-        {
-            id: "army-agniveer-result",
-            category: "result",
-            title: "Indian Army Agniveer CEE Exam Result 2026",
-            tag: "[Declared]",
-            date: "24 Oct 2026",
-            time: "01:20 PM",
-            shortInfo: "Join Indian Army Agniveer Common Entrance Exam (CEE) Roll Number Wise Merit List 2026 for all AROs.",
-            registrationUrl: "https://joinindianarmy.nic.in/",
-            officialUrl: "https://joinindianarmy.nic.in/"
-        },
-        {
-            id: "rrb-alp-result",
-            category: "result",
-            title: "Railway RRB ALP CBT-1 Score Card & Result 2026",
-            tag: "[2026]",
-            date: "22 Oct 2026",
-            time: "05:00 PM",
-            shortInfo: "Railway Recruitment Board (RRB) Assistant Loco Pilot (ALP) CBT-1 Result, Cut Off & Score Card Link.",
-            registrationUrl: "https://indianrailways.gov.in/",
-            officialUrl: "https://indianrailways.gov.in/"
-        },
-        {
-            id: "bihar-board-10th-result",
-            category: "result",
-            title: "Bihar Board BSEB Class 10th & 12th Result 2026",
-            tag: "[Declared]",
-            date: "20 Oct 2026",
-            time: "03:15 PM",
-            shortInfo: "Bihar School Examination Board (BSEB) Matric & Inter Annual Exam Result 2026 Direct Link.",
-            registrationUrl: "https://results.biharboardonline.com/",
-            officialUrl: "https://biharboardonline.bihar.gov.in/"
-        },
-
-        // ADMIT CARDS
-        {
-            id: "up-police-admit",
-            category: "admit-card",
-            title: "UP Police Constable Admit Card & Exam City 2026",
-            tag: "[Link Active]",
-            date: "29 Oct 2026",
-            time: "10:15 AM",
-            shortInfo: "UPPRPB Constable Recruitment Exam City Intimation Slip and Hall Ticket Download 2026.",
-            registrationUrl: "https://uppbpb.gov.in/",
-            officialUrl: "https://uppbpb.gov.in/"
-        },
-        {
-            id: "ssc-cgl-admit",
-            category: "admit-card",
-            title: "SSC CGL Tier-1 / Tier-2 Admit Card 2026",
-            tag: "[Download]",
-            date: "28 Oct 2026",
-            time: "11:40 AM",
-            shortInfo: "Staff Selection Commission Combined Graduate Level (CGL) 2026 Region Wise Application Status & Admit Card.",
-            registrationUrl: "https://ssc.gov.in/",
-            officialUrl: "https://ssc.gov.in/"
-        },
-        {
-            id: "bsf-hc-admit",
-            category: "admit-card",
-            title: "BSF HC RO / RM CBT Exam Admit Card 2026",
-            tag: "[New]",
-            date: "27 Oct 2026",
-            time: "01:00 PM",
-            shortInfo: "Border Security Force (BSF) Head Constable (Radio Operator & Radio Mechanic) Admit Card 2026.",
-            registrationUrl: "https://rectt.bsf.gov.in/",
-            officialUrl: "https://bsf.gov.in/"
-        },
-        {
-            id: "rrb-ntpc-admit",
-            category: "admit-card",
-            title: "Railway RRB NTPC Graduate & 10+2 CBTST Admit Card 2026",
-            tag: "[Live]",
-            date: "26 Oct 2026",
-            time: "04:00 PM",
-            shortInfo: "Railway Recruitment Board (RRB) Non-Technical Popular Categories (NTPC) Graduate & UG Level Admit Card 2026.",
-            registrationUrl: "https://www.rrbapply.gov.in/",
-            officialUrl: "https://indianrailways.gov.in/"
-        },
-        {
-            id: "upsssc-lekhpal-admit",
-            category: "admit-card",
-            title: "UPSSSC Rajasva Lekhpal Mains Admit Card 2026",
-            tag: "[Active]",
-            date: "24 Oct 2026",
-            time: "02:30 PM",
-            shortInfo: "UPSSSC Rajasva Lekhpal Mains Examination Hall Ticket & Exam Center Notice 2026.",
-            registrationUrl: "https://upsssc.gov.in/",
-            officialUrl: "https://upsssc.gov.in/"
-        },
-        {
-            id: "uppsc-pcs-admit",
-            category: "admit-card",
-            title: "UPPSC PCS Pre Exam Admit Card & 2025 Interview Letter",
-            tag: "[Out]",
-            date: "21 Oct 2026",
-            time: "05:20 PM",
-            shortInfo: "Uttar Pradesh Public Service Commission (UPPSC) Combined State / Upper Subordinate Services Admit Card & Interview Letter.",
-            registrationUrl: "https://uppsc.up.nic.in/",
-            officialUrl: "https://uppsc.up.nic.in/"
-        },
-
-        // 10th / ITI JOBS
-        {
-            id: "rrb-ntpc-ug",
-            category: "iti-job",
-            title: "RRB NTPC 10+2 UG Online Form 2026 (1688 Posts)",
-            tag: "[Apply Online]",
-            date: "29 Oct 2026",
-            time: "11:00 AM",
-            shortInfo: "Railway Recruitment Board (RRB) Non-Technical Popular Categories (Undergraduate Level 10+2) 1,688 Posts Online Form 2026.",
-            registrationUrl: "https://www.rrbapply.gov.in/",
-            officialUrl: "https://indianrailways.gov.in/"
-        },
-        {
-            id: "raj-safai-karmchari",
-            category: "iti-job",
-            title: "Rajasthan Safai Karmchari Online Form 2026 (24,752 Posts)",
-            tag: "[Last Date Today]",
-            date: "29 Oct 2026",
-            time: "09:15 AM",
-            shortInfo: "Local Self Government Department Rajasthan Safai Karmchari 24,752 Posts Online Form 2026.",
-            registrationUrl: "https://lsg.urban.rajasthan.gov.in/",
-            officialUrl: "https://lsg.urban.rajasthan.gov.in/"
-        },
-        {
-            id: "upsssc-inter-level",
-            category: "iti-job",
-            title: "UPSSSC Inter (12th) Level & Junior Engineer JE Online Form 2026",
-            tag: "[New]",
-            date: "28 Oct 2026",
-            time: "02:00 PM",
-            shortInfo: "UPSSSC 10+2 Intermediate Level Clerical Cadre and Junior Engineer (Civil/Mechanical) Recruitment 2026.",
-            registrationUrl: "https://upsssc.gov.in/",
-            officialUrl: "https://upsssc.gov.in/"
-        },
-
-        // OUTSOURCING JOBS
-        {
-            id: "ecce-educator",
-            category: "outsourcing",
-            title: "UP Hamirpur & Budaun ECCE Educator Online Form 2026",
-            tag: "[Sevayojan]",
-            date: "29 Oct 2026",
-            time: "10:00 AM",
-            shortInfo: "Uttar Pradesh Samagra Shiksha Abhiyan Early Childhood Care and Education (ECCE) Educator Recruitment 2026 via UP Sevayojan Portal.",
-            registrationUrl: "https://sewayojan.up.nic.in/",
-            officialUrl: "https://sewayojan.up.nic.in/"
-        },
-        {
-            id: "ecce-kanpur-rampur",
-            category: "outsourcing",
-            title: "UP Kanpur, Etawah & Rampur ECCE Educator Online Form 2026",
-            tag: "[Active]",
-            date: "27 Oct 2026",
-            time: "01:10 PM",
-            shortInfo: "UP Kanpur Nagar, Kanpur Dehat, Etawah, and Rampur ECCE Educator Contract Basis Recruitment 2026.",
-            registrationUrl: "https://sewayojan.up.nic.in/",
-            officialUrl: "https://sewayojan.up.nic.in/"
-        },
-
-        // SYLLABUS
-        {
-            id: "upessc-prt-syllabus",
-            category: "syllabus",
-            title: "UPESSC PRT Assistant Teacher 2026 (12,405 Posts) — Syllabus",
-            tag: "[Syllabus]",
-            date: "29 Oct 2026",
-            time: "09:50 AM",
-            shortInfo: "Uttar Pradesh Education Service Selection Commission (UPESSC) Primary Assistant Teacher (PRT) 12,405 Posts Official Syllabus.",
-            registrationUrl: "https://updeled.gov.in/",
-            officialUrl: "https://updeled.gov.in/"
-        },
-        {
-            id: "rrb-ntpc-je-syllabus",
-            category: "syllabus",
-            title: "RRB NTPC Graduate / 10+2 UG (5236 Posts) & RRB JE Revised Exam Syllabus 2026",
-            tag: "[Download]",
-            date: "28 Oct 2026",
-            time: "02:15 PM",
-            shortInfo: "Download Official Exam Pattern and CBT-1/CBT-2 Syllabus for RRB NTPC Graduate (3548 Posts), UG (1688 Posts) & RRB JE.",
-            registrationUrl: "https://indianrailways.gov.in/",
-            officialUrl: "https://indianrailways.gov.in/"
-        },
-
-        // ANSWER KEY
-        {
-            id: "up-police-answer-key",
-            category: "answer-key",
-            title: "UP Police Constable & SI Written Exam All Shift Answer Key 2026",
-            tag: "[Out]",
-            date: "28 Oct 2026",
-            time: "05:30 PM",
-            shortInfo: "Download UPPRPB Police Constable and Sub Inspector Official Master Question Paper and Shift-Wise Answer Key.",
-            registrationUrl: "https://uppbpb.gov.in/",
-            officialUrl: "https://uppbpb.gov.in/"
-        },
-        {
-            id: "ssc-cgl-mts-answer-key",
-            category: "answer-key",
-            title: "SSC CGL Tier-1 & SSC MTS Havildar Response Sheet / Answer Key 2026",
-            tag: "[Link Active]",
-            date: "26 Oct 2026",
-            time: "06:10 PM",
-            shortInfo: "Staff Selection Commission CGL & MTS Candidate Response Sheet and Tentative Answer Key Challenge Link.",
-            registrationUrl: "https://ssc.gov.in/",
-            officialUrl: "https://ssc.gov.in/"
-        },
-
-        // ADMISSION & SCHOLARSHIP
-        {
-            id: "up-scholarship-2026",
-            category: "admission",
-            title: "UP Scholarship Online Form 2026-27 (Pre & Post Matric Class 9-12, UG/PG)",
-            tag: "[Apply Online]",
-            date: "29 Oct 2026",
-            time: "10:30 AM",
-            shortInfo: "Social Welfare Department Uttar Pradesh Pre-Matric (Class 9-10) & Post-Matric (Class 11-12, B.A, B.Sc, B.Tech, ITI, Diploma) Scholarship Form & Status 2026-27.",
-            registrationUrl: "https://scholarship.up.gov.in/RegistrationNew.aspx",
-            officialUrl: "https://scholarship.up.gov.in/"
-        },
-        {
-            id: "nta-neet-ug",
-            category: "admission",
-            title: "NTA NEET UG 2026-27 Online Form, Syllabus & Information Bulletin",
-            tag: "[Medical]",
-            date: "27 Oct 2026",
-            time: "01:00 PM",
-            shortInfo: "National Testing Agency (NTA) National Eligibility Cum Entrance Test (NEET UG) for MBBS/BDS Admission in AIIMS & Govt Medical Colleges.",
-            registrationUrl: "https://neet.nta.nic.in/",
-            officialUrl: "https://neet.nta.nic.in/"
-        }
-    ]);
-
-    // ---------------- 3. 100% WORKING GOVT TOOLS ARRAY ----------------
-    const PORTAL_TOOLS = Object.freeze([
-        {
-            name: "Image Resizer",
-            desc: "Resize any photo or signature to exact 20KB, 50KB or custom pixel dimensions without quality loss.",
-            targetEngineUrl: "https://www.sarkariresult.com/tools/image-resizer.php",
-            graphicHTML: `<div class="gfx-resizer-outer"><div class="gfx-resizer-inner">20KB - 50KB</div></div>`
-        },
-        {
-            name: "Shadi / Marriage Bio Data Maker",
-            desc: "Create attractive Hindi & English Marriage Bio-Data in 2 minutes.",
-            targetEngineUrl: "https://sarkariresulttools.net/shadi-marriage-biodata-maker/",
-            graphicHTML: `<div class="gfx-biodata-box"><span class="ylw">MARITAL</span><span class="wht">BIO-DATA</span><span class="ylw">MAKER</span><span class="hin">शादी का बायोडाटा</span></div>`
-        },
-        {
-            name: "Resume/CV Maker",
-            desc: "Build a clean, print-ready Resume/CV for fresher and experienced jobs.",
-            targetEngineUrl: "https://sarkariresulttools.net/resume-cv-maker/",
-            graphicHTML: `<div class="gfx-cv-circle"><div class="gfx-cv-doc"><span>CV</span><div class="gfx-cv-line"></div><div class="gfx-cv-line"></div></div></div>`
-        },
-        {
-            name: "JPG to PDF Converter",
-            desc: "Convert multiple marksheet or certificate JPG photos into a single file.",
-            targetEngineUrl: "https://www.sarkariresult.com/tools/jpg-to-pdf.php",
-            graphicHTML: `<div class="gfx-jpg-pdf-wrap"><div class="gfx-file-box">JPG</div><div class="gfx-red-arrow">&rarr;</div><div class="gfx-file-box pdf-style">PDF</div></div>`
-        },
-        {
-            name: "Typing Test",
-            desc: "Check your WPM speed and accuracy for UPSSSC, SSC & High Court typing exams.",
-            targetEngineUrl: "https://sarkariresulttools.net/typing-test/",
-            graphicHTML: `<div class="gfx-typing-box"><div class="gfx-wpm-meter">35+ WPM TEST</div><div class="gfx-key-row"><span class="gfx-key">HINDI</span><span class="gfx-key">ENGLISH</span></div></div>`
-        },
-        {
-            name: "Age Calculator",
-            desc: "Calculate your exact age in Years, Months & Days as on notification cutoff date.",
-            targetEngineUrl: "https://www.sarkariresult.com/tools/age-calculator.php",
-            graphicHTML: `<div class="gfx-age-box"><div class="gfx-age-top">Age Calculator</div><div class="gfx-age-grid"><div class="gfx-age-cell">YY</div><div class="gfx-age-cell">MM</div><div class="gfx-age-cell">DD</div></div></div>`
-        },
-        {
-            name: "Name & Date on Photo Maker",
-            desc: "Automatically add your Name and Date of Photo at the bottom of your passport photo.",
-            targetEngineUrl: "https://www.sarkariresult.com/tools/name-date-photo.php",
-            graphicHTML: `<div class="gfx-photo-pair"><div class="gfx-passport-frame"><div class="gfx-avatar-head"></div><div class="gfx-avatar-body"></div></div><div class="gfx-passport-frame"><div class="gfx-avatar-head"></div><div class="gfx-avatar-body"></div><div class="gfx-photo-stamp">Photo Name<br>29-10-2026</div></div></div>`
-        },
-        {
-            name: "Photo Signature Joiner",
-            desc: "Combine your passport photo and signature into one single image for form upload.",
-            targetEngineUrl: "https://www.sarkariresult.com/tools/photo-sign-joiner.php",
-            graphicHTML: `<div class="gfx-merge-banner"><div class="gfx-merge-top">Photo & Signature</div><div class="gfx-merge-mid"><div class="gfx-sign-box">Sign</div><div class="gfx-merge-txt">Merge &rarr;</div></div></div>`
-        },
-        {
-            name: "MPPEB Template",
-            desc: "Generate official MPPEB/MPESB photo, signature & declaration template.",
-            targetEngineUrl: "https://sarkariresulttools.net/mppeb-template/",
-            graphicHTML: `<div class="gfx-mppeb-sheet"><div class="gfx-mppeb-top"><div class="gfx-mini-photo"></div><div class="gfx-mini-lines"><div></div><div></div></div></div><div class="gfx-mppeb-Label">MPPEB Form</div></div>`
-        }
-    ]);
-
-    // ---------------- 4. WIDE 2-COLUMN MODAL CONTROLLER ----------------
-    function removeDownloadPdfRowFromModal() {
-        const pdfBtn = document.getElementById("modalPdfBtn");
-        if (pdfBtn) {
-            const parentRow = pdfBtn.closest("tr");
-            if (parentRow) parentRow.remove();
-        }
-        // पुराना संकरा बॉक्स अगर कहीं बचा हो तो उसे भी हटा दें
-        const oldNarrowBox = document.getElementById("dynamicDetailsTableBox");
-        if (oldNarrowBox) oldNarrowBox.remove();
-    }
-
-    // मुख्य चौड़े टेबल की पंक्तियों (Rows) को पहचान कर तैयार करना
-    function ensureWideModalTableStructure() {
-        const primaryBtn = document.getElementById("modalPrimaryBtn");
-        if (!primaryBtn) return null;
-        const table = primaryBtn.closest("table");
-        if (!table) return null;
-
-        // एक बार पहचान चिह्न (IDs) लगा दें ताकि हर पोस्ट पर चौड़ा 2-कॉलम बॉक्स अपडेट हो सके
-        if (!table.hasAttribute("data-sru-wide-ready")) {
-            const dateOnlyEl = document.getElementById("modalDateOnly");
-            if (dateOnlyEl) {
-                const contentRow = dateOnlyEl.closest("tr");
-                if (contentRow && contentRow.cells.length >= 2) {
-                    contentRow.id = "sruWideDatesFeesRow";
-                    contentRow.cells[0].id = "sruDatesCell";
-                    contentRow.cells[1].id = "sruFeesCell";
-
-                    const headerRow = contentRow.previousElementSibling;
-                    if (headerRow && headerRow.cells.length >= 2) {
-                        headerRow.id = "sruWideHeaderRow";
-                        headerRow.cells[0].id = "sruLeftColTitle";
-                        headerRow.cells[1].id = "sruRightColTitle";
-                    }
-
-                    // Age Limit और Total Post के लिए उसी चौड़े टेबल में एक नई 2-कॉलम पंक्ति (Row) जोड़ें
-                    const agePostHeaderRow = document.createElement("tr");
-                    agePostHeaderRow.id = "sruWideAgePostHeaderRow";
-                    agePostHeaderRow.innerHTML = `
-                        <th style="background:#14532d; color:#ffffff; padding:7px 12px; text-align:left; font-size:0.92rem; border:1px solid #cbd5e1; width:55%;">
-                            Age Limit &amp; Eligibility Details
-                        </th>
-                        <th style="background:#c2410c; color:#ffffff; padding:7px 12px; text-align:center; font-size:0.92rem; border:1px solid #cbd5e1; width:45%;">
-                            Vacancy / Total Post
-                        </th>
-                    `;
-
-                    const agePostBodyRow = document.createElement("tr");
-                    agePostBodyRow.id = "sruWideAgePostBodyRow";
-                    agePostBodyRow.innerHTML = `
-                        <td id="sruAgeLimitCell" style="padding:9px 12px; vertical-align:top; background:#ffffff; border:1px solid #cbd5e1; font-size:0.88rem; line-height:1.55;"></td>
-                        <td id="sruTotalPostCell" style="padding:9px 12px; vertical-align:middle; text-align:center; background:#fff7ed; border:1px solid #cbd5e1; font-size:1.15rem; font-weight:800; color:#9a3412;"></td>
-                    `;
-
-                    contentRow.parentNode.insertBefore(agePostHeaderRow, contentRow.nextSibling);
-                    contentRow.parentNode.insertBefore(agePostBodyRow, agePostHeaderRow.nextSibling);
-                }
-            }
-            table.setAttribute("data-sru-wide-ready", "true");
-        }
-
-        return table;
-    }
-
-    function openPostById(postId) {
-        const post = PORTAL_POSTS.find(p => p.id === postId) || PORTAL_POSTS[0];
-        if (!post) return;
-
-        removeDownloadPdfRowFromModal();
-        ensureWideModalTableStructure();
-
-        const postDateEl = document.getElementById("modalPostDate");
-        if (postDateEl) postDateEl.innerHTML = `${escapeHTML(post.date)} | <strong>${escapeHTML(post.time)}</strong>`;
-
-        const shortInfoEl = document.getElementById("modalShortInfo");
-        if (shortInfoEl) shortInfoEl.textContent = post.shortInfo;
-
-        const mainHeadingEl = document.getElementById("modalMainHeading");
-        if (mainHeadingEl) mainHeadingEl.textContent = post.title;
-
-        // चौड़े 2-कॉलम टेबल में बाईं तरफ Important Dates और दाईं तरफ Application Fee भरना
-        const leftColTitle = document.getElementById("sruLeftColTitle");
-        const rightColTitle = document.getElementById("sruRightColTitle");
-        const datesCell = document.getElementById("sruDatesCell");
-        const feesCell = document.getElementById("sruFeesCell");
-        const ageCell = document.getElementById("sruAgeLimitCell");
-        const totalPostCell = document.getElementById("sruTotalPostCell");
-
-        if (leftColTitle) leftColTitle.textContent = "Important Dates";
-        if (rightColTitle) rightColTitle.textContent = "Application Fee";
-
-        const details = post.detailsTable || {
-            dates: [
-                `Notification / Update Date : ${post.date}`,
-                `Update Timing : ${post.time}`,
-                `Status : ${post.tag.replace(/[\[\]]/g, "")}`
-            ],
-            fees: [
-                "As per Official Department Notification.",
-                "No Extra Charge to Check Result / Download Admit Card."
-            ],
-            ageLimit: [
-                "Minimum / Maximum Age : As per official notification rules.",
-                "Candidates are advised to verify details on the official portal."
-            ],
-            totalPosts: post.category === "result" ? "Result Declared" : post.category === "admit-card" ? "Admit Card Active" : "Check Notification"
-        };
-
-        if (datesCell) {
-            datesCell.innerHTML = `<ul style="margin:0; padding-left:18px; line-height:1.6; font-size:0.88rem; color:#0f172a;">` +
-                details.dates.map(d => `<li>${escapeHTML(d)}</li>`).join("") +
-                `</ul>`;
-        }
-
-        if (feesCell) {
-            feesCell.innerHTML = `<ul style="margin:0; padding-left:18px; line-height:1.6; font-size:0.88rem; color:#0f172a;">` +
-                details.fees.map(f => `<li>${escapeHTML(f)}</li>`).join("") +
-                `</ul>`;
-        }
-
-        if (ageCell) {
-            const ageArr = Array.isArray(details.ageLimit) ? details.ageLimit : [details.ageLimit];
-            ageCell.innerHTML = `<ul style="margin:0; padding-left:18px; line-height:1.55; color:#0f172a;">` +
-                ageArr.map(a => `<li>${escapeHTML(a)}</li>`).join("") +
-                `</ul>`;
-        }
-
-        if (totalPostCell) {
-            totalPostCell.innerHTML = `<span style="display:inline-block; background:#ea580c; color:#ffffff; padding:5px 14px; border-radius:4px; font-size:1rem;">${escapeHTML(details.totalPosts)}</span>`;
-        }
-
-        // लिंक्स और बटन टेक्स्ट अपडेट करना
-        const actionLabel = post.category === "result"
-            ? "Download Result / Score Card"
-            : post.category === "admit-card"
-            ? "Download Admit Card / Exam City"
-            : "Apply Online / Official Registration";
-
-        const actionLabelEl = document.getElementById("modalActionLabel");
-        if (actionLabelEl) actionLabelEl.textContent = actionLabel;
-
-        const primaryBtn = document.getElementById("modalPrimaryBtn");
-        if (primaryBtn) {
-            primaryBtn.textContent = "Click Here Official Website";
-            primaryBtn.href = sanitizeUrl(post.registrationUrl || post.officialUrl);
-        }
-
-        const officialSiteBtn = document.getElementById("modalOfficialSiteBtn");
-        if (officialSiteBtn) {
-            officialSiteBtn.textContent = "Official Website";
-            officialSiteBtn.href = sanitizeUrl(post.officialUrl);
-        }
-
-        document.getElementById("postModal").style.display = "flex";
-    }
-
-    function closePostModal() {
-        document.getElementById("postModal").style.display = "none";
-    }
-
-    function openToolModal(toolName) {
-        const tool = PORTAL_TOOLS.find(t => t.name === toolName) || PORTAL_TOOLS[0];
-        document.getElementById("toolModalTitle").textContent = `SarkariResultUpAll.com — ${tool.name}`;
-        const body = document.getElementById("toolModalBody");
-
-        if (tool.name === "Age Calculator") {
-            body.innerHTML = `
-                <h3 style="color:#1e3a8a; margin-bottom:8px;">Exam Age Calculator</h3>
-                <p style="margin-bottom:12px; font-size:0.92rem; color:#475569;">Enter your Date of Birth to calculate your exact age as on 01 July 2026:</p>
-                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:15px;">
-                    <input type="date" id="dobInput" value="2005-07-15" style="padding:8px 12px; border:1px solid #64748b; border-radius:3px;">
-                    <button type="button" id="calcAgeBtn" class="server-btn">Calculate Age Now</button>
-                </div>
-                <div id="ageResultOutput" style="font-weight:bold; color:#15803d; font-size:1.1rem; padding:8px 0;"></div>
-            `;
-            const calcBtn = document.getElementById("calcAgeBtn");
-            if (calcBtn) {
-                calcBtn.addEventListener("click", function () {
-                    const dobVal = document.getElementById("dobInput").value;
-                    if (!dobVal) return;
-                    const dob = new Date(dobVal);
-                    const target = new Date("2026-07-01");
-                    let years = target.getFullYear() - dob.getFullYear();
-                    let months = target.getMonth() - dob.getMonth();
-                    let days = target.getDate() - dob.getDate();
-                    if (days < 0) { months--; days += 30; }
-                    if (months < 0) { years--; months += 12; }
-                    document.getElementById("ageResultOutput").textContent =
-                        `Your Exact Age: ${years} Years, ${months} Months, ${days} Days`;
-                });
-            }
-        } else {
-            body.innerHTML = `
-                <h3 style="color:#1e3a8a; margin-bottom:8px;">${escapeHTML(tool.name)}</h3>
-                <p style="margin-bottom:14px; font-size:0.93rem; color:#475569;">${escapeHTML(tool.desc)}</p>
-                <div style="padding:22px; background:#f8fafc; border:2px dashed #0284c7; text-align:center; border-radius:6px; margin-bottom:14px;">
-                    <p style="font-weight:700; color:#1e293b; margin-bottom:10px;">Select File from Device (Photo / Marksheet / Sign):</p>
-                    <input type="file" id="userToolFileInput" style="margin-bottom:14px; max-width:100%;">
-                    <br>
-                    <button type="button" id="processToolBtn" class="server-btn" style="padding:9px 24px; font-size:0.95rem;">Process & Launch Tool</button>
-                </div>
-            `;
-            const procBtn = document.getElementById("processToolBtn");
-            if (procBtn) {
-                procBtn.addEventListener("click", function () {
-                    procBtn.textContent = "Connecting to Secure Engine...";
-                    procBtn.style.background = "#d97706";
-                    procBtn.disabled = true;
-                    setTimeout(function () {
-                        closeToolModal();
-                        window.open(tool.targetEngineUrl, "_blank");
-                    }, 500);
-                });
-            }
-        }
-        document.getElementById("toolModal").style.display = "flex";
-    }
-
-    function closeToolModal() {
-        document.getElementById("toolModal").style.display = "none";
-    }
-
-    function switchCategory(cat, targetEl) {
-        document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
-        if (targetEl && targetEl.classList.contains("nav-item")) {
-            targetEl.classList.add("active");
-        }
-    }
-
-    // ---------------- 5. RENDER FUNCTIONS ----------------
-
-    function renderLiveTicker() {
-        const ticker = document.getElementById("liveTickerContainer");
-        if (!ticker) return;
-        ticker.innerHTML = `<span class="live-tag">LIVE</span> ` + LIVE_TICKER_ITEMS.map(item =>
-            `<a href="#" data-post-id="${escapeHTML(item.id)}">${escapeHTML(item.text)}</a>`
-        ).join(" || ");
-    }
-
-    function renderTopHighlights() {
-        const grid = document.getElementById("topHighlightGrid");
-        if (!grid) return;
-        grid.innerHTML = TOP_HIGHLIGHTS.map(item => `
-            <div class="highlight-card ${escapeHTML(item.colorClass)}" data-post-id="${escapeHTML(item.id)}">
-                ${escapeHTML(item.title)}
-            </div>
-        `).join("");
-    }
-
-    function renderFeaturedSchemes() {
-        const container = document.getElementById("featuredSchemesContainer");
-        if (!container) return;
-        container.innerHTML = FEATURED_SCHEMES.map(scheme => `
-            <div class="anganwadi-banner" data-post-id="${escapeHTML(scheme.postId)}">
-                <div class="anganwadi-left">
-                    <h2>${escapeHTML(scheme.hindiTitle)}</h2>
-                    <table class="anganwadi-table">
-                        <thead>
-                            <tr>${scheme.headers.map(h => `<th>${escapeHTML(h)}</th>`).join("")}</tr>
-                        </thead>
-                        <tbody>
-                            ${scheme.rows.map(row => `<tr>${row.map(cell => `<td>${escapeHTML(cell)}</td>`).join("")}</tr>`).join("")}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="anganwadi-right">
-                    <h3>${escapeHTML(scheme.englishTitle)}</h3>
-                    <p>${escapeHTML(scheme.description)}</p>
-                    <span class="anganwadi-btn">${escapeHTML(scheme.buttonText)}</span>
-                </div>
-            </div>
-        `).join("");
-    }
-
-    function createPostListItemHTML(post) {
-        return `
-            <li>
-                <span class="post-link" data-post-id="${escapeHTML(post.id)}">${escapeHTML(post.title)}</span>
-                <span class="post-tag">${escapeHTML(post.tag)}</span>
-                <span class="post-datetime">Date: ${escapeHTML(post.date)} | Time: ${escapeHTML(post.time)}</span>
-            </li>
-        `;
-    }
-
-    function renderAllColumns(filterQuery = "") {
-        const q = filterQuery.trim().toLowerCase();
-        const filterFn = (cat) => PORTAL_POSTS.filter(p =>
-            p.category === cat &&
-            (q === "" || p.title.toLowerCase().includes(q) || p.shortInfo.toLowerCase().includes(q) || p.tag.toLowerCase().includes(q))
-        );
-
-        const populate = (elementId, items) => {
-            const el = document.getElementById(elementId);
-            if (!el) return;
-            el.innerHTML = items.length
-                ? items.map(createPostListItemHTML).join("")
-                : `<li><span class="post-datetime">No matching updates found.</span></li>`;
-        };
-
-        populate("resultList", filterFn("result"));
-        populate("admitCardList", filterFn("admit-card"));
-        populate("latestJobsList", filterFn("latest-job"));
-        populate("itiJobsList", filterFn("iti-job"));
-        populate("outsourcingList", filterFn("outsourcing"));
-        populate("syllabusList", filterFn("syllabus"));
-        populate("answerKeyList", filterFn("answer-key"));
-        populate("admissionList", filterFn("admission"));
-    }
-
-    function renderToolsSection() {
-        const dropdown = document.getElementById("toolsDropdownMenu");
-        if (dropdown) {
-            dropdown.innerHTML = PORTAL_TOOLS.map(t =>
-                `<a href="#tools-section" data-tool-name="${escapeHTML(t.name)}">${escapeHTML(t.name)}</a>`
-            ).join("");
-        }
-
-        const container = document.getElementById("toolsGridContainer");
-        if (!container) return;
-        container.innerHTML = PORTAL_TOOLS.map(t => `
-            <div class="tool-card" data-tool-name="${escapeHTML(t.name)}">
-                <div class="tool-graphic-stage">${t.graphicHTML}</div>
-                <div class="tool-card-title">${escapeHTML(t.name)}</div>
-            </div>
-        `).join("");
-    }
-
-    // ---------------- 6. RIGHT-SIDE SMART AI CHAT WIDGET ----------------
-    function initRightAiFreeChatWidget() {
-        if (document.getElementById("sruAiChatPanel")) return;
-
-        const styleEl = document.createElement("style");
-        styleEl.textContent = `
-            .sru-ai-right-wrap { position: fixed; bottom: 18px; right: 16px; z-index: 2500; font-family: Arial, sans-serif; }
-            .sru-ai-toggle-btn { background: #0284c7; color: #fff; border: 2px solid #fff; padding: 9px 16px; border-radius: 20px; font-size: 0.88rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; gap: 8px; }
-            .sru-ai-online-dot { width: 9px; height: 9px; background: #22c55e; border-radius: 50%; display: inline-block; box-shadow: 0 0 6px #22c55e; }
-            .sru-ai-chat-panel { display: none; width: 320px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 10px; overflow: hidden; flex-direction: column; }
-            .sru-ai-chat-header { background: #0284c7; color: #fff; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; font-weight: 700; }
-            .sru-ai-close-btn { background: transparent; color: #fff; border: none; font-size: 1rem; font-weight: 700; cursor: pointer; }
-            .sru-ai-messages { height: 240px; overflow-y: auto; padding: 12px; background: #f8fafc; display: flex; flex-direction: column; gap: 9px; font-size: 0.85rem; }
-            .sru-msg-bot { background: #e2e8f0; color: #0f172a; padding: 8px 12px; border-radius: 8px 8px 8px 2px; align-self: flex-start; max-width: 90%; line-height: 1.45; }
-            .sru-msg-user { background: #0284c7; color: #fff; padding: 8px 12px; border-radius: 8px 8px 2px 8px; align-self: flex-end; max-width: 85%; line-height: 1.45; }
-            .sru-ai-chips { display: flex; flex-wrap: wrap; gap: 5px; padding: 6px 10px; background: #f1f5f9; border-top: 1px solid #e2e8f0; }
-            .sru-ai-chip { background: #fff; color: #0369a1; border: 1px solid #bae6fd; border-radius: 12px; padding: 3px 9px; font-size: 0.74rem; font-weight: 700; cursor: pointer; }
-            .sru-ai-input-row { display: flex; border-top: 1px solid #cbd5e1; background: #fff; }
-            .sru-ai-input-row input { flex: 1; border: none; padding: 9px 12px; font-size: 0.85rem; outline: none; }
-            .sru-ai-input-row button { background: #0284c7; color: #fff; border: none; padding: 0 14px; font-weight: 700; cursor: pointer; }
-        `;
-        document.head.appendChild(styleEl);
-
-        const widgetWrap = document.createElement("div");
-        widgetWrap.className = "sru-ai-right-wrap";
-        widgetWrap.innerHTML = `
-            <div class="sru-ai-chat-panel" id="sruAiChatPanel">
-                <div class="sru-ai-chat-header">
-                    <span>AI Assistant — SarkariResultUpAll</span>
-                    <button type="button" class="sru-ai-close-btn" id="sruAiCloseBtn">&times;</button>
-                </div>
-                <div class="sru-ai-messages" id="sruAiMessages">
-                    <div class="sru-msg-bot">नमस्ते! मैं आपका AI सहायक हूँ। आप मुझसे किसी भी सरकारी फॉर्म, रेलवे स्टेशन मास्टर या फोटो रिसाइज़र के बारे में पूछ सकते हैं।</div>
-                </div>
-                <div class="sru-ai-chips">
-                    <button type="button" class="sru-ai-chip" data-ai-q="Station Master">Station Master</button>
-                    <button type="button" class="sru-ai-chip" data-ai-q="UP Police">UP Police</button>
-                    <button type="button" class="sru-ai-chip" data-ai-q="Image Resizer">Photo Resizer</button>
-                </div>
-                <div class="sru-ai-input-row">
-                    <input type="text" id="sruAiInput" placeholder="अपना सवाल यहाँ टाइप करें..." maxlength="120">
-                    <button type="button" id="sruAiSendBtn">Send</button>
-                </div>
-            </div>
-            <button type="button" class="sru-ai-toggle-btn" id="sruAiToggleBtn">
-                <span class="sru-ai-online-dot"></span>
-                <span>AI Free Chat</span>
-            </button>
-        `;
-        document.body.appendChild(widgetWrap);
-
-        const panel = document.getElementById("sruAiChatPanel");
-        const toggleBtn = document.getElementById("sruAiToggleBtn");
-        const closeBtn = document.getElementById("sruAiCloseBtn");
-        const messagesBox = document.getElementById("sruAiMessages");
-        const inputEl = document.getElementById("sruAiInput");
-        const sendBtn = document.getElementById("sruAiSendBtn");
-
-        function appendMsg(text, isUser) {
-            const div = document.createElement("div");
-            div.className = isUser ? "sru-msg-user" : "sru-msg-bot";
-            if (isUser) {
-                div.textContent = text;
-            } else {
-                div.innerHTML = text;
-            }
-            messagesBox.appendChild(div);
-            messagesBox.scrollTop = messagesBox.scrollHeight;
-        }
-
-        function queryAI(text) {
-            const query = text.trim();
-            if (!query) return;
-            appendMsg(query, true);
-            inputEl.value = "";
-
-            setTimeout(function () {
-                const qLower = query.toLowerCase();
-                if (qLower.includes("hi") || qLower.includes("hello") || qLower.includes("नमस्ते")) {
-                    appendMsg("नमस्ते! बताइए, आज आपको किस भर्ती, रिजल्ट या टूल की डायरेक्ट लिंक चाहिए?", false);
-                    return;
-                }
-                const matched = PORTAL_POSTS.filter(p =>
-                    p.title.toLowerCase().includes(qLower) || p.shortInfo.toLowerCase().includes(qLower)
-                ).slice(0, 3);
-
-                if (matched.length > 0) {
-                    const links = matched.map(p => `&bull; <a href="#" data-post-id="${escapeHTML(p.id)}" style="color:#0284c7; font-weight:700;">${escapeHTML(p.title)}</a>`).join("<br>");
-                    appendMsg(`ये लीजिए आपके सवाल से जुड़े डायरेक्ट लिंक्स:<br>${links}`, false);
-                } else {
-                    appendMsg(`आप ऊपर दिए गए 'Latest Jobs', 'Result' या 'Admit Card' बॉक्स में देख सकते हैं, या "Station Master", "UP Police" लिखकर पूछ सकते हैं।`, false);
-                }
-            }, 600);
-        }
-
-        toggleBtn.addEventListener("click", () => panel.style.display = panel.style.display === "flex" ? "none" : "flex");
-        closeBtn.addEventListener("click", () => panel.style.display = "none");
-        sendBtn.addEventListener("click", () => queryAI(inputEl.value));
-        inputEl.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                queryAI(inputEl.value);
-            }
-        });
-        widgetWrap.addEventListener("click", (e) => {
-            const chip = e.target.closest("[data-ai-q]");
-            if (chip) queryAI(chip.getAttribute("data-ai-q"));
-        });
-    }
-
-    // ---------------- 7. INITIALIZATION ----------------
-    document.addEventListener("DOMContentLoaded", function () {
-        removeDownloadPdfRowFromModal();
-        renderLiveTicker();
-        renderTopHighlights();
-        renderFeaturedSchemes();
-        renderAllColumns();
-        renderToolsSection();
-        initRightAiFreeChatWidget();
-
-        document.body.addEventListener("click", function (e) {
-            const postTrig = e.target.closest("[data-post-id]");
-            if (postTrig) {
-                e.preventDefault();
-                openPostById(postTrig.getAttribute("data-post-id"));
-                return;
-            }
-            const toolTrig = e.target.closest("[data-tool-name]");
-            if (toolTrig) {
-                e.preventDefault();
-                openToolModal(toolTrig.getAttribute("data-tool-name"));
-                return;
-            }
-            const catTrig = e.target.closest("[data-cat]");
-            if (catTrig) {
-                switchCategory(catTrig.getAttribute("data-cat"), catTrig);
-                return;
-            }
-            if (e.target.id === "postModal" || e.target.id === "closePostModalBtn") closePostModal();
-            if (e.target.id === "toolModal" || e.target.id === "closeToolModalBtn") closeToolModal();
-        });
-
-        const searchInput = document.getElementById("globalSearch");
-        const searchBtn = document.getElementById("searchBtn");
-        if (searchInput) {
-            searchInput.addEventListener("input", (e) => renderAllColumns(escapeHTML(e.target.value)));
-        }
-        if (searchBtn && searchInput) {
-            searchBtn.addEventListener("click", () => renderAllColumns(escapeHTML(searchInput.value)));
-        }
-    });
-})();
+  ],
+  /* ---- Result ---- */
+  result: [
+    {
+      "id": "upsssc-stenographer-09-2023-online-document-upload",
+      "title": "UPSSSC Stenographer 09/2023 Online Document upload",
+      "org": "upsssc",
+      "short": "UPSSSC Stenographer Examination 2025 — Candidates are advised to confirm from the UPSSSC official website.",
+      "tag": "Out",
+      "date": "2026-08-25",
+      "line": "Admit Card: 25 August 2026",
+      "dates": [
+        ["Online Apply Start Date", "17 October 2023"],
+        ["Online Apply Last Date", "06 November 2023"],
+        ["Fee Payment Last Date", "06 November 2023"],
+        ["Correction Date", "15 November 2023"],
+        ["Exam Date", "16 November 2025"],
+        ["Exam City Details", "07 November 2025"],
+        ["Admit Card", "12 November 2025"],
+        ["Revised Answer Key", "01 April 2026"],
+        ["Result Date", "22 July 2026"],
+        ["Skill Test Date", "01 September 2026"],
+        ["Admit Card", "25 August 2026"],
+        ["Documents Upload", "28 October 2026 to 11 November 2026"]
+      ],
+      "fee": [
+        "For All Candidates : ₹ 25/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2023",
+        "Minimum Age : 18 Year",
+        "Maximum Age : 40 Year"
+      ]
+    },
+    {
+      "id": "upsssc-stenographer-2024-online-documents-upload",
+      "title": "UPSSSC Stenographer 2024 Online Documents Upload",
+      "org": "upsssc",
+      "short": "UPSSSC Stenographer Exam 2024",
+      "tag": "Out",
+      "date": "2026-10-27",
+      "line": "Skill Test Result: 27 October 2026",
+      "dates": [
+        ["Application Start", "26 December 2024"],
+        ["Registration Last Date", "25 January 2025"],
+        ["Fee Payment Last Date", "25 January 2025"],
+        ["Last Date For Correction", "1 February 2025"],
+        ["Eligibility Result", "14 October 2025"],
+        ["Exam Date", "20 January 2026"],
+        ["Exam City Details", "10 January 2026"],
+        ["Admit Card", "16 January 2026"],
+        ["Answer Key", "22 January 2026"],
+        ["Revised Answer Key", "01 April 2026"],
+        ["Result Available", "22 July 2026"],
+        ["Skill Test Date", "01 September 2026"],
+        ["Admit Card", "25 August 2026"],
+        ["Skill Test Result", "27 October 2026"],
+        ["Documents Upload", "29 October 2026 to 12 November 2026"]
+      ],
+      "fee": [
+        "General / OBC / EWS : Rs 25/-",
+        "SC / ST : Rs 25/-",
+        "PH (Divyang) : Rs 25/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01.07.2024",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 40 Years"
+      ]
+    },
+    {
+      "id": "rssb-driver-result-2026",
+      "title": "RSSB Driver Result 2026",
+      "org": "rssb",
+      "short": "RSMSSB Driver Examination 2025 — Candidates are advised to confirm from the RSMSSB official website.",
+      "tag": "Out",
+      "date": "2026-02-01",
+      "line": "Score Card Date: 01 February 2026",
+      "dates": [
+        ["Online Apply Start Date", "27th February 2025"],
+        ["Online Apply Last Date", "28th March 2025"],
+        ["Last Date For Fee Payment", "28th March 2025"],
+        ["Exam Date", "23 November 2025"],
+        ["Admit Card", "19 November 2025"],
+        ["Answer Key", "10 December 2025"],
+        ["Result Declared Date", "17 January 2026"],
+        ["Score Card Date", "01 February 2026"]
+      ],
+      "fee": [
+        "General, OBC, EWS: ₹ 600/-",
+        "SC / ST, PWD: ₹ 400/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 January 2026",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 40 Years"
+      ]
+    },
+    {
+      "id": "ssc-cpo-si-pet-pst-result-2026-out",
+      "title": "SSC CPO SI PET / PST Result 2026 – Out",
+      "org": "ssc",
+      "short": "SSC CPO SI Examination 2025 — Candidates are advised to confirm from the SSC official website.",
+      "tag": "Out",
+      "date": "2026-10-29",
+      "line": "PET / PST Result: 29 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "26 September 2025"],
+        ["Online Apply Last Date", "16 October 2025"],
+        ["Last Date For Fee Payment", "17 October 2025"],
+        ["Correction Date", "03 – 05 November 2025"],
+        ["Self Slot Booking", "17-21 November 2025"],
+        ["Exam Date", "09-12 December 2025"],
+        ["Exam City Details", "29 November 2025"],
+        ["Admit Card", "07 December 2025"],
+        ["Answer Key", "24 December 2025"],
+        ["Final Answer Key", "21 April 2026"],
+        ["Marks", "21 April 2026"],
+        ["PET / PST Date", "21 – 28 July 2026"],
+        ["Admit Card", "14 July 2026"],
+        ["PET / PST Result", "29 October 2026"]
+      ],
+      "fee": [
+        "For General/ OBC/ EWS : ₹ 100/-",
+        "For SC/ ST/ Female : ₹ 0/-",
+        "For PH Candidates : ₹ 0/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 August 2025",
+        "Minimum Age : 20 Years",
+        "Maximum Age : 25 Years"
+      ]
+    },
+    {
+      "id": "rpsc-2nd-grade-teacher-result-2026-updated",
+      "title": "RPSC 2nd Grade Teacher Result 2026 – Updated",
+      "org": "rpsc",
+      "short": "RPSC 2nd Grade Teacher Examination 2025 — Candidates are advised to confirm from the RPSC official website.",
+      "tag": "Out",
+      "date": "2026-10-13",
+      "line": "Result Date: 13 October 2026",
+      "dates": [
+        ["Notification Date", "17 July 2025"],
+        ["Online Apply Start Date", "19 August 2025"],
+        ["Online Apply Last Date", "17 September 2025"],
+        ["Last Date For Fee Payment", "17 September 2025"],
+        ["Exam Date", "12 – 18 July 2026"],
+        ["Admit Card", "09 July 2026"],
+        ["Answer Key", "28 July 2026"],
+        ["Result Date", "13 October 2026"]
+      ],
+      "fee": [
+        "For General, Other State : ₹ 600/-",
+        "For SC / ST, OBC / BC : ₹ 400/-",
+        "For Correction Charge : ₹ 500/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 January 2026",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 40 Years"
+      ]
+    },
+    {
+      "id": "uppsc-lt-grade-assistant-teacher-mains-result-2026-updated",
+      "title": "UPPSC LT Grade Assistant Teacher Mains Result 2026 – Updated",
+      "org": "uppsc",
+      "short": "UPPSC LT Grade Assistant Teacher Examination 2025 — Candidates are advised to confirm from the UPPSC official website.",
+      "line": "Computer Mains Admit Card: 11 August 2026",
+      "dates": [
+        ["Online Apply Start Date", "28 July 2025"],
+        ["Online Apply Last Date", "28 August 2025"],
+        ["Last Date For Fee Payment", "28 August 2025"],
+        ["Exam Date", "06 December 2025 – 25 January 2026"],
+        ["Admit Card", "26 November 2025"],
+        ["Answer Key", "28 January 2026"],
+        ["Result Date", "05 February 2026"],
+        ["Computer Exam Date", "05 April 2026"],
+        ["Computer Admit Card", "26 March 2026"],
+        ["Mains Online Form Online Apply Start Date", "02 April 2026"],
+        ["Online Apply Last Date", "17 April 2026"],
+        ["Mains Exam Date (Comm. / Sanskrit)", "23 April 2026"],
+        ["Mains Exam Date Sociology, Physical Education, Music, Hindi", "11 July 2026"],
+        ["Mains Admit Card", "07 July 2026"],
+        ["Mains Exam Date (Math, Home Science, Agri/ Horti, Science)", "16, 17, 18 May 2026"],
+        ["Mains Admit Card", "12 May 2026"],
+        ["Bio / Urdu / Art Mains Exam Date", "13 June 2026"],
+        ["Mains Admit Card", "06 June 2026"],
+        ["Mains Result", "Will Be Updated Here Soon"],
+        ["Computer Mains Form Start Date", "23 June 2026"],
+        ["Computer Mains Form Last Date", "07 July 2026"],
+        ["Computer Mains Exam Date", "16 August 2026"],
+        ["Computer Mains Admit Card", "11 August 2026"]
+      ],
+      "fee": [
+        "For General / EWS/ OBC : ₹ 125/-",
+        "SC/ ST Candidates : ₹ 65/-",
+        "EX-Service Candidates : ₹ 65/-",
+        "PH Candidates: ₹ 25/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2025",
+        "Minimum Age : 21 Years",
+        "Maximum Age : 40 Years"
+      ]
+    },
+    {
+      "id": "bpsc-aso-mains-result-2026",
+      "title": "BPSC ASO Mains Result 2026",
+      "org": "bpsc",
+      "short": "BPSC Assistant Section Officer ASO Examination 2025 — Candidates are advised to confirm from the Bihar BPSC official website.",
+      "tag": "Out",
+      "date": "2026-10-27",
+      "line": "Mains Result: 27 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "29 May 2025"],
+        ["Online Apply Last Date", "23 June 2025"],
+        ["Last Date For Fee Payment", "23 June 2025"],
+        ["Pre Exam Date", "10 September 2025"],
+        ["Admit Card", "04 September 2025"],
+        ["Pre Answer Key", "18 September 2025"],
+        ["Result Date", "23 December 2025"],
+        ["Mains Form Start Date", "12 January 2026"],
+        ["Mains Form Last Date", "31 January 2026"],
+        ["Mains Exam Date", "27 February 2026"],
+        ["Mains Admit Card", "20 February 2026"],
+        ["Final Answer Key", "06 April 2026"],
+        ["Mains Result", "27 October 2026"]
+      ],
+      "fee": [
+        "For General/ OBC/ EWS : ₹ 600/-",
+        "For SC/ ST/ Female Candidates Of Bihar : ₹ 150/-",
+        "For PH Candidates : ₹ 200/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 August 2025",
+        "Minimum Age : 21 Yrs",
+        "Maximum Age : 37 Yrs. (Male)",
+        "Maximum Age : 40 Yrs (Female UR, BC/ EBC-Male & Female)",
+        "Maximum Age : 42 Yrs (SC/ ST-Male & Female)"
+      ]
+    },
+    {
+      "id": "upsc-cds-ii-name-wise-result-2026-out",
+      "title": "UPSC CDS-II (Name Wise) Result 2026 – Out",
+      "org": "upsc",
+      "short": "UPSC Combined Defence Services CDS II Examination 2026 — Candidates are advised to confirm from the UPSC official website.",
+      "tag": "Out",
+      "date": "2026-10-19",
+      "line": "Result Date: 19 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "20 May 2026"],
+        ["Online Apply Last Date", "11 June 2026"],
+        ["Last Date For Fee Payment", "11 June 2026"],
+        ["Exam Date", "13 September 2026"],
+        ["Admit Card", "03 September 2026"],
+        ["Answer Key", "16 September 2026"],
+        ["Result Date", "19 October 2026"]
+      ],
+      "fee": [
+        "General / OBC : ₹ 200/-",
+        "SC / ST/ All Female :₹ 0/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : UPSC Rules.",
+        "candidates born not earlier than 01 July 2003 and not later than 01 July 2008 are eligible.",
+        "Age Relaxation Extra as per UPSC Examination 2026"
+      ]
+    },
+    {
+      "id": "rrb-section-controller-answer-key-2026-out",
+      "title": "RRB Section Controller Answer Key 2026 – Out",
+      "org": "rrb",
+      "short": "RRB Section Controller Examination 2026 — Candidates are advised to confirm from the RRB official website.",
+      "tag": "Out",
+      "date": "2026-10-26",
+      "line": "Answer Key: 26 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "15 July 2026"],
+        ["Online Apply Last Date", "14 August 2026 (23:59 PM)"],
+        ["Last Date For Fee Payment", "16 August 2026"],
+        ["Correction Date", "17 – 26 August 2026"],
+        ["Exam Date", "12 – 13 October 2026"],
+        ["Exam City Details", "02 October 2026"],
+        ["Admit Card", "08 October 2026"],
+        ["Answer Key", "26 October 2026"],
+        ["Result Date", "Will Be Updated Here Soon"]
+      ],
+      "fee": [
+        "For General / OBC / EWS : ₹ 500/-",
+        "For SC / ST / EBC : ₹ 250/-",
+        "For All Category female : ₹ 250/-",
+        "After Appearing in CBT-I Exam",
+        "UR / OBC / EWS Fee Refund : Rs.400/-",
+        "SC / ST / PH & Female Refund : Rs. 250/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2026",
+        "Minimum Age : 20 Years",
+        "Maximum Age : 33 Years"
+      ]
+    },
+    {
+      "id": "up-home-guard-final-marks-2026-out",
+      "title": "UP Home Guard Final Marks 2026 – Out",
+      "org": "uppolice",
+      "short": "UP Police Home guard Examination 2025 — Candidates are advised to confirm from the UP Home Guard official website.",
+      "tag": "Out",
+      "date": "2026-10-24",
+      "line": "Final Marks: 24 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "18 November 2025"],
+        ["Online Apply Last Date", "17 December 2025"],
+        ["Last Date For Fee Payment", "17 December 2025"],
+        ["Correction Date", "18 – 21 December 2025"],
+        ["Exam Date", "25, 26 & 27 April 2026"],
+        ["Exam City Details", "18 April 2026"],
+        ["Admit Card", "22 April 2026"],
+        ["Answer Key", "07 May 2026"],
+        ["Final Answer Key", "28 June 2026"],
+        ["Result Date", "28 June 2026"],
+        ["DV / PST Exam Date", "13 July to 07 August 2026"],
+        ["DV / PST Admit Card", "06 July 2026"],
+        ["PET / PST Date", "08 – 16 September 2026"],
+        ["PET / PST Admit Card", "01 September 2026"],
+        ["New PET Date", "15 September 2026"],
+        ["PET Admit Card", "13 September 2026"],
+        ["Final Result", "03 October 2026"],
+        ["Final Marks", "24 October 2026"]
+      ],
+      "fee": [
+        "For General/ EWS/ OBC : ₹ 400/-",
+        "For SC / ST : ₹ 300/-"
+      ],
+      "eligibility": [
+        "Age Limit As On : 01 July 2025",
+        "Minimum Age : 18 Years",
+        "Maximum Age : 30 Years"
+      ]
+    },
+    {
+      "id": "cci-various-post-result-2026-out",
+      "title": "CCI Various Post Result 2026 – Out",
+      "org": "cci",
+      "short": "Cotton Corporation of India CCIL Various Post Examination 2026 — Candidates are advised to confirm from the CCIL official website.",
+      "tag": "Out",
+      "date": "2026-10-23",
+      "line": "Result Date: 23 October 2026",
+      "dates": [
+        ["Online Apply Start Date", "09 July 2026"],
+        ["Online Apply Last Date", "24 July 2026"],
+        ["Last Date For Fee Payment", "24 July 2026"],
+        ["Exam Date", "01 September 2026"],
+        ["Exam City Details", "18 August 2026"],
+        ["Admit Card", "21 August 2026"],
+        ["Answer Key", "03 September 2026"],
+        ["Result Date", "23 October 2026"]
+      ],
+      "fee": [
+        "For General/ OBC/ EWS : ₹ 1770/-",
+        "For SC/ ST/ PH : ₹ 590/-",
+        "Intimation Charges & GST Included"
+      ],
+      "eligibility": [
+        "Age Limit As On : 09 July 2026",
+        "Minimum. Age : 18 Years",
+        "Maximum. Age : 30 Years (For Other Post)",
+        "Maximum. Age : 32 Years"
+      ]
+    },
+    {
+      "id": "ssc-gd-constable-revised-result-2026-out",
+      "title": "SSC GD Constable Revised Result 2026 – Out",
+      "org": "ssc",
+      "short": "SSC GD C
