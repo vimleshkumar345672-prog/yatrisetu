@@ -1166,3 +1166,19 @@ main > section,
   color: #fafafa !important;
   font-weight: 800 !important;
 }
+/* पीसी और टैबलेट पर सभी नेविगेशन टैब बिना स्क्रॉल किए एक साथ दिखाने के लिए */
+@media (min-width: 720px) {
+  .navbar {
+    flex-wrap: wrap;
+  }
+  .nav-tabs {
+    flex-wrap: wrap;
+    overflow-x: visible !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+  }
+  .nav-tabs a {
+    padding: 10px 10px !important;
+    font-size: 13.5px !important;
+  }
+}
