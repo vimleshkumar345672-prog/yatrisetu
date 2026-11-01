@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sarkari Result UP All – Latest Jobs, Admit Card, Result 2026</title>
+<meta name="description" content="SarkariResultUpAll.com – उत्तर प्रदेश एवं भारत की सभी सरकारी नौकरियों, एडमिट कार्ड, रिजल्ट, सिलेबस और आंसर की की ताज़ा जानकारी एक जगह।">
+<meta name="theme-color" content="#0b1f5c">
+<meta name="robots" content="index, follow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
+<!--
+  SECURITY (हाई-एंड):
+  1) CSP: सिर्फ अपनी ही script.js / style.css चलेगी। inline <script>, inline style="" और बाहरी स्क्रिप्ट ब्लॉक हैं।
+     -> इसलिए इस फाइल में कहीं भी style="..." या onclick="..." मत लिखना।
+  2) सभी बाहरी लिंक rel="noopener noreferrer" के साथ हैं।
+  3) frame-ancestors / X-Frame-Options मेटा टैग से काम नहीं करते, इसलिए क्लिकजैकिंग से बचाव script.js में रहेगा।
+-->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+
+<link rel="stylesheet" href="style.css">
+<script src="script.js" defer></script>
+</head>
+
+<body id="top">
+<a class="skip-link" href="#main">मुख्य सामग्री पर जाएँ</a>
+
+<noscript>
+  <div class="noscript-msg">पोस्ट की लिस्ट देखने के लिए अपने ब्राउज़र में JavaScript चालू करें।</div>
+</noscript>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <h1 class="brand">SARKARI RESULT UP ALL<sup>™</sup></h1>
+  <p class="brand-url">www.SarkariResultUpAll.com</p>
+  <p class="brand-tag" lang="hi">उत्तर प्रदेश एवं भारत की सभी सरकारी नौकरियों, एडमिट कार्ड और रिजल्ट का सबसे तेज़ पोर्टल</p>
+</header>
+
+<!-- ============ NAV + SEARCH : एक ही पट्टी ============ -->
+<nav class="navbar" id="navbar" aria-label="मुख्य मेनू">
+  <ul class="nav-tabs">
+    <li><a class="active" href="#top" data-nav="home">Home</a></li>
+    <li><a href="#box-latest" data-nav="latest">Latest Job</a></li>
+    <li><a href="#box-admit" data-nav="admit">Admit Card</a></li>
+    <li><a href="#box-result" data-nav="result">Result</a></li>
+    <li><a href="#box-admission" data-nav="admission">Admission</a></li>
+    <li><a href="#box-syllabus" data-nav="syllabus">Syllabus</a></li>
+    <li><a href="#box-answerkey" data-nav="answerkey">Answer Key</a></li>
+    <li><a href="#tools" data-nav="tools">Tools</a></li>
+  </ul>
+  <form class="nav-search" id="search-form" role="search" autocomplete="off">
+    <label class="sr-only" for="search-input">Search Result, Job, Admit Card</label>
+    <input id="search-input" type="search" name="q" placeholder="Search…" maxlength="60" inputmode="search" enterkeyhint="search" spellcheck="false">
+    <button type="submit" aria-label="Search">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M20.5 20.5l-4.2-4.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+    </button>
+  </form>
+</nav>
+
+<main id="main">
+
+  <!-- Welcome -->
+  <section class="panel welcome" aria-labelledby="welcome-h">
+    <h2 id="welcome-h">Welcome to SarkariResultUpAll.com</h2>
+    <p>Latest Jobs, Admit Card और Exam Results की सबसे पहले और सही जानकारी। किसी भी फॉर्म की Important Dates, Fee, Eligibility और Total Vacancy एक क्लिक में देखें।</p>
+  </section>
+
+  <!-- Search results (JS भरेगा) -->
+  <section class="panel search-panel" id="search-panel" aria-live="polite" hidden>
+    <div class="panel-head">
+      <h2 id="search-title">Search Results</h2>
+      <button type="button" class="link-btn" id="search-clear">✕ Clear</button>
+    </div>
+    <ul class="post-list" id="search-results"></ul>
+    <p class="box-empty" id="search-empty" hidden>कुछ नहीं मिला। कोई दूसरा शब्द आज़माएँ।</p>
+  </section>
+
+  <!-- LIVE ticker (JS भरेगा, डेटा आते ही दिखेगा) -->
+  <div class="ticker" id="ticker" hidden>
+    <span class="ticker-live">LIVE</span>
+    <div class="ticker-view"><div class="ticker-track" id="ticker-track"></div></div>
+  </div>
+
+  <!-- रंगीन क्विक बटन (JS भरेगा) -->
+  <section class="hot-grid" id="hot-grid" aria-label="जरूरी भर्ती" hidden></section>
+
+  <!-- फीचर्ड बैनर (JS भरेगा, खाली रहे तो छिपा रहेगा) -->
+  <section class="panel featured" id="featured" aria-label="Featured" hidden></section>
+
+  <!--
+    ============ मुख्य बॉक्स ============
+    हर लिस्ट में data-list="..." है। script.js का डेटा इन्हीं नामों से जुड़ता है:
+    result | admit | latest | jobs10 | outsource | syllabus | answerkey | admission
+    नया डेटा चढ़ाने पर HTML बदलने की ज़रूरत नहीं।
+  -->
+
+  <!-- पंक्ति 1: Result | Admit Card | Latest Jobs  (मोबाइल पर भी तीनों साथ) -->
+  <div class="board board-3">
+
+    <section class="box" id="box-result" aria-labelledby="h-result">
+      <h2 class="box-title" id="h-result">Result</h2>
+      <ul class="post-list" data-list="result"></ul>
+      <p class="box-empty" data-empty="result">जल्द अपडेट होगा</p>
+      <div class="box-foot"><button type="button" class="view-all" data-more="result" hidden>View All Results »</button></div>
+    </section>
+
+    <section class="box" id="box-admit" aria-labelledby="h-admit">
+      <h2 class="box-title" id="h-admit">Admit Card</h2>
+      <ul class="post-list" data-list="admit"></ul>
+      <p class="box-empty" data-empty="admit">जल्द अपडेट होगा</p>
+      <div class="box-foot"><button type="button" class="view-all" data-more="admit" hidden>View All Admit Cards »</button></div>
+    </section>
+
+    <section class="box" id="box-latest" aria-labelledby="h-latest">
+      <h2 class="box-title" id="h-latest">Latest Jobs</h2>
+      <ul class="post-list" data-list="latest"></ul>
+      <p class="box-empty" data-empty="latest">जल्द अपडेट होगा</p>
+      <div class="box-foot"><button type="button" class="view-all" data-more="latest" hidden>View All Latest Jobs »</button></div>
+    </section>
+
+  </div>
+
+  <!-- पंक्ति 2: खाली बॉक्स (डेटा के लिए जगह) -->
+  <div class="board board-3">
+
+    <section class="box" id="box-jobs10" aria-labelledby="h-jobs10">
+      <h2 class="box-title" id="h-jobs10">10th/ITI Jobs</h2>
+      <ul class="post-list" data-list="jobs10"></ul>
+      <p class="box-empty" data-empty="jobs10">जल्द अपडेट होगा</p>
+      <div class="box-foot"><button type="button" class="view-all" data-more="jobs10" hidden>View All »</button></div>
+    </section>
+
+    <section class="box" id="box-outsource" aria-labelledby="h-outsource">
+      <h2 class="box-title" id="h-outsource">Outsourcing Jobs</h2>
+      <ul class="post-list" data-list="outsource"></ul>
+      <p class="box-empty" data-empty="outsource">जल्द अपडेट होगा</p>
+      <div class="box-foot"><button type="button" class="view-all" data-more="outsource" hidden>View All »</button></div>
+    </section>
+
+    <section class="box" id="box-syllabus" aria-labelledby="h-syllabus">
+      <h2 class="box-title" id="h-syllabus">Syllabus</h2>
+      <ul class="post-list" data-list="syllabus"></ul>
+      <p class="box-empty" data-empty="syllabus">जल्द अपडेट होगा</p>
+      <div class="box-foot"><button type="button" class="view-all" data-more="syllabus" hidden>View All »</button></div>
+    </section>
+
+  </div>
+
+  <!-- पंक्ति 3: खाली बॉक्स -->
+  <div class="board board-2">
+
+    <section class="box" id="box-answerkey" aria-labelledby="h-answerkey">
+      <h2 class="box-title" id="h-answerkey">Answer Key</h2>
+      <ul class="post-list" data-list="answerkey"></ul>
+      <p class="box-empty" data-empty="answerkey">जल्द अपडेट होगा</p>
+      <div class="box-foot"><button type="button" class="view-all" data-more="answerkey" hidden>View All »</button></div>
+    </section>
+
+    <section class="box" id="box-admission" aria-labelledby="h-admission">
+      <h2 class="box-title" id="h-admission">Admission &amp; Scholarship</h2>
+      <ul class="post-list" data-list="admission"></ul>
+      <p class="box-empty" data-empty="admission">जल्द अपडेट होगा</p>
+      <div class="box-foot"><button type="button" class="view-all" data-more="admission" hidden>View All »</button></div>
+    </section>
+
+  </div>
+
+  <!-- ============ FREE TOOLS (सीधे फ्री वेबसाइट पर) ============ -->
+  <section class="tools" id="tools" aria-labelledby="tools-h">
+    <h2 class="band" id="tools-h">SarkariResultUpAll.com — Free Student &amp; Exam Tools</h2>
+
+    <div class="tool-grid">
+
+      <a class="tool-card" href="https://imageresizer.com/" target="_blank" rel="noopener noreferrer nofollow">
+        <span class="ti ti-resize" aria-hidden="true"><span class="ti-pic">20KB - 50KB</span></span>
+        <span class="tool-name">Image Resizer</span>
+      </a>
+
+      <a class="tool-card" href="https://marriagebiodata.app/en" target="_blank" rel="noopener noreferrer nofollow">
+        <span class="ti ti-bio" aria-hidden="true">
+          <span class="ti-line y">MARITAL</span><span class="ti-line">BIO-DATA</span><span class="ti-line y">MAKER</span>
+          <span class="ti-chip" lang="hi">शादी का बायोडाटा</span>
+        </span>
+        <span class="tool-name">Shadi / Marriage Bio Data Maker</span>
+      </a>
+
+      <a class="tool-card" href="https://www.cvmaker.com/" target="_blank" rel="noopener noreferrer nofollow">
+        <span class="ti ti-cv" aria-hidden="true"><span class="ti-doc"><span class="ti-cvtxt">CV</span></span></span>
+        <span class="tool-name">Resume/CV Maker</span>
+      </a>
+
+      <a class="tool-card" href="https://www.ilovepdf.com/jpg_to_pdf" target="_blank" rel="noopener noreferrer nofollow">
+        <span class="ti ti-pdf" aria-hidden="true"><span class="ti-box">JPG</span><span class="ti-arrow">→</span><span class="ti-box red">PDF</span></span>
+        <span class="tool-name">JPG to PDF Converter</span>
+      </a>
+
+      <a class="tool-card" href="https://www.typingtest.com/" target="_blank" rel="noopener noreferrer nofollow">
+        <span class="ti ti-wpm" aria-hidden="true"><span class="ti-head">35+ WPM TEST</span><span class="ti-chips"><span>HINDI</span><span>ENGLISH</span></span></span>
+        <span class="tool-name">Typing Test</span>
+      </a>
+
+      <a class="tool-card" href="https://www.calculator.net/age-calculator.html" target="_blank" rel="noopener noreferrer nofollow">
+        <span class="ti ti-age" aria-hidden="true"><span class="ti-bar">Age Calculator</span><span class="ti-chips"><span>YY</span><span>MM</span><span>DD</span></span></span>
+        <span class="tool-name">Age Calculator</span>
+      </a>
+
+      <a class="tool-card" href="https://image.pi7.org/add-name-and-date-on-photo" target="_blank" rel="noopener noreferrer nofollow">
+        <span class="ti ti-name" aria-hidden="true"><span class="ti-person"></span><span class="ti-person sm"><small>Name · Date</small></span></span>
+        <span class="tool-name">Name &amp; Date on Photo Maker</span>
+      </a>
+
+      <a class="tool-card" href="https://image.pi7.org/merge-photo-and-signature" target="_blank" rel="noopener noreferrer nofollow">
+        <span class="ti ti-merge" aria-hidden="true"><span class="ti-bar y">Photo &amp; Signature</span><span class="ti-row"><span class="ti-sign">Sign</span><span class="ti-go">Merge →</span></span></span>
+        <span class="tool-name">Photo Signature Joiner</span>
+      </a>
+
+      <a class="tool-card" href="https://esb.mponline.gov.in/img/Madhya%20Pradesh%20Professional%20Examination%20Board%20-%20Template.pdf" target="_blank" rel="noopener noreferrer nofollow">
+        <span class="ti ti-form" aria-hidden="true"><span class="ti-formbox"><span class="ti-sq"></span><span class="ti-ln"></span></span><span class="ti-cap">MPPEB Form</span></span>
+        <span class="tool-name">MPPEB Template</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section class="panel about" aria-labelledby="about-h">
+    <h2 id="about-h">SarkariResultUpAll.com Tools</h2>
+    <p>छात्रों और जॉब सीकर्स के लिए फ्री टूल्स: फोटो/सिग्नेचर रिसाइज़, JPG से PDF, टाइपिंग टेस्ट, एज कैलकुलेटर, नाम-डेट वाली फोटो, फोटो+सिग्नेचर जॉइनर, रिज्यूमे और शादी का बायोडाटा।</p>
+    <ol class="about-list">
+      <li>Image Resizer</li>
+      <li>MPPEB Template</li>
+      <li>Resume/CV Maker</li>
+      <li>JPG to PDF Converter</li>
+      <li>Typing Speed Test (Hindi &amp; English)</li>
+      <li>Age Calculator</li>
+      <li>Name &amp; Date on Photo Maker</li>
+      <li>Photo &amp; Signature Joiner</li>
+      <li>Shadi / Marriage Bio-Data Maker</li>
+    </ol>
+  </section>
+
+  <!-- ============ DISCLAIMER ============ -->
+  <section class="panel disclaimer" id="disclaimer" aria-labelledby="disc-h">
+    <h2 id="disc-h">Disclaimer</h2>
+    <p>यह वेबसाइट (SarkariResultUpAll.com) एक स्वतंत्र शैक्षणिक एवं करियर सूचना पोर्टल है और किसी सरकारी संगठन से संबद्ध नहीं है। यहाँ दी गई जानकारी केवल सामान्य जानकारी के लिए है। आवेदन से पहले संबंधित विभाग की ऑफिशियल नोटिफिकेशन से सभी विवरण ज़रूर जाँच लें।</p>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+  <h2 class="foot-title">Connect With Us</h2>
+  <!-- TODO: नीचे हर href="#" की जगह अपनी असली लिंक डालना (https://...) -->
+  <ul class="social">
+    <li><a href="#" data-social="telegram" target="_blank" rel="noopener noreferrer">Telegram</a></li>
+    <li><a href="#" data-social="whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+    <li><a href="#" data-social="instagram" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+    <li><a href="#" data-social="youtube" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+    <li><a href="#" data-social="facebook" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+    <li><a href="#" data-social="x" target="_blank" rel="noopener noreferrer">X (Twitter)</a></li>
+  </ul>
+  <div class="foot-bottom">
+    <p>Copyright © <span id="year">2026</span> | <strong>SarkariResultUpAll.com</strong></p>
+    <ul class="foot-links">
+      <li><a href="#top">Home</a></li>
+      <li><a href="#tools">Tools</a></li>
+      <li><a href="#disclaimer">Disclaimer</a></li>
+    </ul>
+  </div>
+</footer>
+
+<!-- ============ POST DETAIL POPUP (script.js भरेगा) ============ -->
+<div class="modal" id="post-modal" hidden>
+  <div class="modal-backdrop" data-close="1"></div>
+
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="m-title" tabindex="-1">
+    <div class="modal-head">
+      <h2 class="modal-heading">Post Details &amp; Official Links</h2>
+      <button type="button" class="modal-close" id="m-close">✕ Close</button>
+    </div>
+
+    <div class="modal-body">
+      <dl class="meta-rows">
+        <div class="meta-row"><dt>Post Date / Update:</dt><dd id="m-date"></dd></div>
+        <div class="meta-row"><dt>Short Information:</dt><dd id="m-short"></dd></div>
+      </dl>
+
+      <h3 class="d-title" id="m-title"></h3>
+
+      <div class="d-grid">
+        <section class="d-box d-vacancy" aria-labelledby="m-vac-h">
+          <h4 id="m-vac-h">Vacancy / Total Post</h4>
+          <p class="vac" id="m-vacancy"></p>
+        </section>
+
+        <section class="d-box d-dates" aria-labelledby="m-dates-h">
+          <h4 id="m-dates-h">Important Dates</h4>
+          <ul id="m-dates"></ul>
+        </section>
+
+        <section class="d-box d-fee" aria-labelledby="m-fee-h">
+          <h4 id="m-fee-h">Application Fee</h4>
+          <ul id="m-fee"></ul>
+        </section>
+
+        <section class="d-box d-elig" aria-labelledby="m-elig-h">
+          <h4 id="m-elig-h">Eligibility &amp; Age Limit</h4>
+          <ul id="m-eligibility"></ul>
+        </section>
+      </div>
+
+      <div class="d-links">
+        <h4>Some Useful Important Links</h4>
+
+        <div class="link-row">
+          <div class="link-label">
+            Apply Online / Login Portal
+            <small lang="hi">सीधे रजिस्ट्रेशन / लॉगिन पेज पर जाएँ</small>
+          </div>
+          <a class="btn btn-apply" id="m-apply" href="#" target="_blank" rel="noopener noreferrer nofollow">Apply / Login »</a>
+        </div>
+
+        <div class="link-row">
+          <div class="link-label">
+            Official Website (View Only)
+            <small lang="hi">सिर्फ ऑफिशियल वेबसाइट देखें</small>
+          </div>
+          <a class="btn btn-official" id="m-official" href="#" target="_blank" rel="noopener noreferrer nofollow">Official Website</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
